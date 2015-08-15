@@ -1,0 +1,14 @@
+C:\Users\Onkelsam\Documents\Visual Studio 2012\Projects\Visual Novel Database\Visual Novel Database\bin\Debug\Visual Novel Database.exe.config
+C:\Users\Onkelsam\Documents\Visual Studio 2012\Projects\Visual Novel Database\Visual Novel Database\bin\Debug\Visual Novel Database.exe
+C:\Users\Onkelsam\Documents\Visual Studio 2012\Projects\Visual Novel Database\Visual Novel Database\bin\Debug\Visual Novel Database.pdb
+C:\Users\Onkelsam\Documents\Visual Studio 2012\Projects\Visual Novel Database\Visual Novel Database\obj\Debug\Visual_Novel_Database.Properties.Resources.resources
+C:\Users\Onkelsam\Documents\Visual Studio 2012\Projects\Visual Novel Database\Visual Novel Database\obj\Debug\Visual Novel Database.csproj.GenerateResource.Cache
+C:\Users\Onkelsam\Documents\Visual Studio 2012\Projects\Visual Novel Database\Visual Novel Database\obj\Debug\Visual Novel Database.exe
+C:\Users\Onkelsam\Documents\Visual Studio 2012\Projects\Visual Novel Database\Visual Novel Database\obj\Debug\Visual Novel Database.pdb
+C:\Users\Onkelsam\Documents\Visual Studio 2012\Projects\Visual Novel Database\Visual Novel Database\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Onkelsam\Documents\Visual Studio 2012\Projects\Visual Novel Database\Visual Novel Database\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Onkelsam\Documents\Visual Studio 2012\Projects\Visual Novel Database\Visual Novel Database\bin\Debug\HtmlAgilityPack.dll
+C:\Users\Onkelsam\Documents\Visual Studio 2012\Projects\Visual Novel Database\Visual Novel Database\bin\Debug\HtmlAgilityPack.pdb
+C:\Users\Onkelsam\Documents\Visual Studio 2012\Projects\Visual Novel Database\Visual Novel Database\bin\Debug\HtmlAgilityPack.xml
+C:\Users\Onkelsam\Documents\Visual Studio 2012\Projects\Visual Novel Database\Visual Novel Database\obj\Debug\Visual_Novel_Database.frmMain.resources
+C:\Users\Onkelsam\Documents\Visual Studio 2012\Projects\Visual Novel Database\Visual Novel Database\obj\Debug\Visual Novel Database.csprojResolveAssemblyReference.cache
