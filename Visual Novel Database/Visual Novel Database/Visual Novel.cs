@@ -37,9 +37,10 @@ namespace Visual_Novel_Database
             Category = new List<string>();
         }
 
-        public Visual_Novel(string Name, string oName, string tag, string descripe, string pathing, int vn_id)
+        public Visual_Novel(string Name, string oName, string tag, string descripe, string pathing, int vn_id, List<string> character_images)
         {
 
+            Char_Images = new List<string>();
             englishName = Name;
             originalName = oName;
             tags = tag;
@@ -47,10 +48,8 @@ namespace Visual_Novel_Database
             path = pathing;
             id = vn_id;
             Images = GetImages("https://vndb.org/v" + id); //Use the 'GetImages' function to get screenshots               
-            Char_Images = GetImages("https://vndb.org/v" + id + "/chars#chars"); //and character images
+            Char_Images.AddRange(character_images); //and character images
             Category = new List<string>();
-          
-            Char_Images.RemoveAt(0); //Remove VN main image from character images
 
             saveInformation(); //and save the information in "VisualNovels.json"
         }

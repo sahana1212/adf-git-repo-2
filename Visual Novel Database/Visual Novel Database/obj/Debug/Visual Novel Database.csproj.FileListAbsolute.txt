@@ -11,4 +11,3 @@ C:\Users\Onkelsam\Documents\Visual Studio 2012\Projects\Visual Novel Database\Vi
 C:\Users\Onkelsam\Documents\Visual Studio 2012\Projects\Visual Novel Database\Visual Novel Database\bin\Debug\HtmlAgilityPack.pdb
 C:\Users\Onkelsam\Documents\Visual Studio 2012\Projects\Visual Novel Database\Visual Novel Database\bin\Debug\HtmlAgilityPack.xml
 C:\Users\Onkelsam\Documents\Visual Studio 2012\Projects\Visual Novel Database\Visual Novel Database\obj\Debug\Visual_Novel_Database.frmMain.resources
-C:\Users\Onkelsam\Documents\Visual Studio 2012\Projects\Visual Novel Database\Visual Novel Database\obj\Debug\Visual Novel Database.csprojResolveAssemblyReference.cache

@@ -22,6 +22,7 @@ namespace Visual_Novel_Database
     {
         List<Visual_Novel> VNS = new List<Visual_Novel>(); //List of all Visual Novels in database
         List<WrittenTagsRootObject> plain_tags; //Contains all plain_tags, meaning the loaded tagdump.json
+        List<string> character_images;
         int image_number = 0; //used for cycling through screenshots
         int char_number = 0; //used for cycling through character images
 
@@ -97,7 +98,9 @@ namespace Visual_Novel_Database
             name.Replace('"', ' ');
 
             //Create the new VN
-            Visual_Novel novel = new Visual_Novel(name.Trim(), txtOriginalName.Text, txtTags.Text, rtbDescription.Text, txtPath.Text, Convert.ToInt32(txtVNID.Text));
+            Visual_Novel novel = new Visual_Novel(name.Trim(), txtOriginalName.Text, txtTags.Text, rtbDescription.Text, txtPath.Text, Convert.ToInt32(txtVNID.Text), character_images);
+
+            character_images.Clear();
 
             txtPath.Text = ""; //Reset textboxes
             lblStatus.Text = "Visual Novel with ID: " + txtID.Text + " added"; //And set status text
@@ -233,7 +236,7 @@ namespace Visual_Novel_Database
                         rtbDescriptionvn.Text = novel.description;
                         pbImage.ImageLocation = "https:" + novel.Images[0]; //Load VN's main image to screenshot picturebox
                         if (novel.Char_Images.Count > 0) //if there are no character images
-                            pbCharacters.ImageLocation = "https:" + novel.Char_Images[0];
+                            pbCharacters.ImageLocation = novel.Char_Images[0];
                         else
                             pbCharacters.ImageLocation = "https:" + novel.Images[0]; //display VN's main image instead of first character image
 
@@ -384,7 +387,7 @@ namespace Visual_Novel_Database
             foreach (Visual_Novel novel in VNS) //Cycle through character images; reset counter once cycle has been completed
                 if ((novel.englishName == txtEnglishName.Text) && (char_number <= novel.Char_Images.Count - 2) && (novel.Char_Images.Count > 0))
                 {
-                    pbCharacters.ImageLocation = "https:" + novel.Char_Images[char_number + 1];
+                    pbCharacters.ImageLocation = novel.Char_Images[char_number + 1];
                     char_number++;
                     toolTip1.Show("Picture " + (char_number + 1) + " of " + (novel.Char_Images.Count), pbCharacters);
                     return;
@@ -392,7 +395,7 @@ namespace Visual_Novel_Database
                 else if ((novel.englishName == txtEnglishName.Text) && (char_number > novel.Char_Images.Count - 2) && (novel.Char_Images.Count > 0))
                 {
                     char_number = -1;
-                    pbCharacters.ImageLocation = "https:" + novel.Char_Images[char_number + 1];
+                    pbCharacters.ImageLocation = novel.Char_Images[char_number + 1];
                     char_number++;
                     toolTip1.Show("Picture 1 of " + (novel.Char_Images.Count), pbCharacters);
                     return;
@@ -837,7 +840,7 @@ namespace Visual_Novel_Database
 
             if (error == 1)
             {
-                MessageBox.Show("Error while logging in. Response: " + conn.jsonresponse, "Login Error", MessageBoxButtons.OK);
+                MessageBox.Show("Error while requesting information. Response: " + conn.jsonresponse, "Query Error", MessageBoxButtons.OK);
                 return 0;
             }
 
@@ -853,13 +856,35 @@ namespace Visual_Novel_Database
                 VNS[vns_number].description = details_item[0].description;
 
             if (Update == false)
+                error = conn.Query("get character details (vn = " + txtID.Text + " )");
+            else
+                error = conn.Query("get character details (vn = " + id + " )");
+
+            if (error == 1)
+            {
+                MessageBox.Show("Error while requesting information. Response: " + conn.jsonresponse, "Query Error", MessageBoxButtons.OK);
+                return 0;
+            }
+
+            CharacterRootObject character_information = Newtonsoft.Json.JsonConvert.DeserializeObject<CharacterRootObject>(conn.jsonresponse);
+            List<CharacterItem> character_item = character_information.items;
+
+            character_images = new List<string>();
+            character_images.Clear();
+
+            foreach (CharacterItem item in character_item)
+            {
+                character_images.Add(item.image);
+            }
+
+            if (Update == false)
                 error = conn.Query("get vn tags (id = " + txtID.Text + " )");
             else
                 error = conn.Query("get vn tags (id = " + id + " )");
 
             if (error == 1)
             {
-                MessageBox.Show("Error while logging in. Response: " + conn.jsonresponse, "Login Error", MessageBoxButtons.OK);
+                MessageBox.Show("Error while requesting information. Response: " + conn.jsonresponse, "Query Error", MessageBoxButtons.OK);
                 return 0;
             }
 
