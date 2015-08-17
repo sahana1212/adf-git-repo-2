@@ -577,8 +577,11 @@ namespace Visual_Novel_Database
             {
                 if (novel.englishName == lbVN.SelectedItem.ToString()) //and start it
                 {
-                    System.Diagnostics.Process.Start(novel.path);
-                    lblStatus2.Text = novel.englishName + " has been started."; //update statusstrip
+                    if (novel.path != "")
+                    {
+                        System.Diagnostics.Process.Start(novel.path);
+                        lblStatus2.Text = novel.englishName + " has been started."; //update statusstrip
+                    }
                     break;
                 }
             }
