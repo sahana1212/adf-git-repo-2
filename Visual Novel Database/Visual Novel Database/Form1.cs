@@ -874,7 +874,8 @@ namespace Visual_Novel_Database
 
             foreach (CharacterItem item in character_item)
             {
-                character_images.Add(item.image);
+                if (item.image != null)
+                    character_images.Add(item.image);
             }
 
             if (Update == false)
