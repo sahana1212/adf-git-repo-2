@@ -362,7 +362,7 @@ namespace Visual_Novel_Database
             foreach (Visual_Novel novel in VNS) //Cycle through screenshots; reset counter once cycle has been completed
                 if ((novel.englishName == txtEnglishName.Text) && (image_number <= novel.Images.Count - 2))
                 {
-                    pbImage.ImageLocation = "https:" + novel.Images[image_number + 1];
+                    pbImage.ImageLocation = "https:" + novel.Images[image_number + 1].Replace("st", "sf");
                     image_number++;
                     toolTip1.Show("Picture " + (image_number + 1) + " of " + (novel.Images.Count), pbImage);
                     return;
