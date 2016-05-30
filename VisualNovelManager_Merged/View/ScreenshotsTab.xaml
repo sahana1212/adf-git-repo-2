@@ -1,0 +1,59 @@
+﻿<UserControl x:Class="VisualNovelManager.View.ScreenshotsTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+
+             xmlns:viewmodel="clr-namespace:VisualNovelManager.ViewModel"
+             xmlns:customClasses="clr-namespace:VisualNovelManager.CustomClasses">
+    <UserControl.DataContext>
+        <viewmodel:ScreenshotViewModel/>
+    </UserControl.DataContext>
+
+
+
+
+    <UserControl.Resources>
+        <customClasses:NullImageConverter x:Key="nullImageConverter"/>
+        <DataTemplate x:Key="ImageDataTemplate">
+            <Image Source="{Binding ScreenshotModel.Screenshot, Converter={StaticResource nullImageConverter}}" Stretch="Uniform" Height="85" Width="85" RenderOptions.BitmapScalingMode="HighQuality" />
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid Background="#F0F0F0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="8*"/>
+            <RowDefinition Height="150"/>
+        </Grid.RowDefinitions>
+
+
+        <GroupBox Grid.Row="0" Header="Screenshot" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderBrush="{Binding MyBrush}">
+            <Grid>
+                <Image x:Name="main_img" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" Stretch="Uniform" Source="{Binding ScreenshotModel.Screenshot, Converter={StaticResource nullImageConverter}}" />
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="Thumbnails" HorizontalAlignment="Stretch"  VerticalAlignment="Top" Height="140" BorderBrush="Black" Grid.Row="1"  Grid.Column="0" Margin="0,5,0,0">
+            <Grid Margin="5">
+                <ListBox x:Name="ListThumbs"  HorizontalAlignment="Stretch" Height="100"  VerticalAlignment="Top" ScrollViewer.HorizontalScrollBarVisibility="Auto" Margin="2"
+                 ItemsSource="{Binding ScreenshotCollection}" ItemTemplate="{StaticResource ImageDataTemplate}" SelectedIndex="{Binding SelectedScreenIndex}" SelectedItem="{Binding SelectedScreenItem}"
+                         >
+
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                </ListBox>
+            </Grid>
+        </GroupBox>
+
+
+        
+        
+        
+        
+       
+
+    </Grid>
+</UserControl>

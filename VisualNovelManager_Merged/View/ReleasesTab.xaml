@@ -1,0 +1,117 @@
+﻿<UserControl x:Class="VisualNovelManager.View.ReleasesTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:VisualNovelManager.ViewModel"
+             xmlns:customClasses="clr-namespace:VisualNovelManager.CustomClasses">
+    <UserControl.DataContext>
+        <local:ReleasesViewModel/>
+    </UserControl.DataContext>
+    <UserControl.Resources>
+        <customClasses:NullImageConverter x:Key="nullImageConverter"/>
+    </UserControl.Resources>
+    <Grid Background="#F0F0F0">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="7*"/>
+        </Grid.ColumnDefinitions>
+
+        <GroupBox Header="Releases Listbox" HorizontalAlignment="Left" VerticalAlignment="Top" Height="338" Width="250" BorderBrush="Gray">
+            <Grid>
+                <ListBox HorizontalAlignment="Left" Height="314" VerticalAlignment="Top" Width="238" SelectedItem="{Binding SelectedReleaseItem}" SelectedIndex="{Binding SelectedReleaseIndex}" ItemsSource="{Binding ReleasesItems}"/>                
+
+            </Grid>
+        </GroupBox>
+        <GroupBox Grid.Column="0" Header="VN Image" HorizontalAlignment="Left" VerticalAlignment="Top" Height="362" Width="250" BorderBrush="Gray" Margin="0,338,0,0" >
+            <Grid>
+                <Image HorizontalAlignment="Left" Height="269" Margin="10,10,0,0" VerticalAlignment="Top" Width="218" Source="{Binding ReleasesModel.VnImage, Converter={StaticResource nullImageConverter}}" Stretch="Uniform"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox Grid.Column="1" Header="Release Information" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Top" Height="523" Width="745" BorderBrush="Gray">
+            <Grid >
+                <TextBlock HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Title:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="10,40,0,0" TextWrapping="Wrap" Text="Original Name:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="10,70,0,0" TextWrapping="Wrap" Text="Released:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="10,100,0,0" TextWrapping="Wrap" Text="Type:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="10,130,0,0" TextWrapping="Wrap" Text="Patch:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="10,160,0,0" TextWrapping="Wrap" Text="Freeware:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="10,190,0,0" TextWrapping="Wrap" Text="Doujin:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="10,224,0,0" TextWrapping="Wrap" Text="Languages:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="10,277,0,0" TextWrapping="Wrap" Text="Notes:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="402,10,0,0" TextWrapping="Wrap" Text="Website:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="402,40,0,0" TextWrapping="Wrap" Text="Min age:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="402,70,0,0" TextWrapping="Wrap" Text="GTIN:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="402,100,0,0" TextWrapping="Wrap" Text="Catalog #:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="402,130,0,0" TextWrapping="Wrap" Text="Platforms:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="402,160,0,0" TextWrapping="Wrap" Text="Media:" VerticalAlignment="Top"/>
+                <TextBox HorizontalAlignment="Left" Height="181" Margin="10,310,0,0" TextWrapping="Wrap" Text="{Binding ReleasesModel.Notes}" VerticalAlignment="Top" Width="350"/>
+                <TextBlock HorizontalAlignment="Left" Margin="40,10,0,0" TextWrapping="Wrap" Text="{Binding ReleasesModel.Title}" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="94,40,0,0" TextWrapping="Wrap" Text="{Binding ReleasesModel.Original}" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="65,70,0,0" TextWrapping="Wrap" Text="{Binding ReleasesModel.Released}" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="43,100,0,0" TextWrapping="Wrap" Text="{Binding ReleasesModel.Type}" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="47,130,0,0" TextWrapping="Wrap" Text="{Binding ReleasesModel.Patch}" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="65,160,0,0" TextWrapping="Wrap" Text="{Binding ReleasesModel.Freeware}" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="52,190,0,0" TextWrapping="Wrap" Text="{Binding ReleasesModel.Doujin}" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="75,224,0,0" TextWrapping="Wrap" Text="{Binding ReleasesModel.Languages}" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="452,10,0,0" TextWrapping="Wrap" Text="{Binding ReleasesModel.Website}" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="453,40,0,0" TextWrapping="Wrap" Text="{Binding ReleasesModel.MinAge}" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="436,70,0,0" TextWrapping="Wrap" Text="{Binding ReleasesModel.Gtin}" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="460,100,0,0" TextWrapping="Wrap" Text="{Binding ReleasesModel.Catalog}" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="460,130,0,0" TextWrapping="Wrap" Text="{Binding ReleasesModel.Platforms}" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="443,160,0,0" TextWrapping="Wrap" Text="{Binding ReleasesModel.Media}" VerticalAlignment="Top"/>
+
+
+
+
+
+
+            </Grid>
+        </GroupBox>
+        <GroupBox Grid.Column="1" Header="Producer Information" HorizontalAlignment="Left" Margin="5,523,0,0" VerticalAlignment="Top" Height="177" Width="745" BorderBrush="Gray"
+                  Grid.Row="0">
+            <Grid>
+                <TextBlock HorizontalAlignment="Left" Margin="306,21,0,0" TextWrapping="Wrap" Text="Developer:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="306,63,0,0" TextWrapping="Wrap" Text="Publisher:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="10,21,0,0" TextWrapping="Wrap" Text="Name:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="10,63,0,0" TextWrapping="Wrap" Text="Original:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="551,21,0,0" TextWrapping="Wrap" Text="Type:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="49,21,0,0" TextWrapping="Wrap" Text="{Binding ReleasesModel.ProducerName}" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="60,63,0,0" TextWrapping="Wrap" Text="{Binding ReleasesModel.ProducerOriginal}" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="368,21,0,0" TextWrapping="Wrap" Text="{Binding ReleasesModel.ProducerDeveloper}" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="362,63,0,0" TextWrapping="Wrap" Text="{Binding ReleasesModel.ProducerPublisher}" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="584,21,0,0" TextWrapping="Wrap" Text="{Binding ReleasesModel.ProducerType}" VerticalAlignment="Top"/>
+
+            </Grid>
+        </GroupBox>
+
+
+
+    </Grid>
+</UserControl>
+
+
+<!--<Grid>
+            <TextBlock HorizontalAlignment="Left" Margin="49,38,0,0" TextWrapping="Wrap" Text="Name" VerticalAlignment="Top"/>
+            <TextBlock HorizontalAlignment="Left" Margin="64,76,0,0" TextWrapping="Wrap" Text="original" VerticalAlignment="Top"/>
+            <TextBlock HorizontalAlignment="Left" Margin="68,121,0,0" TextWrapping="Wrap" Text="released" VerticalAlignment="Top"/>
+            <TextBlock HorizontalAlignment="Left" Margin="49,160,0,0" TextWrapping="Wrap" Text="type" VerticalAlignment="Top"/>
+            <TextBlock HorizontalAlignment="Left" Margin="49,194,0,0" TextWrapping="Wrap" Text="patch" VerticalAlignment="Top"/>
+            <TextBlock HorizontalAlignment="Left" Margin="49,233,0,0" TextWrapping="Wrap" Text="freeware" VerticalAlignment="Top"/>
+            <TextBlock HorizontalAlignment="Left" Margin="71,285,0,0" TextWrapping="Wrap" Text="doujin" VerticalAlignment="Top"/>
+            <TextBlock HorizontalAlignment="Left" Margin="56,342,0,0" TextWrapping="Wrap" Text="languages" VerticalAlignment="Top"/>
+            <TextBlock HorizontalAlignment="Left" Margin="63,391,0,0" TextWrapping="Wrap" Text="website" VerticalAlignment="Top"/>
+            <TextBox HorizontalAlignment="Left" Height="101" Margin="56,438,0,0" TextWrapping="Wrap" Text="notes" VerticalAlignment="Top" Width="160"/>
+            <TextBlock HorizontalAlignment="Left" Margin="457,47,0,0" TextWrapping="Wrap" Text="min age" VerticalAlignment="Top"/>
+            <TextBlock HorizontalAlignment="Left" Margin="469,95,0,0" TextWrapping="Wrap" Text="gtin" VerticalAlignment="Top"/>
+            <TextBlock HorizontalAlignment="Left" Margin="468,131,0,0" TextWrapping="Wrap" Text="catalog" VerticalAlignment="Top"/>
+            <TextBlock HorizontalAlignment="Left" Margin="472,174,0,0" TextWrapping="Wrap" Text="platforms" VerticalAlignment="Top"/>
+            <TextBlock HorizontalAlignment="Left" Margin="482,215,0,0" TextWrapping="Wrap" Text="medium, quantity" VerticalAlignment="Top"/>
+            <TextBlock HorizontalAlignment="Left" Margin="484,267,0,0" TextWrapping="Wrap" Text="Developer" VerticalAlignment="Top"/>
+            <TextBlock HorizontalAlignment="Left" Margin="496,307,0,0" TextWrapping="Wrap" Text="publisher" VerticalAlignment="Top"/>
+            <TextBlock HorizontalAlignment="Left" Margin="496,337,0,0" TextWrapping="Wrap" Text="producer name" VerticalAlignment="Top"/>
+            <TextBlock HorizontalAlignment="Left" Margin="505,378,0,0" TextWrapping="Wrap" Text="original producer name" VerticalAlignment="Top"/>
+            <TextBlock HorizontalAlignment="Left" Margin="518,443,0,0" TextWrapping="Wrap" Text="producer type" VerticalAlignment="Top"/>
+
+        </Grid>-->

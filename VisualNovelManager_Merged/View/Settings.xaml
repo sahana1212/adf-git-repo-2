@@ -1,0 +1,38 @@
+﻿<Window x:Class="VisualNovelManager.View.Settings"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Settings" Height="350" Width="350">
+    <Grid>
+
+        <GroupBox Header="Global Settings" HorizontalAlignment="Left" VerticalAlignment="Top" Height="74" Width="342">
+            <Grid>
+                <Label Content="NSFW Content Enabled:" HorizontalAlignment="Left" Margin="11,18,0,0" VerticalAlignment="Top"/>
+                <ComboBox x:Name="NsfwCmb" HorizontalAlignment="Left" Margin="197,22,0,0" VerticalAlignment="Top" Width="120">
+                    <ComboBoxItem Content="True"/>
+                    <ComboBoxItem Content="False"/>
+                </ComboBox>              
+            </Grid>
+        </GroupBox>
+        
+        <GroupBox Header="VN Settings" HorizontalAlignment="Left" Margin="0,79,0,0" VerticalAlignment="Top" Height="189" Width="342">
+            <Grid>
+                <Label Content="Vn Spoiler Level:" HorizontalAlignment="Left" Margin="10,6,0,0" VerticalAlignment="Top"/>
+                <ComboBox x:Name="VnSpoilerCmb" HorizontalAlignment="Left" Margin="197,6,0,0" VerticalAlignment="Top" Width="120">
+                    <ComboBoxItem Content="None"/>
+                    <ComboBoxItem Content="Minor"/>
+                    <ComboBoxItem Content="Major"/>
+                </ComboBox>
+                <Label Content="Character Spoiler Level:" HorizontalAlignment="Left" Margin="10,83,0,0" VerticalAlignment="Top"/>
+                <ComboBox x:Name="CharSpoilerCmb" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="120" Margin="197,87,0,0">
+                    <ComboBoxItem Content="None"/>
+                    <ComboBoxItem Content="Minor"/>
+                    <ComboBoxItem Content="Major"/>
+                </ComboBox>
+            </Grid>
+        </GroupBox>
+
+        <Button Content="Save" HorizontalAlignment="Left" Margin="120,281,0,0" VerticalAlignment="Top" Width="85" Height="28" Click="SaveConfig_Click"/>
+
+
+    </Grid>
+</Window>
