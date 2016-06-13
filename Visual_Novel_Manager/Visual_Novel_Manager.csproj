@@ -95,7 +95,6 @@
       <DependentUpon>SplashScreen.xaml</DependentUpon>
     </Compile>
     <Compile Include="StaticClass.cs" />
-    <Compile Include="ViewModel\AddVnViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="ViewModel\SettingsViewModel.cs" />
     <Compile Include="View\Settings.xaml.cs">

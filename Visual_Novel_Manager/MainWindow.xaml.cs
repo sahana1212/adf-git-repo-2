@@ -37,8 +37,8 @@ namespace Visual_Novel_Manager
 
         private void AddVnMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
-            var addvn = new View.AddVisualNovel();
-            addvn.Show();
+            //var addvn = new View.AddVisualNovel();
+            //addvn.Show();
         }
     }
 }
