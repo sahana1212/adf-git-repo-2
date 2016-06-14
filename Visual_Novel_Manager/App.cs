@@ -279,7 +279,7 @@ namespace Visual_Novel_Manager
                 " NfoId int NULL, RomajiTitle text NULL, KanjiTitle text NULL, Year int NULL, Type text NULL);", dbConnection);
 
                 SQLiteCommand VnAPITable = new SQLiteCommand("CREATE TABLE VnAPI(RowId INTEGER CONSTRAINT PK PRIMARY KEY, VnId int NULL,Title text NULL, Original text NULL, Released text NULL," +
-                " Languages text NULL,Orig_Lang text NULL, Platforms text NULL, Aliases text NULL, Length tinyint NULL, Description text NULL, Links text NULL, Image text NULL, ImageNsfw text NULL," +
+                " Languages text NULL,OrigLang text NULL, Platforms text NULL, Aliases text NULL, Length tinyint NULL, Description text NULL, Links text NULL, Image text NULL, ImageNsfw text NULL," +
                 " Popularity numeric(5,2) NULL, Rating numeric(5,2) NULL, Screenshots text NULL);", dbConnection);
 
                 SQLiteCommand VnTagsTable = new SQLiteCommand("CREATE TABLE VnTags(RowId INTEGER CONSTRAINT PK PRIMARY KEY, VnId int NULL,TagId int NULL, TagName text NULL," +

@@ -57,6 +57,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddToDatase.cs" />
     <Compile Include="ConnectionClient\Connection.cs" />
     <Compile Include="ConnectionClient\Response.cs" />
     <Compile Include="ConnectionClient\VndbProtocol.cs" />
@@ -80,6 +81,7 @@
     <Compile Include="JSON\VNRelease.cs" />
     <Compile Include="JSON\WrittenTags.cs" />
     <Compile Include="JSON\WrittenTraits.cs" />
+    <Compile Include="Model\AddVnModel.cs" />
     <Compile Include="Model\CharacterModel.cs" />
     <Compile Include="Model\MainWindowModel.cs" />
     <Compile Include="Model\ReleasesModel.cs" />
@@ -95,8 +97,12 @@
       <DependentUpon>SplashScreen.xaml</DependentUpon>
     </Compile>
     <Compile Include="StaticClass.cs" />
+    <Compile Include="ViewModel\AddVnViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="ViewModel\SettingsViewModel.cs" />
+    <Compile Include="View\AddVisualNovel.xaml.cs">
+      <DependentUpon>AddVisualNovel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
@@ -110,6 +116,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Startup\SplashScreen.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\AddVisualNovel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

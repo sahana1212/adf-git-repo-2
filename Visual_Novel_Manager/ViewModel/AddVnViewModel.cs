@@ -50,18 +50,8 @@ namespace Visual_Novel_Manager.ViewModel
         }
         #endregion
 
-        private double _prog;
+        BackgroundWorker worker = null;
 
-        public double Prog
-        {
-            get { return _prog; }
-            set
-            {
-                _prog = value;
-                RaisePropertyChanged("Prog");
-            }
-        }
-        private BackgroundWorker worker = null;
         // private ICommand _exePathBrowseCommand;
         //public ICommand ExePathBrowseCommand
         // {
@@ -117,10 +107,7 @@ namespace Visual_Novel_Manager.ViewModel
 
         async Task AddVnExecute()
         {
-            //Prog = 53.7;
-            AddToDatabase.CreateAddVnVariables(AddVnModel.VnId,AddVnModel.ExePath,"","");
-            AddToDatabase addDb = new AddToDatabase();
-
+            AddToDatabase.CreateAddVnVariables(AddVnModel.VnId, AddVnModel.ExePath, "", "");
             if (await CheckVnId() == 0)
             {
                 worker = new BackgroundWorker();
@@ -130,87 +117,8 @@ namespace Visual_Novel_Manager.ViewModel
                 worker.ProgressChanged += worker_ProgressChanged;
                 worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(worker_completed);
                 worker.RunWorkerAsync();
-
-                //Application.Current.Dispatcher.Invoke(() =>
-                //{
-                //    Prog = Prog + 5.882352941176471;
-                //});
-
-                //addDb.fetch_vn_relations();
-                //Application.Current.Dispatcher.Invoke(() =>
-                //{
-                //    Prog = Prog + 5.882352941176471;
-                //});
-                
-                //addDb.fetch_vn_stats();
-                //Application.Current.Dispatcher.Invoke(() =>
-                //{
-                //    Prog = Prog + 5.882352941176471;
-                //});
-                //addDb.fetch_vn_screens();
-                //Application.Current.Dispatcher.Invoke(() =>
-                //{
-                //    Prog = Prog + 5.882352941176471;
-                //});
-                //addDb.fetch_releases();
-                //Application.Current.Dispatcher.Invoke(() =>
-                //{
-                //    Prog = Prog + 5.882352941176471;
-                //});
-                //addDb.fetch_characters();
-                //Application.Current.Dispatcher.Invoke(() =>
-                //{
-                //    Prog = Prog + 5.882352941176471;
-                //});
-                //addDb.fetch_tags();
-                //Application.Current.Dispatcher.Invoke(() =>
-                //{
-                //    Prog = Prog + 5.882352941176471;
-                //});
-                //addDb.fetch_traits();
-                //Application.Current.Dispatcher.Invoke(() =>
-                //{
-                //    Prog = Prog + 5.882352941176471;
-                //});
-                //return;
-                //addDb.AddNovelData();
-                //Application.Current.Dispatcher.Invoke(() =>
-                //{
-                //    Prog = Prog + 5.882352941176471;
-                //});
-                //addDb.AddNovelCategory();
-                //Application.Current.Dispatcher.Invoke(() =>
-                //{
-                //    Prog = Prog + 5.882352941176471;
-                //});
-                //addDb.AddVnApi();
-                //Application.Current.Dispatcher.Invoke(() =>
-                //{
-                //    Prog = Prog + 5.882352941176471;
-                //});
-                //addDb.AddVnRelations();
-                //Application.Current.Dispatcher.Invoke(() =>
-                //{
-                //    Prog = Prog + 5.882352941176471;
-                //});
-                //addDb.AddVnTags();
-                //Application.Current.Dispatcher.Invoke(() =>
-                //{
-                //    Prog = Prog + 5.882352941176471;
-                //});
-                //addDb.AddReleaseApi();
-                //Application.Current.Dispatcher.Invoke(() =>
-                //{
-                //    Prog = Prog + 5.882352941176471;
-                //});
-                //addDb.AddCharacterApi();
-                //Application.Current.Dispatcher.Invoke(() =>
-                //{
-                //    Prog = Prog + 5.882352941176471;
-                //});
-                //addDb.AddCharacterTraits();
-
             }
+
         }
 
 
@@ -358,8 +266,18 @@ namespace Visual_Novel_Manager.ViewModel
         }
 
 
-        #region background worker
-        void worker_DoWork(object sender, DoWorkEventArgs e)
+
+
+
+
+        #endregion
+
+
+
+
+        #region worker
+
+        private void worker_DoWork(object sender, DoWorkEventArgs e)
         {
             AddToDatabase addToDatabase = new AddToDatabase();
             for (int switchvar = 0; switchvar < 17; switchvar++)
@@ -454,44 +372,30 @@ namespace Visual_Novel_Manager.ViewModel
             }
         }
 
-        void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        private void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             if (e.ProgressPercentage == 100)
             {
-                AddVnModel.ProgBar = e.ProgressPercentage;
+                AddVnModel.Progress = e.ProgressPercentage;
+                //progress.Value = e.ProgressPercentage;
             }
             else
             {
+                AddVnModel.Progress = e.ProgressPercentage;
+                AddVnModel.Progress = AddVnModel.Progress * 6.25;
+                //have prog_value multiply by (100 % number of switch cases I have)
 
-                double prog_value = e.ProgressPercentage;
-                prog_value = prog_value * 5.8823529411764705882352941176471;//have prog_value multiply by (100 % number of switch cases I have)
-
-                AddVnModel.ProgBar = prog_value;
+                //progress.Value = prog_value;
                 //lblProgress.Content = string.Format("{0}% Complete", Convert.ToInt32(prog_value));
             }
 
             //pbStatus.Value = e.ProgressPercentage;
         }
 
-        void worker_completed(object sender, RunWorkerCompletedEventArgs e)
+        private void worker_completed(object sender, RunWorkerCompletedEventArgs e)
         {
-            //lblStatus1.Text = "Visual Novel with ID: " + txtID.Text + " added"; //And set status text
-            //txtID.Text = "";
-            //txtPath.Text = ""; //Reset textboxes
-            //txtName.Text = "";
-            //txtIcon.Text = "";
-            //progress.Value = 0;
-            //lblProgress.Content = "";
-            //Thread.Sleep(300);
-
-            //StaticClass.AddVnProgressStatic.AddVnProgressVisibleFalseCommand.Execute(null);
-            //StaticClass.VnListboxViewModelStatic.BindListboxInitialCommand.Execute(null);
+            
         }
-        #endregion
-
-
-
-
         #endregion
 
     }
