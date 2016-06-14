@@ -226,24 +226,16 @@ namespace Visual_Novel_Manager.ViewModel
                             //perhaps set the spoiler levels to the static spoiler levels
                             var oldJson = File.ReadAllText(StaticClass.CurrentDirectory + @"\config.json");
                             var json = JsonConvert.DeserializeObject<ConfigRootObject>(oldJson);
-                            foreach (var match in json.unique)
+                            foreach (var match in json.unique)//removes ALL previous entries that have the samme VnId
                             {
-                                if (match.VnId.ToString() == AddVnModel.VnId)//remove the previous entrie(s), and add a new one
+                                if (match.VnId.ToString() == AddVnModel.VnId)
                                 {
                                     json.unique.Remove(match);
-                                    json.unique.Add(new Unique {VnId = Convert.ToInt32(AddVnModel.VnId), VnSpoilerLevel = 0, CharacterSpoilerLevel = 0});
-                                    File.WriteAllText(StaticClass.CurrentDirectory + @"\config.json", JsonConvert.SerializeObject(json));
-                                }
-                                else if(json.unique.Contains(match))
-                                {
-                                    //don't do anything with previous entries
-                                }
-                                else//add new entry
-                                {
-                                    json.unique.Add(new Unique { VnId = Convert.ToInt32(AddVnModel.VnId), VnSpoilerLevel = 0, CharacterSpoilerLevel = 0 });
-                                    File.WriteAllText(StaticClass.CurrentDirectory + @"\config.json", JsonConvert.SerializeObject(json));
-                                }
+                                }                                
                             }
+                            json.unique.Add(new Unique { VnId = Convert.ToInt32(AddVnModel.VnId), VnSpoilerLevel = 0, CharacterSpoilerLevel = 0 });
+                            File.WriteAllText(StaticClass.CurrentDirectory + @"\config.json", JsonConvert.SerializeObject(json));
+                            
                             //adds the new data to the json object, then serializes it, and writes it to the file
                             return 0;
                         }
