@@ -390,7 +390,15 @@ namespace Visual_Novel_Manager.ViewModel
 
         private void worker_completed(object sender, RunWorkerCompletedEventArgs e)
         {
-            MessageBox.Show("Complete");
+            AddVnModel.VnId = null;
+            AddVnModel.ExePath = null;
+            AddVnModel.Name = null;
+            AddVnModel.IconPath = null;
+            AddVnModel.ProgressBar = 0.0;
+            AddVnModel.ProgressPercent = null;
+
+            //bind the listbox ICommand here
+
         }
         #endregion
 
