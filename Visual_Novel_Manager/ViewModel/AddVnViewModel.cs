@@ -376,13 +376,17 @@ namespace Visual_Novel_Manager.ViewModel
         {
             if (e.ProgressPercentage == 100)
             {
-                AddVnModel.Progress = e.ProgressPercentage;
+                AddVnModel.ProgressBar = e.ProgressPercentage;
+
+                AddVnModel.ProgressPercent = string.Format("{0}% Complete", Convert.ToInt32(AddVnModel.ProgressBar));
                 //progress.Value = e.ProgressPercentage;
             }
             else
             {
-                AddVnModel.Progress = e.ProgressPercentage;
-                AddVnModel.Progress = AddVnModel.Progress * 6.25;
+                AddVnModel.ProgressBar = e.ProgressPercentage;
+                AddVnModel.ProgressBar = AddVnModel.ProgressBar * 6.25;
+
+                AddVnModel.ProgressPercent = string.Format("{0}% Complete", Convert.ToInt32(AddVnModel.ProgressBar));
                 //have prog_value multiply by (100 % number of switch cases I have)
 
                 //progress.Value = prog_value;
@@ -394,7 +398,7 @@ namespace Visual_Novel_Manager.ViewModel
 
         private void worker_completed(object sender, RunWorkerCompletedEventArgs e)
         {
-            
+            MessageBox.Show("Complete");
         }
         #endregion
 

@@ -55,18 +55,28 @@ namespace Visual_Novel_Manager.Model
 
 
 
-
-
-
-        public double Progress
+        public double ProgressBar
         {
-            get { return (double)GetValue(ProgressProperty); }
-            set { SetValue(ProgressProperty, value); }
+            get { return (double)GetValue(ProgressBarProperty); }
+            set { SetValue(ProgressBarProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for Progress.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty ProgressProperty =
-            DependencyProperty.Register("Progress", typeof(double), typeof(AddVnModel), new PropertyMetadata(0.0));
+        // Using a DependencyProperty as the backing store for ProgressBar.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ProgressBarProperty =
+            DependencyProperty.Register("ProgressBar", typeof(double), typeof(AddVnModel), new PropertyMetadata(0.0));
+
+
+        public string ProgressPercent
+        {
+            get { return (string)GetValue(ProgressPercentProperty); }
+            set { SetValue(ProgressPercentProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for ProgressPercent.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ProgressPercentProperty =
+            DependencyProperty.Register("ProgressPercent", typeof(string), typeof(AddVnModel), new PropertyMetadata("0%"));
+
+
 
 
 

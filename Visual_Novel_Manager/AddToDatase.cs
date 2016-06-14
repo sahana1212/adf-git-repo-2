@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -931,19 +932,6 @@ namespace Visual_Novel_Manager
 
 
         #endregion
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

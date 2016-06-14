@@ -37,8 +37,8 @@
                 
 
                 <Grid HorizontalAlignment="Left" Height="74" Margin="85,228,0,0" VerticalAlignment="Top" Width="234">
-                    <Label x:Name="lblProgress" HorizontalAlignment="Center" Content="{Binding AddVnModel.Progress}" />
-                    <ProgressBar x:Name="progress" Height="25" Foreground="LimeGreen" Value="{Binding AddVnModel.Progress}"/>
+                    <Label x:Name="lblProgress" HorizontalAlignment="Center" Content="{Binding AddVnModel.ProgressPercent}" />
+                    <ProgressBar x:Name="progress" Height="25" Foreground="LimeGreen" Value="{Binding AddVnModel.ProgressBar}"/>
                 </Grid>
 
             </Grid>
