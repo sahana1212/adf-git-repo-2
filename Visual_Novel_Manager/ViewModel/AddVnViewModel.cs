@@ -107,7 +107,7 @@ namespace Visual_Novel_Manager.ViewModel
 
         async Task AddVnExecute()
         {
-            AddToDatabase.CreateAddVnVariables(AddVnModel.VnId, AddVnModel.ExePath, "", "");
+            AddToDatabase.CreateAddVnVariables(AddVnModel.VnId, AddVnModel.ExePath, null, null);
             if (await CheckVnId() == 0)
             {
                 worker = new BackgroundWorker();

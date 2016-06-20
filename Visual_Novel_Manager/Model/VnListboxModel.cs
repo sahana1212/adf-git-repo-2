@@ -30,7 +30,19 @@ namespace Visual_Novel_Manager.Model
         public static readonly DependencyProperty ItemIconProperty =
             DependencyProperty.Register("ItemIcon", typeof(BitmapSource), typeof(VnListboxModel));
 
-        
+
+        public int VnSelectedIndex
+        {
+            get { return (int)GetValue(VnSelectedIndexProperty); }
+            set { SetValue(VnSelectedIndexProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for VnSelectedIndex.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty VnSelectedIndexProperty =
+            DependencyProperty.Register("VnSelectedIndex", typeof(int), typeof(VnListboxModel), new PropertyMetadata(-1));
+
+
+
 
     }
 }

@@ -592,7 +592,7 @@ namespace Visual_Novel_Manager
                     var vnlang = String.Join(",", _basicItem[0].languages); //use this to join an array into comma delimited string
                     cmd.Parameters.AddWithValue("@languages", CheckForDbNull(vnlang));
                     var vnOriginalLanguage = String.Join(",", _basicItem[0].orig_lang);
-                    cmd.Parameters.AddWithValue("@orig_lang", CheckForDbNull(vnOriginalLanguage));
+                    cmd.Parameters.AddWithValue("@OrigLang", CheckForDbNull(vnOriginalLanguage));
                     var vnPlatforms = String.Join(",", _basicItem[0].platforms);
                     cmd.Parameters.AddWithValue("@platforms", CheckForDbNull(vnPlatforms));
                     cmd.Parameters.AddWithValue("@aliases", CheckForDbNull(_detailsItem[0].aliases));
@@ -600,7 +600,7 @@ namespace Visual_Novel_Manager
                     cmd.Parameters.AddWithValue("@description", CheckForDbNull(_detailsItem[0].description));
                     cmd.Parameters.AddWithValue("@links", CheckForDbNull("[" + _detailsItem[0].links.encubed + "," + _detailsItem[0].links.renai + "," + _detailsItem[0].links.wikipedia + "]"));
                     cmd.Parameters.AddWithValue("@image", CheckForDbNull(_detailsItem[0].image));
-                    cmd.Parameters.AddWithValue("@image_nsfw", CheckForDbNull(_detailsItem[0].image_nsfw));
+                    cmd.Parameters.AddWithValue("@ImageNsfw", CheckForDbNull(_detailsItem[0].image_nsfw));
                     cmd.Parameters.AddWithValue("@popularity", CheckForDbNull(_statsItem[0].popularity));
                     cmd.Parameters.AddWithValue("@rating", CheckForDbNull(_statsItem[0].rating));
                     cmd.Parameters.AddWithValue("@screenshots", CheckForDbNull(screenlist));
@@ -890,6 +890,7 @@ namespace Visual_Novel_Manager
 
         internal void AddCharacterTraits()
         {
+
             using (SQLiteConnection con = new SQLiteConnection("Data Source=Database.db;Version=3;"))
             {
                 con.Open();

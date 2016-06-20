@@ -11,7 +11,7 @@ namespace Visual_Novel_Manager
     public class StaticClass
     {
         //public static readonly VnInfoViewModel VnInfoViewModelStatic = new VnInfoViewModel();
-        //public static readonly VnListboxViewModel VnListboxViewModelStatic = new VnListboxViewModel();
+        public static readonly  VnListBoxViewModel VnListboxViewModelStatic = new VnListBoxViewModel();
         //public static readonly CharacterViewModel CharacterViewModelStatic = new CharacterViewModel();
         public static readonly AddVnViewModel AddVnViewModelStatic = new AddVnViewModel();
         //public static readonly ReleasesViewModel ReleasesViewModelStatic = new ReleasesViewModel();

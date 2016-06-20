@@ -23,6 +23,8 @@ namespace Visual_Novel_Manager.View
         public VisualNovelsListBox()
         {
             InitializeComponent();
+            DataContext = StaticClass.VnListboxViewModelStatic;
+            StaticClass.VnListboxViewModelStatic.BindListboxInitialCommand.Execute(null);
         }
     }
 }
