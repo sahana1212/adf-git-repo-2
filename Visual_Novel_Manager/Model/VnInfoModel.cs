@@ -195,15 +195,27 @@ namespace Visual_Novel_Manager.Model
 
 
 
-        public string TagDescription
+        //public string TagDescription
+        //{
+        //    get { return (string)GetValue(TagDescriptionProperty); }
+        //    set { SetValue(TagDescriptionProperty, value); }
+        //}
+
+        //// Using a DependencyProperty as the backing store for TagDescription.  This enables animation, styling, binding, etc...
+        //public static readonly DependencyProperty TagDescriptionProperty =
+        //    DependencyProperty.Register("TagDescription", typeof(string), typeof(VnInfoModel), new PropertyMetadata(""));
+
+
+        public FlowDocument TagDescription
         {
-            get { return (string)GetValue(TagDescriptionProperty); }
+            get { return (FlowDocument)GetValue(TagDescriptionProperty); }
             set { SetValue(TagDescriptionProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for TagDescription.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty TagDescriptionProperty =
-            DependencyProperty.Register("TagDescription", typeof(string), typeof(VnInfoModel), new PropertyMetadata(""));
+            DependencyProperty.Register("TagDescription", typeof(FlowDocument), typeof(VnInfoModel), new PropertyMetadata(null));
+
 
 
         #endregion

@@ -62,6 +62,7 @@
     <Compile Include="ConnectionClient\Connection.cs" />
     <Compile Include="ConnectionClient\Response.cs" />
     <Compile Include="ConnectionClient\VndbProtocol.cs" />
+    <Compile Include="CustomClasses\BindableRichTextBox.cs" />
     <Compile Include="CustomClasses\ConvertRichTextDocument.cs" />
     <Compile Include="CustomClasses\Delegate.cs" />
     <Compile Include="CustomClasses\NullImageConverter.cs" />

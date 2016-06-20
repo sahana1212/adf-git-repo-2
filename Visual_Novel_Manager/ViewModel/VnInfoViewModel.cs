@@ -68,12 +68,12 @@ namespace Visual_Novel_Manager.ViewModel
         #region INot properties
 
         private string _selectedTagItem;
-        public string MySelectedItem
+        public string SelectedTagItem
         {
             get { return _selectedTagItem; }
             set
             {
-                //VisualNovelsInformation.tagdesc.Document = LoadTagDescription().Result;
+                VnInfoModel.TagDescription = LoadTagDescription().Result;
             }
         }
 
@@ -143,19 +143,17 @@ namespace Visual_Novel_Manager.ViewModel
 
             });
 
-
-            //var VnApiData = LoadNovelSQLData(11, new string[] { "VnId", "title", "original", "aliases", "released", "length", "description", "popularity", "rating", "image","image_nsfw" }, "SELECT * FROM VnAPI WHERE VnId=");
-            //var TimePlayed = LoadNovelSQLData(2, new[] {"PlayTime", "LastPlayed"}, "Select * FROM NovelPath WHERE VnId=");
-
-            //var Developers = LoadNovelSQLData(1, new[] {"ProducerName"},
-            //    "SELECT * FROM ReleaseAPI WHERE ProducerDeveloper='True' AND VnId=");
-
-            //var Taglist = LoadTags();
-            //var RelationItems = LoadRelations();
+            
 
             ConvertRichTextDocument convRTD = new ConvertRichTextDocument();
             VnInfoModel.VnDescription = convRTD.ConvertToFlowDocument(VnApiData[6]);
             //VisualNovelsInformation.vndesc.Document = convRTD.ConvertToFlowDocument(VnApiData[6]);
+
+            //var flowdocument = new FlowDocument();
+            //var paragraph= new Paragraph();
+            //flowdocument.Blocks.Add(paragraph);
+            //paragraph.Inlines.Add(new Run("no tag selected"));
+
 
 
 
@@ -167,7 +165,7 @@ namespace Visual_Novel_Manager.ViewModel
             //VnInfoModel.VnDescription = VnApiData[6];
             VnInfoModel.Popularity = VnApiData[7];
             VnInfoModel.Rating = VnApiData[8];
-            VnInfoModel.TagDescription = "no tag selected";
+            //VnInfoModel.TagDescription = "no tag selected";
             VnInfoModel.Developers = Developers[0];
 
             #region playtime
@@ -464,6 +462,7 @@ namespace Visual_Novel_Manager.ViewModel
             if (tagidx < 0)
             {
                 //return "tag index was -1";
+                return null;
             }
 
             int vnSpoiler = StaticClass.VnSpoilerLevel;
@@ -471,7 +470,7 @@ namespace Visual_Novel_Manager.ViewModel
             using (SQLiteConnection con = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
             {
                 con.Open();
-                SQLiteCommand tagdesccmd = new SQLiteCommand("SELECT * FROM VnTags WHERE VnId=" + StaticClass.Vnid + "AND Spoiler<=" + vnSpoiler, con);
+                SQLiteCommand tagdesccmd = new SQLiteCommand("SELECT * FROM VnTags WHERE VnId=" + StaticClass.Vnid + " AND Spoiler<=" + vnSpoiler, con);
                 SQLiteDataReader tagdescreader = tagdesccmd.ExecuteReader();
                 while (tagdescreader.Read())
                 {

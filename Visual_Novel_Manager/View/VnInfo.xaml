@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Visual_Novel_Manager.ViewModel"
+             xmlns:custom="clr-namespace:Visual_Novel_Manager.CustomClasses"
              mc:Ignorable="d" 
              >
     <UserControl.DataContext>
@@ -45,14 +46,17 @@
             <Grid HorizontalAlignment="Left" Height="149" Margin="59,387,0,0" VerticalAlignment="Top" Width="506">
                 <GroupBox Header="Summary" BorderBrush="Gray">
                     <Grid x:Name="summgrid">
-                        <!--<TextBox x:Name="rtbDescriptionvn" HorizontalAlignment="Left" Height="117" Margin="5,5,0,0" VerticalAlignment="Top" Width="485" TextWrapping="Wrap" IsReadOnly="True" Text="{Binding VnInfoModel.VnDescription}" Focusable="False"/>-->
-                        <RichTextBox x:Name="rtbDescriptionvn" HorizontalAlignment="Left" Height="117" Margin="5,5,0,0" VerticalAlignment="Top" Width="485"  IsReadOnly="True" Focusable="False" IsDocumentEnabled="True" >
-                            <FlowDocument >
+
+                        <!--<RichTextBox x:Name="rtbDescriptionvn" HorizontalAlignment="Left" Height="117" Margin="5,5,0,0" VerticalAlignment="Top" Width="485"  IsReadOnly="True" Focusable="False" IsDocumentEnabled="True" >
+                            <FlowDocument>
                                 <Paragraph>
-                                    <Run Text="{Binding VnInfoModel.VnDescription}"></Run>
+                                    <Run Text="{Binding VnInfoModel.VnDescription}"/>
                                 </Paragraph>
                             </FlowDocument>
-                        </RichTextBox>
+                        </RichTextBox>-->
+                        <custom:BindableRichTextBox x:Name="rtbDescriptionvn" HorizontalAlignment="Left" Height="117" Margin="5,5,0,0" VerticalAlignment="Top" Width="485"  
+                        IsReadOnly="True" Focusable="False" IsDocumentEnabled="True" Document="{Binding VnInfoModel.VnDescription,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                        
                     </Grid>
                 </GroupBox>
             </Grid>
@@ -67,17 +71,11 @@
 
                         <!--<ListBox x:Name="lbTags" Grid.Column="0" Margin="5,5,0,5" HorizontalAlignment="Left"  Height="265" Width="155" VerticalAlignment="Top" ItemsSource="{Binding VnInfoViewModelTags}" SelectionChanged="LbTags_OnSelectionChanged" >-->
                         <ListBox x:Name="lbTags" Grid.Column="0" Margin="5,5,0,5" HorizontalAlignment="Left"  Height="265" Width="155" VerticalAlignment="Top" 
-                                     ItemsSource="{Binding VnInfoViewModelTags}" SelectedItem="{Binding MySelectedItem}" SelectedIndex="{Binding SelectedTagIndex}"/>
+                                     ItemsSource="{Binding VnInfoViewModelTags}" SelectedItem="{Binding SelectedTagItem}" SelectedIndex="{Binding SelectedTagIndex}"/>
 
-                        <!--<TextBox x:Name="tagdescription" Grid.Column="1" HorizontalAlignment="Left" Height="265" Margin="5,5,0,5" TextWrapping="Wrap" Text="{Binding VnInfoModel.TagDescription}" VerticalAlignment="Top" Width="323" IsReadOnly="True" />-->
-                        <RichTextBox x:Name="tagdescription" Grid.Column="1" HorizontalAlignment="Left" Height="265" Margin="5,5,0,5" VerticalAlignment="Top" Width="323" IsReadOnly="True" IsDocumentEnabled="True" >
-                            <FlowDocument>
-                                <Paragraph>
-                                    <Run Text="{Binding VnInfoModel.TagDescription}"></Run>
-                                </Paragraph>
-                            </FlowDocument>
-                        </RichTextBox>
-
+                        <custom:BindableRichTextBox x:Name="tagdescription" Grid.Column="1" HorizontalAlignment="Left" Height="265" Margin="5,5,0,5" VerticalAlignment="Top" Width="323"
+                        IsReadOnly="True" IsDocumentEnabled="True" Document="{Binding VnInfoModel.TagDescription,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                        
 
                     </Grid>
                 </GroupBox>
