@@ -39,7 +39,7 @@ namespace Visual_Novel_Manager.Model
 
         // Using a DependencyProperty as the backing store for VnSelectedIndex.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty VnSelectedIndexProperty =
-            DependencyProperty.Register("VnSelectedIndex", typeof(int), typeof(VnListboxModel), new PropertyMetadata(-1));
+            DependencyProperty.Register("VnSelectedIndex", typeof(int), typeof(VnListboxModel), new PropertyMetadata(0));
 
 
 

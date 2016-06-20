@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Media.Imaging;
 
 namespace Visual_Novel_Manager.Model
@@ -103,13 +104,17 @@ namespace Visual_Novel_Manager.Model
             DependencyProperty.Register("Popularity", typeof(string), typeof(VnInfoModel), new PropertyMetadata(""));
 
 
-        public string VnDescription
+        public FlowDocument VnDescription
         {
-            get { return (string)GetValue(VnDescriptionProperty); }
+            get { return (FlowDocument)GetValue(VnDescriptionProperty); }
             set { SetValue(VnDescriptionProperty, value); }
         }
+
+        // Using a DependencyProperty as the backing store for VnDescription.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty VnDescriptionProperty =
-            DependencyProperty.Register("VnDescription", typeof(string), typeof(VnInfoModel), new PropertyMetadata(""));
+            DependencyProperty.Register("VnDescription", typeof(FlowDocument), typeof(VnInfoModel), new PropertyMetadata(null));
+
+
 
 
 

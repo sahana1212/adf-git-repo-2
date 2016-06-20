@@ -1,0 +1,104 @@
+﻿<UserControl x:Class="Visual_Novel_Manager.View.VnInfo"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Visual_Novel_Manager.ViewModel"
+             mc:Ignorable="d" 
+             >
+    <UserControl.DataContext>
+        <local:VnInfoViewModel/>
+    </UserControl.DataContext>
+    <ScrollViewer Name="scrollViewer1" Width="Auto"  VerticalScrollBarVisibility="Visible" >
+        <Grid ScrollViewer.VerticalScrollBarVisibility="Visible" Height="1030">
+
+            <Grid>
+                <TextBlock HorizontalAlignment="Left" Margin="20,20,0,0" TextWrapping="Wrap" Text="Name:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Height="22" Margin="59,19,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="398" Text="{Binding VnInfoModel.Name}"/>
+                <TextBlock HorizontalAlignment="Left" Margin="10,48,0,0" TextWrapping="Wrap" Text="Original:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Height="22" Margin="59,45,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="398" Text="{Binding VnInfoModel.Original}"/>
+                <Image Margin="59,74,0,0" Source="{Binding VnInfoModel.VnImage}" Width="245" Height="308" HorizontalAlignment="Left" VerticalAlignment="Top" Stretch="Uniform"/>
+                <TextBlock HorizontalAlignment="Left" Margin="309,75,0,0" TextWrapping="Wrap" Text="Last Played:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Height="18" Margin="376,75,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189" Text="{Binding VnInfoModel.LastPlayed}"/>
+                <TextBlock HorizontalAlignment="Left" Margin="309,110,0,0" TextWrapping="Wrap" Text="Played:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Height="18" Margin="376,110,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189" Text="{Binding VnInfoModel.PlayTime}"/>
+                <TextBlock HorizontalAlignment="Left" Margin="309,145,0,0" TextWrapping="Wrap" Text="Aliases:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Height="18" Margin="376,145,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="189" Text="{Binding VnInfoModel.Aliases}"/>
+                <TextBlock HorizontalAlignment="Left" Margin="309,180,0,0" TextWrapping="Wrap" Text="Released:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Height="18" Margin="376,180,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189" Text="{Binding VnInfoModel.Released}"/>
+                <TextBlock HorizontalAlignment="Left" Margin="309,215,0,0" TextWrapping="Wrap" Text="Length:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Height="18" Margin="376,215,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189" Text="{Binding VnInfoModel.Length}"/>
+                <TextBlock HorizontalAlignment="Left" Margin="309,250,0,0" TextWrapping="Wrap" Text="Developers:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Height="18" Margin="376,250,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189" Text="{Binding VnInfoModel.Developers}"/>
+                <TextBlock HorizontalAlignment="Left" Margin="309,285,0,0" TextWrapping="Wrap" Text="Publishers:" VerticalAlignment="Top"/>
+                <TextBlock x:Name="publishers" HorizontalAlignment="Left" Height="18" Margin="376,285,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189"/>
+                <TextBlock HorizontalAlignment="Left" Margin="309,320,0,0" TextWrapping="Wrap" Text="Popularity:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Height="18" Margin="376,320,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189" Text="{Binding VnInfoModel.Popularity}"/>
+                <TextBlock HorizontalAlignment="Left" Margin="309,355,0,0" TextWrapping="Wrap" Text="Rating:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Height="18" Margin="376,355,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189" Text="{Binding VnInfoModel.Rating}"/>
+            </Grid>
+
+
+
+
+
+            <Grid HorizontalAlignment="Left" Height="149" Margin="59,387,0,0" VerticalAlignment="Top" Width="506">
+                <GroupBox Header="Summary" BorderBrush="Gray">
+                    <Grid x:Name="summgrid">
+                        <!--<TextBox x:Name="rtbDescriptionvn" HorizontalAlignment="Left" Height="117" Margin="5,5,0,0" VerticalAlignment="Top" Width="485" TextWrapping="Wrap" IsReadOnly="True" Text="{Binding VnInfoModel.VnDescription}" Focusable="False"/>-->
+                        <RichTextBox x:Name="rtbDescriptionvn" HorizontalAlignment="Left" Height="117" Margin="5,5,0,0" VerticalAlignment="Top" Width="485"  IsReadOnly="True" Focusable="False" IsDocumentEnabled="True" >
+                            <FlowDocument >
+                                <Paragraph>
+                                    <Run Text="{Binding VnInfoModel.VnDescription}"></Run>
+                                </Paragraph>
+                            </FlowDocument>
+                        </RichTextBox>
+                    </Grid>
+                </GroupBox>
+            </Grid>
+
+            <Grid HorizontalAlignment="Left" Margin="59,541,0,0" Height="299" Width="506" VerticalAlignment="Top">
+                <GroupBox Header="Tags" BorderBrush="Gray">
+                    <Grid x:Name="maintaggrid">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <!--<ListBox x:Name="lbTags" Grid.Column="0" Margin="5,5,0,5" HorizontalAlignment="Left"  Height="265" Width="155" VerticalAlignment="Top" ItemsSource="{Binding VnInfoViewModelTags}" SelectionChanged="LbTags_OnSelectionChanged" >-->
+                        <ListBox x:Name="lbTags" Grid.Column="0" Margin="5,5,0,5" HorizontalAlignment="Left"  Height="265" Width="155" VerticalAlignment="Top" 
+                                     ItemsSource="{Binding VnInfoViewModelTags}" SelectedItem="{Binding MySelectedItem}" SelectedIndex="{Binding SelectedTagIndex}"/>
+
+                        <!--<TextBox x:Name="tagdescription" Grid.Column="1" HorizontalAlignment="Left" Height="265" Margin="5,5,0,5" TextWrapping="Wrap" Text="{Binding VnInfoModel.TagDescription}" VerticalAlignment="Top" Width="323" IsReadOnly="True" />-->
+                        <RichTextBox x:Name="tagdescription" Grid.Column="1" HorizontalAlignment="Left" Height="265" Margin="5,5,0,5" VerticalAlignment="Top" Width="323" IsReadOnly="True" IsDocumentEnabled="True" >
+                            <FlowDocument>
+                                <Paragraph>
+                                    <Run Text="{Binding VnInfoModel.TagDescription}"></Run>
+                                </Paragraph>
+                            </FlowDocument>
+                        </RichTextBox>
+
+
+                    </Grid>
+                </GroupBox>
+            </Grid>
+
+
+            <Grid HorizontalAlignment="Left" Margin="59,850,0,0" Height="175" Width="506" VerticalAlignment="Top">
+                <GroupBox Header="Relations" BorderBrush="Gray">
+                    <Grid>
+                        <ListBox x:Name="lbRelations" HorizontalAlignment="Left" Margin="5,5,0,0" Height="142" Width="483" VerticalAlignment="Top" Focusable="False" 
+                                 ItemsSource="{Binding VnInfoViewModelRelations}">
+
+                        </ListBox>
+                    </Grid>
+
+
+                </GroupBox>
+            </Grid>
+
+            <Button Content="Play" HorizontalAlignment="Left" Margin="462,19,0,0" VerticalAlignment="Top" Width="103" Height="48"/>
+
+        </Grid>
+    </ScrollViewer>
+</UserControl>

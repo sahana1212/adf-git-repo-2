@@ -40,5 +40,11 @@ namespace Visual_Novel_Manager
             var addvn = new View.AddVisualNovel();
             addvn.Show();
         }
+
+        private void Test_Click(object sender, RoutedEventArgs e)
+        {
+
+            StaticClass.VnListboxViewModelStatic.VnSelectionChangedCommand.Execute(null);
+        }
     }
 }

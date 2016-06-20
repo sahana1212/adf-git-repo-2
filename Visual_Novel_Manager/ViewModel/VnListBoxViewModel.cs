@@ -56,13 +56,29 @@ namespace Visual_Novel_Manager.ViewModel
 
 
 
+        public ICommand VnSelectionChangedCommand { get { return new AwaitableDelegateCommand(Vn_SelectedIndexChanged);} }
 
-
-        private void Vn_SelectedIndexChanged()
+        async Task Vn_SelectedIndexChanged()
         {
             //put the code to check if downloading here once I set it up
+            var VnIndex = VnListboxModel.VnSelectedIndex;
+            VnIndex++;
+            using (SQLiteConnection con = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
+            {
+                con.Open();
+                SQLiteCommand cmd = new SQLiteCommand("SELECT * FROM VnAPI WHERE RowID=@SelectedIndex", con);
+                cmd.Parameters.AddWithValue("@SelectedIndex", VnIndex);
+                SQLiteDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    StaticClass.Vnid = (int)reader["VnId"];
+                }
+
+                con.Close();
+            }
 
 
+            StaticClass.VnInfoViewModelStatic.BindVnDataCommand.Execute(null);
 
         }
 

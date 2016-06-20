@@ -41,6 +41,7 @@
 
                     <GroupBox Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Header="Information" HorizontalAlignment="Stretch" Margin="5,0,0,0" VerticalAlignment="Stretch" BorderBrush="Gray">
                         <!--<local:VisualNovelsInformation/>-->
+                        <local:VnInfo/>
 
                     </GroupBox>
 
@@ -66,7 +67,7 @@
 
                                         <MenuItem Header="Settings" Click="SettingsMenuItem_OnClick"/>
                                         <MenuItem Header="Add VN" Click="AddVnMenuItem_OnClick"/>
-                                        <MenuItem Header="View" />
+                                        <MenuItem Header="View" Click="Test_Click"/>
                                         <MenuItem Header="Edit" />
 
                                     </ContextMenu>
