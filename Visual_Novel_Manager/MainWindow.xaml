@@ -67,7 +67,7 @@
 
                                         <MenuItem Header="Settings" Click="SettingsMenuItem_OnClick"/>
                                         <MenuItem Header="Add VN" Click="AddVnMenuItem_OnClick"/>
-                                        <MenuItem Header="View" Click="Test_Click"/>
+                                        <MenuItem Header="Testing Click" Click="Test_Click"/>
                                         <MenuItem Header="Edit" />
 
                                     </ContextMenu>

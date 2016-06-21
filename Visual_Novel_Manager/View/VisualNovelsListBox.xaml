@@ -11,7 +11,8 @@
     </UserControl.DataContext>
     <Grid>
 
-        <ListBox x:Name="lbVN"  Margin="3,40,3,10" VerticalAlignment="Stretch" ItemTemplate="{DynamicResource ListBoxItemDataTemplate}"  ItemsSource="{Binding ListboxItems}">
+        <ListBox x:Name="lbVN"  Margin="3,40,3,10" VerticalAlignment="Stretch" ItemTemplate="{DynamicResource ListBoxItemDataTemplate}" ItemsSource="{Binding ListboxItems}"
+                 SelectedItem="{Binding SelectedTag}">
            
             <ListBox.Resources>
                 <DataTemplate x:Key="ListBoxItemDataTemplate">

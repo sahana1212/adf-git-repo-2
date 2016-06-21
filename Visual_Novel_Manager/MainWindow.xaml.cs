@@ -43,8 +43,8 @@ namespace Visual_Novel_Manager
 
         private void Test_Click(object sender, RoutedEventArgs e)
         {
-
-            StaticClass.VnListboxViewModelStatic.VnSelectionChangedCommand.Execute(null);
+            //use this for testing methods and such
+            
         }
     }
 }

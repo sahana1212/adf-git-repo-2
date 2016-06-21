@@ -46,6 +46,7 @@ namespace Visual_Novel_Manager.ViewModel
         }
         #endregion
 
+        #region properties
         private bool? VnListboxSelectedIndex { get; set; }
         ObservableCollection<VnListboxViewModelCollection> _listboxItems = new ObservableCollection<VnListboxViewModelCollection>();
         public ObservableCollection<VnListboxViewModelCollection> ListboxItems
@@ -55,10 +56,20 @@ namespace Visual_Novel_Manager.ViewModel
         }
 
 
+        private string _selectedTag;
+        public string SelectedTag
+        {
+            get { return _selectedTag; }
+            set
+            {
+                VnSelectedIndexChanged();
+            }
+        }
+        #endregion
 
-        public ICommand VnSelectionChangedCommand { get { return new AwaitableDelegateCommand(Vn_SelectedIndexChanged);} }
 
-        async Task Vn_SelectedIndexChanged()
+
+        private void VnSelectedIndexChanged()
         {
             //put the code to check if downloading here once I set it up
             var VnIndex = VnListboxModel.VnSelectedIndex;
@@ -76,10 +87,7 @@ namespace Visual_Novel_Manager.ViewModel
 
                 con.Close();
             }
-
-
             StaticClass.VnInfoViewModelStatic.BindVnDataCommand.Execute(null);
-
         }
 
 
@@ -144,6 +152,14 @@ namespace Visual_Novel_Manager.ViewModel
 
 
         }
+
+
+
+
+
+
+
+
 
     }
 
