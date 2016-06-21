@@ -88,6 +88,7 @@ namespace Visual_Novel_Manager.ViewModel
                 con.Close();
             }
             StaticClass.VnInfoViewModelStatic.BindVnDataCommand.Execute(null);
+            StaticClass.CharacterViewModelStatic.BindCharacterDataCommand.Execute(null);
         }
 
 

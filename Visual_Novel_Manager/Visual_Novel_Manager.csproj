@@ -100,12 +100,16 @@
     </Compile>
     <Compile Include="StaticClass.cs" />
     <Compile Include="ViewModel\AddVnViewModel.cs" />
+    <Compile Include="ViewModel\CharacterViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="ViewModel\SettingsViewModel.cs" />
     <Compile Include="ViewModel\VnInfoViewModel.cs" />
     <Compile Include="ViewModel\VnListBoxViewModel.cs" />
     <Compile Include="View\AddVisualNovel.xaml.cs">
       <DependentUpon>AddVisualNovel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\CharacterTab.xaml.cs">
+      <DependentUpon>CharacterTab.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
@@ -130,6 +134,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\AddVisualNovel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\CharacterTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

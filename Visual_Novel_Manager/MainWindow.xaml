@@ -102,7 +102,7 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Characters">
-                <!--<local:CharacterTab/>-->
+                <local:CharacterTab/>
             </TabItem>
             <TabItem Header="Releases">
                 <!--<local:ReleasesTab/>-->

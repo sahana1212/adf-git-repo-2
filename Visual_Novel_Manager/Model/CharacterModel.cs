@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Media.Imaging;
 
 namespace Visual_Novel_Manager.Model
@@ -152,15 +153,17 @@ namespace Visual_Novel_Manager.Model
 
 
 
-        public string Description
+        public FlowDocument Description
         {
-            get { return (string)GetValue(DescriptionProperty); }
+            get { return (FlowDocument)GetValue(DescriptionProperty); }
             set { SetValue(DescriptionProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for Description.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty DescriptionProperty =
-            DependencyProperty.Register("Description", typeof(string), typeof(CharacterModel), new PropertyMetadata(""));
+            DependencyProperty.Register("Description", typeof(FlowDocument), typeof(CharacterModel), new PropertyMetadata(null));
+
+
 
 
 
@@ -196,15 +199,17 @@ namespace Visual_Novel_Manager.Model
 
 
 
-        public string TraitDescription
+        public FlowDocument TraitDescription
         {
-            get { return (string)GetValue(TraitDescriptionProperty); }
+            get { return (FlowDocument)GetValue(TraitDescriptionProperty); }
             set { SetValue(TraitDescriptionProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for TraitDescription.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty TraitDescriptionProperty =
-            DependencyProperty.Register("TraitDescription", typeof(string), typeof(CharacterModel), new PropertyMetadata(""));
+            DependencyProperty.Register("TraitDescription", typeof(FlowDocument), typeof(CharacterModel), new PropertyMetadata(null));
+
+
 
         #endregion
 

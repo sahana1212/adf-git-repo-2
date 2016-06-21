@@ -23,6 +23,7 @@ namespace Visual_Novel_Manager.View
         public CharacterTab()
         {
             InitializeComponent();
+            DataContext = StaticClass.CharacterViewModelStatic;
         }
     }
 }

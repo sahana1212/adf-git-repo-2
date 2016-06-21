@@ -3,10 +3,80 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Visual_Novel_Manager.View"
+             xmlns:local="clr-namespace:Visual_Novel_Manager.ViewModel"
+             xmlns:custom="clr-namespace:Visual_Novel_Manager.CustomClasses"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-            
+             d:DesignHeight="768" d:DesignWidth="1024">
+    <UserControl.DataContext>
+        <local:CharacterViewModel/>
+    </UserControl.DataContext>
+
+    <Grid x:Name="CharGrid" Background="#F0F0F0" >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="7*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="8*"/>
+            <RowDefinition Height="90"/>
+        </Grid.RowDefinitions>
+        <GroupBox Header="Character Image" HorizontalAlignment="Left" VerticalAlignment="Top" Height="589" Width="250" BorderBrush="Gray">
+            <Grid x:Name="charimg_grid">
+                <Image HorizontalAlignment="Left" Height="269" Margin="10,10,0,0" VerticalAlignment="Top" Width="218" Source="{Binding CharacterModel.CharImage}" Stretch="Uniform"/>
+
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="Controls" HorizontalAlignment="Left" VerticalAlignment="Top" Height="111" Width="250" BorderBrush="Gray" Margin="0,589,0,0" Grid.RowSpan="2">
+            <Grid>
+                <Button Content="Previous" HorizontalAlignment="Left" Margin="10,21,0,0" VerticalAlignment="Top" Width="105" Height="42"  IsEnabled="{Binding PreviousButtonEnabled}" Command="{Binding PreviousCharacterDataCommand}"/>
+                <Button Content="Next" HorizontalAlignment="Left" Margin="123,21,0,0" VerticalAlignment="Top" Width="105" Height="42"  IsEnabled="{Binding NextButtonEnabled}" Command="{Binding NextCharacterDataCommand}"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox Grid.Column="1" Header="Character Information" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Top" Height="338" Width="745" BorderBrush="Gray">
+            <Grid x:Name="wpf_char_information">
+                <TextBlock HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Name:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="10,40,0,0" TextWrapping="Wrap" Text="Original Name:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="10,70,0,0" TextWrapping="Wrap" Text="Aliases:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="10,100,0,0" TextWrapping="Wrap" Text="Gender:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="10,130,0,0" TextWrapping="Wrap" Text="Blood Type:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="10,160,0,0" TextWrapping="Wrap" Text="Birthday:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="10,190,0,0" TextWrapping="Wrap" Text="Description:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="400,10,0,0" TextWrapping="Wrap" Text="Bust:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="400,40,0,0" TextWrapping="Wrap" Text="Waist:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="400,70,0,0" TextWrapping="Wrap" Text="Hip:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="400,100,0,0" TextWrapping="Wrap" Text="Height:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="400,130,0,0" TextWrapping="Wrap" Text="Weight:" VerticalAlignment="Top"/>
+                <custom:BindableRichTextBox x:Name="charDesc" HorizontalAlignment="Left" Height="95" Margin="10,211,0,0" VerticalAlignment="Top" Width="350" IsDocumentEnabled="True" IsReadOnly="True"
+                 Document="{Binding CharacterModel.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                
+                
+                <TextBlock x:Name="charname" HorizontalAlignment="Left" Margin="49,10,0,0" TextWrapping="Wrap" Text="{Binding CharacterModel.Name}" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="94,40,0,0" TextWrapping="Wrap" Text="{Binding CharacterModel.Original}" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="54,70,0,0" TextWrapping="Wrap" Text="{Binding CharacterModel.Aliases}" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="66,100,0,0" TextWrapping="Wrap" Text="{Binding CharacterModel.Gender}" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="77,130,0,0" TextWrapping="Wrap" Text="{Binding CharacterModel.BloodType}" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="66,160,0,0" TextWrapping="Wrap" Text="{Binding CharacterModel.Birthday}" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="430,10,0,0" TextWrapping="Wrap" Text="{Binding CharacterModel.Bust}" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="437,40,0,0" TextWrapping="Wrap" Text="{Binding CharacterModel.Waist}" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="430,70,0,0" TextWrapping="Wrap" Text="{Binding CharacterModel.Hips}" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="443,100,0,0" TextWrapping="Wrap" Text="{Binding CharacterModel.Height}" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="453,130,0,0" TextWrapping="Wrap" Text="{Binding CharacterModel.Weight}" VerticalAlignment="Top"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox Grid.Column="1" Header="Traits" HorizontalAlignment="Left" Margin="5,338,0,0" VerticalAlignment="Top" Height="362" Width="745" BorderBrush="Gray" Grid.RowSpan="2">
+            <Grid x:Name="chartraitsgrid">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="160"/>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <ListBox x:Name="CharTraits" Grid.Column="0" Margin="5,5,0,4" HorizontalAlignment="Left" Width="209" ItemsSource="{Binding CharacterViewModelTraits}"   
+                         Grid.ColumnSpan="2" SelectedItem="{Binding SelectedTraitItem}" SelectedIndex="{Binding SelectedTraitIndex}"/>
+
+                <!--<TextBox Grid.Column="1" HorizontalAlignment="Left" Height="265" Margin="5,5,0,5" TextWrapping="Wrap" Text="{Binding bdTagDescription}" VerticalAlignment="Top" Width="323" IsReadOnly="True" />-->
+                
+                <custom:BindableRichTextBox x:Name="traitdescription" Grid.Column="1" HorizontalAlignment="Left" Height="331" Margin="59,5,0,0"  VerticalAlignment="Top" Width="509" IsReadOnly="True" IsDocumentEnabled="True"
+                Document="{Binding CharacterModel.TraitDescription, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+        </GroupBox>
     </Grid>
 </UserControl>

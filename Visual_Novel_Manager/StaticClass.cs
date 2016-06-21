@@ -12,7 +12,7 @@ namespace Visual_Novel_Manager
     {
         public static readonly VnInfoViewModel VnInfoViewModelStatic = new VnInfoViewModel();
         public static readonly  VnListBoxViewModel VnListboxViewModelStatic = new VnListBoxViewModel();
-        //public static readonly CharacterViewModel CharacterViewModelStatic = new CharacterViewModel();
+        public static readonly CharacterViewModel CharacterViewModelStatic = new CharacterViewModel();
         public static readonly AddVnViewModel AddVnViewModelStatic = new AddVnViewModel();
         //public static readonly ReleasesViewModel ReleasesViewModelStatic = new ReleasesViewModel();
         //public static readonly ScreenshotViewModel ScreenshotViewModelStatic = new ScreenshotViewModel();
