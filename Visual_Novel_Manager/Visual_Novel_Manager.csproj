@@ -103,6 +103,7 @@
     <Compile Include="ViewModel\CharacterViewModel.cs" />
     <Compile Include="ViewModel\MainWindowViewModel.cs" />
     <Compile Include="ViewModel\ReleasesViewModel.cs" />
+    <Compile Include="ViewModel\ScreenshotViewModel.cs" />
     <Compile Include="ViewModel\SettingsViewModel.cs" />
     <Compile Include="ViewModel\VnInfoViewModel.cs" />
     <Compile Include="ViewModel\VnListBoxViewModel.cs" />
@@ -114,6 +115,9 @@
     </Compile>
     <Compile Include="View\ReleasesTab.xaml.cs">
       <DependentUpon>ReleasesTab.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ScreenshotsTab.xaml.cs">
+      <DependentUpon>ScreenshotsTab.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
@@ -146,6 +150,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ReleasesTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ScreenshotsTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

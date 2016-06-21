@@ -108,7 +108,7 @@
                 <local:ReleasesTab/>
             </TabItem>
             <TabItem Header="Screenshots">
-                <!--<local:ScreenshotsTab/>-->
+                <local:ScreenshotsTab/>
             </TabItem>
             <TabItem Header="Visual Novel List">
                 <!--<json:UserVnList/>-->
