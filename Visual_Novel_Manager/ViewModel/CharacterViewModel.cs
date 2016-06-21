@@ -48,6 +48,9 @@ namespace Visual_Novel_Manager.ViewModel
         public CharacterViewModel()
         {
             _characterModel = new CharacterModel();
+
+            PreviousButtonEnabled = true;
+            NextButtonEnabled = true;
         }
         #endregion
 
@@ -77,7 +80,6 @@ namespace Visual_Novel_Manager.ViewModel
             set
             {
                 CharacterModel.TraitDescription = LoadTraitDescription(CurrentCharacterId).Result;
-                //CharacterModel.TraitDescription = LoadTraitDescription(CurrentCharacterId).Result;
             }
         }
 
