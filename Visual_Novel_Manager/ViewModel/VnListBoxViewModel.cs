@@ -72,25 +72,36 @@ namespace Visual_Novel_Manager.ViewModel
         private void VnSelectedIndexChanged()
         {
             //put the code to check if downloading here once I set it up
-            var VnIndex = VnListboxModel.VnSelectedIndex;
-            VnIndex++;
-            using (SQLiteConnection con = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
+            if (StaticClass.ScreenshotViewModelStatic.IsDownloading == true)
             {
-                con.Open();
-                SQLiteCommand cmd = new SQLiteCommand("SELECT * FROM VnAPI WHERE RowID=@SelectedIndex", con);
-                cmd.Parameters.AddWithValue("@SelectedIndex", VnIndex);
-                SQLiteDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    StaticClass.Vnid = (int)reader["VnId"];
-                }
+                VnListboxModel.VnSelectedIndex = -1;
 
-                con.Close();
             }
-            StaticClass.VnInfoViewModelStatic.BindVnDataCommand.Execute(null);
-            StaticClass.CharacterViewModelStatic.BindCharacterDataCommand.Execute(null);
-            StaticClass.ReleasesViewModelStatic.BindReleasesCommand.Execute(null);
-            StaticClass.ScreenshotViewModelStatic.BindScreenshotsCommand.Execute(null);
+            else
+            {
+                var VnIndex = VnListboxModel.VnSelectedIndex;
+                VnIndex++;
+                using (SQLiteConnection con = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
+                {
+                    con.Open();
+                    SQLiteCommand cmd = new SQLiteCommand("SELECT * FROM VnAPI WHERE RowID=@SelectedIndex", con);
+                    cmd.Parameters.AddWithValue("@SelectedIndex", VnIndex);
+                    SQLiteDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        StaticClass.Vnid = (int)reader["VnId"];
+                    }
+
+                    con.Close();
+                }
+                StaticClass.VnInfoViewModelStatic.BindVnDataCommand.Execute(null);
+                StaticClass.CharacterViewModelStatic.BindCharacterDataCommand.Execute(null);
+                StaticClass.ReleasesViewModelStatic.BindReleasesCommand.Execute(null);
+                StaticClass.ScreenshotViewModelStatic.BindScreenshotsCommand.Execute(null);
+            }
+
+            
+            
         }
 
 

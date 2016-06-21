@@ -16,7 +16,7 @@ namespace Visual_Novel_Manager
         public static readonly AddVnViewModel AddVnViewModelStatic = new AddVnViewModel();
         public static readonly ReleasesViewModel ReleasesViewModelStatic = new ReleasesViewModel();
         public static readonly ScreenshotViewModel ScreenshotViewModelStatic = new ScreenshotViewModel();
-        //public static readonly UserVnListViewModel UserVnListViewModelStatic = new UserVnListViewModel();
+        public static readonly UserVnListViewModel UserVnListViewModelStatic = new UserVnListViewModel();
         public static readonly MainWindowViewModel MainWindowViewModelStatic = new MainWindowViewModel();
         public static readonly SettingsViewModel SettingsViewModel = new SettingsViewModel();
         public static List<JSON.WrittenTagsRootObject> PlainTags;

@@ -111,7 +111,7 @@
                 <local:ScreenshotsTab/>
             </TabItem>
             <TabItem Header="Visual Novel List">
-                <!--<json:UserVnList/>-->
+                <local:UserVnList/>
             </TabItem>
             <!--<TabItem Header="About">
                 <Grid Background="#F0F0F0"/>

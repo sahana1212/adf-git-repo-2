@@ -105,6 +105,7 @@
     <Compile Include="ViewModel\ReleasesViewModel.cs" />
     <Compile Include="ViewModel\ScreenshotViewModel.cs" />
     <Compile Include="ViewModel\SettingsViewModel.cs" />
+    <Compile Include="ViewModel\UserVnListViewModel.cs" />
     <Compile Include="ViewModel\VnInfoViewModel.cs" />
     <Compile Include="ViewModel\VnListBoxViewModel.cs" />
     <Compile Include="View\AddVisualNovel.xaml.cs">
@@ -121,6 +122,9 @@
     </Compile>
     <Compile Include="View\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\UserVnList.xaml.cs">
+      <DependentUpon>UserVnList.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\VisualNovelsListBox.xaml.cs">
       <DependentUpon>VisualNovelsListBox.xaml</DependentUpon>
@@ -158,6 +162,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Settings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\UserVnList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
