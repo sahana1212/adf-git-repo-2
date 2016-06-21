@@ -91,6 +91,11 @@ namespace Visual_Novel_Manager.CustomClasses
                         }
                     }
 
+                    //SHOULD prevent crashing by adding an about blank to urls that weren't caught by regex
+                    if (urlList.Count <1)
+                    {
+                        urlList.Add("about:blank");
+                    }
 
                     var hyperlink = new Hyperlink(new Run(centerword))
                     {
