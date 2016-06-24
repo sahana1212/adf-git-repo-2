@@ -25,6 +25,7 @@ namespace Visual_Novel_Manager.View
             InitializeComponent();
             DataContext = StaticClass.VnListboxViewModelStatic;
             StaticClass.VnListboxViewModelStatic.BindListboxInitialCommand.Execute(null);
+            StaticClass.VnListboxViewModelStatic.LoadCategoriesDropdownCommand.Execute(null);
         }
     }
 }

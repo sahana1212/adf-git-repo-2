@@ -11,8 +11,12 @@
     </UserControl.DataContext>
     <Grid>
 
+
+        <ComboBox x:Name="cbCategory" HorizontalAlignment="Stretch" Margin="5,5,5,0" VerticalAlignment="Top" Width="Auto" ItemsSource="{Binding DropdownItems}"
+                  SelectedItem="{Binding SelectedCatChanged}" SelectedIndex="0"/>
+
         <ListBox x:Name="lbVN"  Margin="3,40,3,10" VerticalAlignment="Stretch" ItemTemplate="{DynamicResource ListBoxItemDataTemplate}" ItemsSource="{Binding ListboxItems}"
-                 SelectedItem="{Binding SelectedTag}">
+                 SelectedItem="{Binding SelectedVn}" SelectedIndex="{Binding VnListboxModel.VnSelectedIndex}">
            
             <ListBox.Resources>
                 <DataTemplate x:Key="ListBoxItemDataTemplate">
