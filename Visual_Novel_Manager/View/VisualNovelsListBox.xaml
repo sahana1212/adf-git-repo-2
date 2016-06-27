@@ -17,6 +17,12 @@
 
         <ListBox x:Name="lbVN"  Margin="3,40,3,10" VerticalAlignment="Stretch" ItemTemplate="{DynamicResource ListBoxItemDataTemplate}" ItemsSource="{Binding ListboxItems}"
                  SelectedItem="{Binding SelectedVn}" SelectedIndex="{Binding VnListboxModel.VnSelectedIndex}">
+            <ListBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Add to Category:" ItemsSource="{Binding AddCategory}"/>
+                    <MenuItem Header="Remove from Category:" ItemsSource="{Binding RemoveCategory}"/>
+                </ContextMenu>
+            </ListBox.ContextMenu>
            
             <ListBox.Resources>
                 <DataTemplate x:Key="ListBoxItemDataTemplate">

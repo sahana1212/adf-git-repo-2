@@ -10,9 +10,11 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Visual_Novel_Manager.Model;
 using System.Drawing;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Visual_Novel_Manager.CustomClasses;
+using Visual_Novel_Manager.View;
 
 namespace Visual_Novel_Manager.ViewModel
 {
@@ -110,11 +112,9 @@ namespace Visual_Novel_Manager.ViewModel
         #endregion
 
 
-        
+        private string _fileName;
 
-
-        
-        
+        public string FileName => $"_{0 + 1} - {_fileName}";
 
 
         private void VnSelectedIndexChanged()
@@ -228,7 +228,7 @@ namespace Visual_Novel_Manager.ViewModel
             DropdownItems.AddRange(CategoryListArr);
 
 
-            return;
+            //return;
 
             //
             AddCategory.Clear();
@@ -240,8 +240,11 @@ namespace Visual_Novel_Manager.ViewModel
                 {
                     MenuItem menuitm2 = new MenuItem();
                     menuitm2.Header = categoryName;
+                    menuitm2.Click += VisualNovelsListBox.ListInstance.AddToCategory;
+                    //menuitm2.Command = AddToCategoryCommand;
                     //menuitm2.Click += VisualNovelsListbox.ListInstance.AddToCategory_Click;
                     menuitmList.Add(menuitm2);
+                    
 
                 }
             }
@@ -257,19 +260,156 @@ namespace Visual_Novel_Manager.ViewModel
                 {
                     MenuItem menuitm2 = new MenuItem();
                     menuitm2.Header = categoryName;
-                    //menuitm2.Click += VisualNovelsListbox.ListInstance.RemoveFromCategory_Click;
+                    menuitm2.Click += VisualNovelsListBox.ListInstance.RemoveFromCategory;
                     menuitmList.Add(menuitm2);
                 }
             }
             RemoveCategory.AddMenuItemRange(menuitmList);
         }
 
-        
+
         //BindListboxSelectedCategoryChangedExecute is used when a different category is selected
-       
 
 
-       
+
+
+        private RelayCommand<object> _addCategoryCommand;
+        public ICommand AddCategoryCommand
+        {
+            get
+            {
+                _addCategoryCommand= new RelayCommand<object>(AddToCategory_Click);
+                return _addCategoryCommand;
+            }
+        }
+
+
+        private void AddToCategory_Click(object header)
+        {
+
+            int SelIndex = VnListboxModel.VnSelectedIndex;
+            SelIndex++;
+
+
+            using (SQLiteConnection con = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
+            {
+                con.Open();
+
+                //MenuItem item = new MenuItem();
+                MenuItem item = header as MenuItem;
+                if (item != null)
+                {
+                    var categoryname = item.Header.ToString();
+
+                    int CategoryCounter = 0;
+                    SQLiteCommand checkcmd = new SQLiteCommand("SELECT * FROM NovelCategories WHERE VnId=@VnId", con);
+                    checkcmd.Parameters.AddWithValue("@VnId", StaticClass.Vnid);
+                    SQLiteDataReader checkreader = checkcmd.ExecuteReader();
+                    while (checkreader.Read())
+                    {
+                        string category = (string)checkreader["Category"];
+                        if (category == categoryname)
+                        {
+                            CategoryCounter++;
+                        }
+                    }
+
+                    if (!(CategoryCounter >= 1))
+                    {
+                        SQLiteCommand cmd2 = new SQLiteCommand("INSERT INTO NovelCategories(VnId, Category) VALUES(@VnId, @Category)", con);
+                        cmd2.Parameters.AddWithValue("@VnId", StaticClass.Vnid);
+                        cmd2.Parameters.AddWithValue("@Category", categoryname);
+                        cmd2.ExecuteNonQuery();
+                    }
+
+
+                }
+                con.Close();
+
+            }
+
+        }
+
+
+
+        private RelayCommand<object> _removeFromCategoryCommand;
+        public ICommand RemoveFromCategoryCommand
+        {
+            get
+            {
+                _removeFromCategoryCommand = new RelayCommand<object>(RemoveFromCategory_Click);
+                return _removeFromCategoryCommand;
+            }
+        }
+        private void RemoveFromCategory_Click(object header)
+        {
+            int SelIndex = VnListboxModel.VnSelectedIndex;
+            SelIndex++;
+            if (VnListboxModel.VnSelectedIndex > -1 && VnListboxModel.VnSelectedIndex != -1)
+            //runs as long as the selected index is 0 or greater
+            {
+
+
+                MenuItem item = header as MenuItem;
+                if (item != null)
+                {
+                    var categoryname = item.Header.ToString();//gets the name of the category to remove
+                    if (categoryname == "All")
+                    {
+                        MessageBox.Show("Visual Novels can't be removed from category: 'All'", "Removal impossible", MessageBoxButton.OK);
+                        return;
+                    }
+
+                    using (SQLiteConnection con = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
+                    {
+
+                        con.Open();
+
+
+                        int CategoryCounter = 0;
+                        SQLiteCommand checkallcmd = new SQLiteCommand("Select * FROM NovelCategories WHERE Category=@Category", con);
+                        checkallcmd.Parameters.AddWithValue("@Category", categoryname);
+                        SQLiteDataReader checker = checkallcmd.ExecuteReader();
+                        while (checker.Read())
+                        {
+                            CategoryCounter++;
+                        }
+
+
+                        SQLiteCommand deletecatcmd = new SQLiteCommand("DELETE FROM NovelCategories WHERE VnId=@VnId AND Category=@Category ", con);
+                        deletecatcmd.Parameters.AddWithValue("@VnId", StaticClass.Vnid);
+                        deletecatcmd.Parameters.AddWithValue("@Category", categoryname);
+                        deletecatcmd.ExecuteNonQuery();
+
+
+                        //string removeCatSql = "UPDATE NovelPath SET Category = REPLACE('" + novelCategories + "','," +
+                        //                      categoryname + "','') WHERE RowId=" + VnListBoxSelectedIndex;
+
+
+                        //SQLiteCommand cmd2 = new SQLiteCommand(removeCatSql, con);
+
+                        if (CategoryCounter == 1)
+                        {
+                            SQLiteCommand deleteAllcatcmd = new SQLiteCommand("DELETE FROM Categories WHERE Category=@Category", con);
+                            deleteAllcatcmd.Parameters.AddWithValue("@Category", categoryname);
+                            deleteAllcatcmd.ExecuteNonQuery();
+                            //cbCategory.Items.Remove(cbCategory.SelectedItem);
+                        }
+                        //SQLiteEngine engine = new SQLiteEngine(@"Data Source=|DataDirectory|\Database.sdf");
+                        //engine.Shrink();
+                        //engine.Dispose();
+
+
+                        con.Close();
+                    }
+                }
+
+
+                //lblStatus2.Text = novel.englishName + " has been removed from category: " + novel.Category[index - 1].ToString();
+            }
+            StaticClass.VnListboxViewModelStatic.LoadCategoriesDropdownCommand.Execute(null);
+        }
+
 
 
 

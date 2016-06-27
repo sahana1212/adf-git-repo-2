@@ -2,7 +2,7 @@
 
 namespace Visual_Novel_Manager.Model
 {
-    public class UserVnListModel :DependencyObject
+    public class UserVnListModel : DependencyObject
     {
 
 
@@ -17,7 +17,7 @@ namespace Visual_Novel_Manager.Model
         public static readonly DependencyProperty UsernameProperty =
             DependencyProperty.Register("Username", typeof(string), typeof(UserVnListModel), new PropertyMetadata(""));
 
-        
+
 
         public bool UsernameEnabled
         {
@@ -45,7 +45,7 @@ namespace Visual_Novel_Manager.Model
         public static readonly DependencyProperty PasswordEnabledProperty =
             DependencyProperty.Register("PasswordEnabled", typeof(bool), typeof(UserVnListModel), new PropertyMetadata(true));
 
-        
+
 
 
 
@@ -60,7 +60,7 @@ namespace Visual_Novel_Manager.Model
         public static readonly DependencyProperty LoginBtnEnabledProperty =
             DependencyProperty.Register("LoginBtnEnabled", typeof(bool), typeof(UserVnListModel), new PropertyMetadata(true));
 
-        
+
 
 
         public string VoteInfo
@@ -125,7 +125,7 @@ namespace Visual_Novel_Manager.Model
 
         // Using a DependencyProperty as the backing store for ClearStatus.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ClearStatusProperty =
-            DependencyProperty.Register("ClearStatus", typeof(bool), typeof(UserVnListModel ), new PropertyMetadata(false));
+            DependencyProperty.Register("ClearStatus", typeof(bool), typeof(UserVnListModel), new PropertyMetadata(false));
 
 
 
@@ -180,7 +180,7 @@ namespace Visual_Novel_Manager.Model
         public static readonly DependencyProperty ClearNoteProperty =
             DependencyProperty.Register("ClearNote", typeof(bool), typeof(UserVnListModel), new PropertyMetadata(false));
 
-        
+
 
         #endregion
 

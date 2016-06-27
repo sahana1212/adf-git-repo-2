@@ -3,24 +3,31 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Visual_Novel_Manager.ViewModel"
+             xmlns:local="clr-namespace:Visual_Novel_Manager.View"
+             xmlns:customClasses="clr-namespace:Visual_Novel_Manager.CustomClasses"
+             xmlns:viewModel="clr-namespace:Visual_Novel_Manager.ViewModel"
              mc:Ignorable="d" 
              d:DesignHeight="768" d:DesignWidth="1024">
     <UserControl.DataContext>
-        <local:UserVnListViewModel/>
+        <viewModel:UserVnListViewModel/>
     </UserControl.DataContext>
-
-
+    <UserControl.Resources>
+        <customClasses:NullImageConverter x:Key="NullImageConverter"/>
+    </UserControl.Resources>
+    
     <Grid Background="#F0F0F0">
-
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="350"/>
             <ColumnDefinition Width="7*"/>
         </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="25"/>
+        </Grid.RowDefinitions>
 
         <GroupBox Header="Visual Novel List" HorizontalAlignment="Left" VerticalAlignment="Top" Height="700" Width="350" BorderBrush="Gray">
             <Grid>
-                <ListBox x:Name="VnListBox" HorizontalAlignment="Left" Height="675" VerticalAlignment="Top" Width="338" SelectionChanged="VnListBox_OnSelectionChanged" 
+                <ListBox x:Name="VnListBox" HorizontalAlignment="Left" Height="675" VerticalAlignment="Top" Width="338"  
                          ItemsSource="{Binding UserVnListCollection}" SelectedIndex="{Binding ListboxSelectedIndex}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
@@ -39,6 +46,7 @@
 
             </Grid>
         </GroupBox>
+
         <GroupBox Grid.Column="1" Header="Visual Novel List Information" HorizontalAlignment="Left" Margin="5,103,0,0" VerticalAlignment="Top" Height="316" Width="331" BorderBrush="Gray">
             <Grid Margin="0,0,0,-12" >
                 <TextBlock HorizontalAlignment="Left" Margin="10,21,0,0" TextWrapping="Wrap" Text="Vote:" VerticalAlignment="Top"/>
@@ -74,7 +82,7 @@
                 <TextBlock HorizontalAlignment="Left" Margin="10,179,0,0" TextWrapping="Wrap" Text="Clear Notes:" VerticalAlignment="Top"/>
                 <CheckBox x:Name="ClearNotesChk" Content="" HorizontalAlignment="Left" Margin="79,180,0,0" VerticalAlignment="Top" IsChecked="{Binding UserVnListModel.ClearNote}"/>
 
-                <Button Content="Update" HorizontalAlignment="Left" Margin="49,218,0,0" VerticalAlignment="Top" Width="75" Click="Update_OnClick"/>
+                <Button Content="Update" HorizontalAlignment="Left" Margin="49,218,0,0" VerticalAlignment="Top" Width="75" />
 
 
             </Grid>
@@ -82,7 +90,7 @@
         <GroupBox Grid.Column="1" Header="Vn Image" HorizontalAlignment="Left" Margin="341,103,0,0" VerticalAlignment="Top" Height="316" Width="308" BorderBrush="Gray">
             <Grid>
                 <Image x:Name="vnImage" HorizontalAlignment="Left" Height="274" Margin="10,10,0,0" VerticalAlignment="Top" Width="276" 
-                       Stretch="Uniform" Source="{Binding UserVnListModel.VnImage}"/>
+                       Stretch="Uniform" Source="{Binding UserVnListModel.VnImage, Converter={StaticResource NullImageConverter}}"/>
 
             </Grid>
         </GroupBox>
@@ -94,7 +102,7 @@
                 <TextBlock HorizontalAlignment="Left" Margin="289,30,0,0" TextWrapping="Wrap" Text="Password:" VerticalAlignment="Top"/>
                 <PasswordBox x:Name="passwordTxt" HorizontalAlignment="Left" Margin="347,28,0,0" VerticalAlignment="Top" Width="130" IsEnabled="{Binding UserVnListModel.PasswordEnabled}"/>
                 <Button x:Name="LoginBtn" Content="Login" HorizontalAlignment="Left" Margin="519,25,0,0" VerticalAlignment="Top" Width="75" Height="26"
-                        Click="LoginBtn_Click" Command="{Binding GetUserVnListCommand}" CommandParameter="{Binding ElementName=UC_UserVnList}" IsEnabled="{Binding UserVnListModel.LoginBtnEnabled}"/>
+                         Command="{Binding GetUserVnListCommand}" CommandParameter="{Binding ElementName=UC_UserVnList}" IsEnabled="{Binding UserVnListModel.LoginBtnEnabled}"/>
                 <ProgressBar x:Name="_progressBar" HorizontalAlignment="Left" Height="10" Margin="186,61,0,0" VerticalAlignment="Top" Width="165" Value="{Binding ProgbarValue}"/>
 
 
@@ -104,5 +112,13 @@
 
 
 
+
+
+
+
+
+        <!--bottomm statusbar-->
+        <StatusBar HorizontalAlignment="Stretch" Height="25" Margin="0,0,0,0" Grid.Row="2" VerticalAlignment="Top" Width="Auto" Background="DarkGray"  Grid.ColumnSpan="2"
+                               Grid.Column="0"/>
     </Grid>
 </UserControl>
