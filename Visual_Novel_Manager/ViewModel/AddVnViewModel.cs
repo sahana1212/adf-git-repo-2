@@ -149,15 +149,16 @@ namespace Visual_Novel_Manager.ViewModel
             if (File.Exists(AddVnModel.ExePath))
             {
                 var twoBytes = new byte[2];
-                using (var fileStream = File.Open(AddVnModel.ExePath, FileMode.Open))
+                var file = new FileInfo(AddVnModel.ExePath);
+                using (var fileStream = file.OpenRead())
                 {
                     fileStream.Read(twoBytes, 0, 2);
                 }
-
-                if (Encoding.UTF8.GetString(twoBytes) !="MZ")//checks the firsst two bytes tto see if the exe can be run(prevents adding .ink)
+                if (Encoding.UTF8.GetString(twoBytes) != "MZ")//checks the firsst two bytes tto see if the exe can be run(prevents adding non runnable exe files)
                 {
                     return -1;
                 }
+                //use file.Extension to check for .ink shortcuts if I want to
             }
 
             
