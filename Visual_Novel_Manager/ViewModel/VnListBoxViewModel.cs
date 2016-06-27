@@ -10,9 +10,11 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Visual_Novel_Manager.Model;
 using System.Drawing;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using Visual_Novel_Manager.CustomClasses;
 using Visual_Novel_Manager.View;
 
@@ -435,31 +437,54 @@ namespace Visual_Novel_Manager.ViewModel
                     {
                         string exe = (string)reader["ExePath"];
                         string nvl = (string)reader["Novel"];
+
                         if (!reader.IsDBNull(reader.GetOrdinal("IconPath")))
                         {
                             string icopth = (string)reader["IconPath"];
-                            var sysicon = System.Drawing.Icon.ExtractAssociatedIcon(icopth);
-                            var bmpSrc = System.Windows.Interop.Imaging.CreateBitmapSourceFromHIcon(
-                                sysicon.Handle,
-                                System.Windows.Int32Rect.Empty,
-                                System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
-                            sysicon.Dispose();
+                            if (File.Exists(icopth))
+                            {
+                                var sysicon = System.Drawing.Icon.ExtractAssociatedIcon(icopth);
+                                var bmpSrc = System.Windows.Interop.Imaging.CreateBitmapSourceFromHIcon(
+                                    sysicon.Handle,
+                                    System.Windows.Int32Rect.Empty,
+                                    System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+                                sysicon.Dispose();
 
-                            novelList.Add(nvl);
-                            iconList.Add(bmpSrc);
+                                novelList.Add(nvl);
+                                iconList.Add(bmpSrc);
+                            }
+                            else
+                            {
+                                var bmpSrc = BitmapSource.Create(1, 1, 96, 96, PixelFormats.Bgra32, null,
+                                    new byte[] { 0, 0, 0, 0 }, 4);
+                                novelList.Add(nvl);
+                                iconList.Add(bmpSrc);
+                            }
+                            
 
                         }
                         else if (reader.IsDBNull(reader.GetOrdinal("IconPath")))
                         {
-                            var sysicon = System.Drawing.Icon.ExtractAssociatedIcon(exe);
-                            var bmpSrc = System.Windows.Interop.Imaging.CreateBitmapSourceFromHIcon(
-                                        sysicon.Handle,
-                                        System.Windows.Int32Rect.Empty,
-                                        System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
-                            sysicon.Dispose();
+                            if (File.Exists(exe))
+                            {
+                                var sysicon = System.Drawing.Icon.ExtractAssociatedIcon(exe);
+                                var bmpSrc = System.Windows.Interop.Imaging.CreateBitmapSourceFromHIcon(
+                                            sysicon.Handle,
+                                            System.Windows.Int32Rect.Empty,
+                                            System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+                                sysicon.Dispose();
 
-                            novelList.Add(nvl);
-                            iconList.Add(bmpSrc);
+                                novelList.Add(nvl);
+                                iconList.Add(bmpSrc);
+                            }
+                            else
+                            {
+                                var bmpSrc = BitmapSource.Create(1, 1, 96, 96, PixelFormats.Bgra32, null,
+                                    new byte[] {0, 0, 0, 0}, 4);
+                                novelList.Add(nvl);
+                                iconList.Add(bmpSrc);
+                            }
+                            
                         }
 
                         else
