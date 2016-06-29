@@ -45,6 +45,28 @@ namespace Visual_Novel_Manager.ViewModel
         }
         #endregion
 
+        private bool _addCategoryVisibilty = false;
+
+        public bool AddCategoryVisibility
+        {
+            get { return _addCategoryVisibilty; }
+            set
+            {
+                _addCategoryVisibilty = value;
+                RaisePropertyChanged("AddCategoryVisibility");
+            }
+        }
+
+
+        public ICommand ShowCategoryCommand { get { return new AwaitableDelegateCommand(ShowCategory);} }
+        async Task ShowCategory()
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                AddCategoryVisibility = true;
+            });
+            AddCategoryVisibility = true;
+        }
 
         //public ICommand CreateCategoryCommand { get { return new AwaitableDelegateCommand(CreateCategory);} }
 

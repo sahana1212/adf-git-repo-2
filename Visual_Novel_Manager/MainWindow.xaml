@@ -5,6 +5,9 @@
         xmlns:local="clr-namespace:Visual_Novel_Manager.View"
         xmlns:vm="clr-namespace:Visual_Novel_Manager.ViewModel"
         Title="Visual Novel Manager" Height="768" Width="1024" MinHeight="768" MinWidth="1024">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisiblity" />
+    </Window.Resources>
     <Grid>
         <TabControl HorizontalAlignment="Stretch"   VerticalAlignment="Stretch" >
             <TabItem Header="Visual Novels">
@@ -62,17 +65,21 @@
                                 <vm:SettingsViewModel/>
                             </Grid.DataContext>
                             <Button x:Name="MenuButton" Content="Right click" Width="75">
-                               <Button.ContextMenu>
-                                   <ContextMenu x:Name="ContextMenu" PlacementRectangle="{Binding RelativeSource={RelativeSource Self}}" >
+                                <Button.ContextMenu>
+                                    <ContextMenu x:Name="ContextMenu" PlacementRectangle="{Binding RelativeSource={RelativeSource Self}}" >
 
                                         <MenuItem Header="Settings" Click="SettingsMenuItem_OnClick"/>
                                         <MenuItem Header="Add VN" Click="AddVnMenuItem_OnClick"/>
                                         <MenuItem Header="Testing Click" Click="Test_Click"/>
-                                        <MenuItem Header="Edit" />
+                                        <MenuItem Header="Edit" Command="{Binding ShowCategoryCommand}">
+                                            <MenuItem.DataContext>
+                                                <vm:MainWindowViewModel/>
+                                            </MenuItem.DataContext>
+                                        </MenuItem>
 
                                     </ContextMenu>
-                               </Button.ContextMenu> 
-                                
+                                </Button.ContextMenu>
+
                                 <Button.Triggers>
                                     <EventTrigger SourceName="MenuButton" RoutedEvent="Button.Click">
                                         <BeginStoryboard>
@@ -88,15 +95,24 @@
                                         </BeginStoryboard>
                                     </EventTrigger>
                                 </Button.Triggers>
-                                
-                                
+
+
                             </Button>
 
 
                             <!--<TextBlock x:Name="lblStatus2"/>
                             <TextBlock x:Name="lblNumberOfVNS"/>-->
                         </Grid>
-                        
+
+                        <Grid Visibility="{Binding AddCategoryVisibility,  Converter={StaticResource BoolToVisiblity}}">
+                            <Grid.DataContext>
+                                <vm:MainWindowViewModel/>
+                            </Grid.DataContext>
+                            <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"
+                        />
+                        </Grid>
+                       
+
                     </StatusBar>
 
                 </Grid>
