@@ -27,6 +27,22 @@ namespace Visual_Novel_Manager
             DataContext = StaticClass.MainWindowViewModelStatic;
         }
 
+        private void Button_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
+        }
+
+        private void Button_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var button = sender as Button;
+            if (button != null)
+            {
+                // Why is button.ContextMenu.DataContext null? ... when right click is O.K. but leftdown is N.G.
+                button.ContextMenu.DataContext = button.DataContext;
+                button.ContextMenu.IsOpen = true;
+            }
+        }
+
 
 
         private void SettingsMenuItem_OnClick(object sender, RoutedEventArgs e)

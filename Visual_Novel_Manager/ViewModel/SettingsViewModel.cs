@@ -99,32 +99,6 @@ namespace Visual_Novel_Manager.ViewModel
 
         }
 
-
-
-        /////////////////////
-        //
-
-        private ICommand _command;
-
-        public ICommand Command
-        {
-            get{_command =new RelayCommands(shit,CanExec);return _command;}
-            
-        }
-
-
-        bool CanExec(object param)
-        {
-            return true;
-        }
-
-        void shit(object param)
-        {
-            Console.WriteLine("");
-        }
-
-
-
     }
 
 

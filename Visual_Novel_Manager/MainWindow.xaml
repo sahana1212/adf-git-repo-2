@@ -50,69 +50,17 @@
 
                     <StatusBar HorizontalAlignment="Stretch" Height="25" Margin="0,0,0,0" Grid.Row="2" VerticalAlignment="Top" Width="Auto" Background="DarkGray"  Grid.ColumnSpan="2"
                                Grid.Column="0">
-                        <Grid>
-                            <!--<Button x:Name="button" Content="Right click" Width="75">
-                                <Button.ContextMenu>
-                                    <ContextMenu>
-                                        <MenuItem Header="Menu item 1" />
-                                        <MenuItem Header="Menu item 2" />
-                                        <Separator />
-                                        <MenuItem Header="Menu item 3" />
-                                    </ContextMenu>
-                                </Button.ContextMenu>
-                            </Button>-->
-                            <Grid.DataContext>
-                                <vm:SettingsViewModel/>
-                            </Grid.DataContext>
-                            <Button x:Name="MenuButton" Content="Right click" Width="75">
-                                <Button.ContextMenu>
-                                    <ContextMenu x:Name="ContextMenu" PlacementRectangle="{Binding RelativeSource={RelativeSource Self}}" >
-
-                                        <MenuItem Header="Settings" Click="SettingsMenuItem_OnClick"/>
-                                        <MenuItem Header="Add VN" Click="AddVnMenuItem_OnClick"/>
-                                        <MenuItem Header="Testing Click" Click="Test_Click"/>
-                                        <MenuItem Header="Edit" Command="{Binding ShowCategoryCommand}">
-                                            <MenuItem.DataContext>
-                                                <vm:MainWindowViewModel/>
-                                            </MenuItem.DataContext>
-                                        </MenuItem>
-
-                                    </ContextMenu>
-                                </Button.ContextMenu>
-
-                                <Button.Triggers>
-                                    <EventTrigger SourceName="MenuButton" RoutedEvent="Button.Click">
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContextMenu" Storyboard.TargetProperty="(ContextMenu.IsOpen)">
-                                                    <DiscreteObjectKeyFrame KeyTime="0:0:0">
-                                                        <DiscreteObjectKeyFrame.Value>
-                                                            <sys:Boolean>True</sys:Boolean>
-                                                        </DiscreteObjectKeyFrame.Value>
-                                                    </DiscreteObjectKeyFrame>
-                                                </ObjectAnimationUsingKeyFrames>
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </EventTrigger>
-                                </Button.Triggers>
-
-
-                            </Button>
-
-
-                            <!--<TextBlock x:Name="lblStatus2"/>
-                            <TextBlock x:Name="lblNumberOfVNS"/>-->
-                        </Grid>
-
-                        <Grid Visibility="{Binding AddCategoryVisibility,  Converter={StaticResource BoolToVisiblity}}">
-                            <Grid.DataContext>
-                                <vm:MainWindowViewModel/>
-                            </Grid.DataContext>
-                            <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"
-                        />
-                        </Grid>
-                       
-
+                        <Button MouseRightButtonUp="Button_MouseRightButtonUp" PreviewMouseLeftButtonDown="Button_MouseLeftButtonDown" Content="Menu" >
+                            <Button.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Settings" Click="SettingsMenuItem_OnClick"/>
+                                    <MenuItem Header="Add VN" Click="AddVnMenuItem_OnClick"/>
+                                    <MenuItem Header="TESTING COMMAND ONLY!" Click="Test_Click"/>
+                                    <MenuItem Header="Create Category" Command="{Binding ShowCategoryCommand}"/>
+                                </ContextMenu>
+                            </Button.ContextMenu>
+                        </Button>
+                        <TextBox x:Name="textBox" Height="23" TextWrapping="Wrap" Text="TextBox" Width="120" Visibility="{Binding AddCategoryVisibility, Converter={StaticResource BoolToVisiblity}}"/>
                     </StatusBar>
 
                 </Grid>

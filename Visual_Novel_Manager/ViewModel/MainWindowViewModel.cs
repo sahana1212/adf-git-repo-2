@@ -58,13 +58,9 @@ namespace Visual_Novel_Manager.ViewModel
         }
 
 
-        public ICommand ShowCategoryCommand { get { return new AwaitableDelegateCommand(ShowCategory);} }
-        async Task ShowCategory()
+        public ICommand ShowCategoryCommand { get {return new RelayCommand(ShowCategory);} }
+        private void ShowCategory()
         {
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                AddCategoryVisibility = true;
-            });
             AddCategoryVisibility = true;
         }
 
