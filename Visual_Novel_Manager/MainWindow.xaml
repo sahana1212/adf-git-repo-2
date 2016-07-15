@@ -50,7 +50,7 @@
 
                     <StatusBar HorizontalAlignment="Stretch" Height="25" Margin="0,0,0,0" Grid.Row="2" VerticalAlignment="Top" Width="Auto" Background="DarkGray"  Grid.ColumnSpan="2"
                                Grid.Column="0">
-                        <Button MouseRightButtonUp="Button_MouseRightButtonUp" PreviewMouseLeftButtonDown="Button_MouseLeftButtonDown" Content="Menu" >
+                        <Button MouseRightButtonUp="Button_MouseRightButtonUp" PreviewMouseLeftButtonDown="Button_MouseLeftButtonDown" Content="Settings" >
                             <Button.ContextMenu>
                                 <ContextMenu>
                                     <MenuItem Header="Settings" Click="SettingsMenuItem_OnClick"/>
@@ -60,7 +60,9 @@
                                 </ContextMenu>
                             </Button.ContextMenu>
                         </Button>
-                        <TextBox x:Name="textBox" Height="23" TextWrapping="Wrap" Text="TextBox" Width="120" Visibility="{Binding AddCategoryVisibility, Converter={StaticResource BoolToVisiblity}}"/>
+
+                        <TextBox x:Name="textBox" Height="23" TextWrapping="Wrap" Text="{Binding MainWindowModel.CategoryText}" Width="120" Visibility="{Binding AddCategoryVisibility, Converter={StaticResource BoolToVisiblity}}"/>
+                        <Button x:Name="button" Content="Create Category" Width="118" Visibility="{Binding AddCategoryVisibility, Converter={StaticResource BoolToVisiblity}}" Command="{Binding CreateCategoryCommand}"/>
                     </StatusBar>
 
                 </Grid>

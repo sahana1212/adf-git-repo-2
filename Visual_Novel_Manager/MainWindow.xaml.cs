@@ -57,6 +57,15 @@ namespace Visual_Novel_Manager
             addvn.Show();
         }
 
+
+
+
+
+
+
+
+
+
         private void Test_Click(object sender, RoutedEventArgs e)
         {
             //use this for testing methods and such

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using System.Windows.Input;
 using Visual_Novel_Manager.CustomClasses;
 using Visual_Novel_Manager.Model;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace Visual_Novel_Manager.ViewModel
 {
@@ -64,23 +66,74 @@ namespace Visual_Novel_Manager.ViewModel
             AddCategoryVisibility = true;
         }
 
-        //public ICommand CreateCategoryCommand { get { return new AwaitableDelegateCommand(CreateCategory);} }
+        public ICommand CreateCategoryCommand { get { return new RelayCommand(CreateCategory);} }
 
-        async Task CreateCategory()
+        private void CreateCategory()
         {
-            if (MainWindowModel.CategoryText != null || MainWindowModel.CategoryText != "")
+            if (string.IsNullOrEmpty(MainWindowModel.CategoryText))
             {
                 MessageBox.Show("Enter a category name first", "No category name", MessageBoxButton.OK);
                 return;
             }
             else
-            {
-                bool addCategory = true;
+            {                
+
+                int addCategory = 0;
+                var CatComboBox = new View.VisualNovelsListBox();
+                foreach (string existingCategory in CatComboBox.cbCategory.Items)
+                {
+                    if (existingCategory.ToLower() == MainWindowModel.CategoryText.ToLower())
+                        addCategory = -1;//set to -1 if the category already exists
+                }
+
+                if (addCategory == 0)
+                {
+                    using (SQLiteConnection con = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
+                    {
+                        con.Open();
+                        SQLiteCommand cmd = new SQLiteCommand("INSERT INTO Categories(Category) VALUES(@Category)", con);
+                        cmd.Parameters.AddWithValue("@Category", CheckForDbNull(MainWindowModel.CategoryText));
+                        cmd.ExecuteNonQuery();
+                        con.Close();
+                    }
+
+
+                    MenuItem addItem = new MenuItem();
+                    addItem.Header = MainWindowModel.CategoryText;
+                    addItem.Click += CatComboBox.AddToCategory;
+                    CatComboBox.AddCategory.Items.Add(addItem);//might be violating MVVM. Need to check on it
+
+                    MenuItem remItem = new MenuItem();
+                    remItem.Header = MainWindowModel.CategoryText;
+                    remItem.Click += CatComboBox.RemoveFromCategory;
+                    CatComboBox.RemoveCategory.Items.Add(remItem);//might be violating MVVM
+
+                    StaticClass.VnListboxViewModelStatic.LoadCategoriesDropdownCommand.Execute(null);
+                }
+
+                if (addCategory==-1)
+                {
+                    MainWindowModel.CategoryText = "";
+                }
+
                 
 
+                //
+                AddCategoryVisibility = false;
             }
         }
 
 
+
+
+        public object CheckForDbNull(object value)       //this forces entries that are null to work in the database
+        {
+            if (value == null)
+            {
+                return DBNull.Value;
+            }
+
+            return value;
+        }
     }
 }

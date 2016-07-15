@@ -19,8 +19,8 @@
                  SelectedItem="{Binding SelectedVn}" SelectedIndex="{Binding VnListboxModel.VnSelectedIndex}">
             <ListBox.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Add to Category:" ItemsSource="{Binding AddCategory}"/>
-                    <MenuItem Header="Remove from Category:" ItemsSource="{Binding RemoveCategory}"/>
+                    <MenuItem x:Name="AddCategory" Header="Add to Category:" ItemsSource="{Binding AddCategory}"/>
+                    <MenuItem x:Name="RemoveCategory" Header="Remove from Category:" ItemsSource="{Binding RemoveCategory}"/>
                 </ContextMenu>
             </ListBox.ContextMenu>
            
