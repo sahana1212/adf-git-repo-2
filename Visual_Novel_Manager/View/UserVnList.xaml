@@ -102,7 +102,7 @@
                 <TextBlock HorizontalAlignment="Left" Margin="289,30,0,0" TextWrapping="Wrap" Text="Password:" VerticalAlignment="Top"/>
                 <PasswordBox x:Name="passwordTxt" HorizontalAlignment="Left" Margin="347,28,0,0" VerticalAlignment="Top" Width="130" IsEnabled="{Binding UserVnListModel.PasswordEnabled}"/>
                 <Button x:Name="LoginBtn" Content="Login" HorizontalAlignment="Left" Margin="519,25,0,0" VerticalAlignment="Top" Width="75" Height="26"
-                         Command="{Binding GetUserVnListCommand}" CommandParameter="{Binding ElementName=UC_UserVnList}" IsEnabled="{Binding UserVnListModel.LoginBtnEnabled}"/>
+                         Click="LoginBtn_OnClick" IsEnabled="{Binding UserVnListModel.LoginBtnEnabled}"/>
                 <ProgressBar x:Name="_progressBar" HorizontalAlignment="Left" Height="10" Margin="186,61,0,0" VerticalAlignment="Top" Width="165" Value="{Binding ProgbarValue}"/>
 
 

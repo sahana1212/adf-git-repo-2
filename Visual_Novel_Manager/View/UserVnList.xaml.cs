@@ -23,6 +23,14 @@ namespace Visual_Novel_Manager.View
         public UserVnList()
         {
             InitializeComponent();
+            DataContext = StaticClass.UserVnListViewModelStatic;
+        }
+
+
+        private void LoginBtn_OnClick(object sender, RoutedEventArgs e)
+        {
+            StaticClass.UserVnListViewModelStatic.SetEncPassCommand.Execute(passwordTxt.SecurePassword);
+            StaticClass.UserVnListViewModelStatic.GetUserVnListCommand.Execute(null);
         }
     }
 }

@@ -166,7 +166,7 @@ namespace Visual_Novel_Manager.ViewModel
                     StaticClass.VnInfoViewModelStatic.BindVnDataCommand.Execute(null);
                     //StaticClass.CharacterViewModelStatic.BindCharacterDataCommand.Execute(null);
                     //StaticClass.ReleasesViewModelStatic.BindReleasesCommand.Execute(null);
-                    //StaticClass.ScreenshotViewModelStatic.BindScreenshotsCommand.Execute(null);
+                    StaticClass.ScreenshotViewModelStatic.BindScreenshotsCommand.Execute(null);
                 }
                 else
                 {
