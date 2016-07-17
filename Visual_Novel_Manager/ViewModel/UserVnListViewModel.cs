@@ -157,13 +157,21 @@ namespace Visual_Novel_Manager.ViewModel
                 await conn.Close();
                 Username = UserVnListModel.Username;
             }
-            
+
+
+
+
+            List<int> currentVnList = null;
+            List<int> SqlVnList = null;
             //put in async Task.Run()
             await Task.Run(() =>
             {
 
 
-                var foo = GetVnListInfo().Result;
+                var vninfo = GetVnListInfo().Result;
+
+
+                var foo = GetItemInfo(93);
             });
 
 
@@ -176,7 +184,7 @@ namespace Visual_Novel_Manager.ViewModel
         //put return only methods here
         #region return methods
 
-        private async Task<Tuple<List<int>, List<int>>> GetVnListInfo()
+        private async Task<List<string>> GetVnListInfo()
         {
             try
             {
@@ -267,11 +275,13 @@ namespace Visual_Novel_Manager.ViewModel
                     #endregion
 
                     List<int> currentVnList = new List<int>();
+                    var idList = "";
                     foreach (var id in _userVnListItem)
                     {
                         VnIdList.Add(id.vn);
-                        currentVnList.Add(id.vn);
+                        idList = idList + id.vn + ',';
                     }
+                    idList = idList.TrimEnd(',');
 
                     //creates a list of IDs from the sql table
                     #region creates a list of IDs from the sql table
@@ -307,8 +317,66 @@ namespace Visual_Novel_Manager.ViewModel
                     #endregion
 
 
-                    var vnListTuple = Tuple.Create(currentVnList, SqlVnList);
-                    return vnListTuple;
+                    //get list of 'basic' info from the api
+                    #region get list of 'basic' info from the api
+                    int vnNamePage = 1;
+                    var mergenames = _basicItem;
+                    while (true)
+                    {
+                        responseCode = Convert.ToInt32(await conn.Query("get vn basic (id = [" + idList + "] )" + "{\"results\":25,\"page\":" + vnNamePage + "}"));
+                        if (responseCode == 0)
+                        {
+                            var basicInformation = JsonConvert.DeserializeObject<BasicRootObject>(conn.JsonResponse);
+                            _basicItem = basicInformation.items;
+
+
+                            if (vnNamePage == 1)
+                            {
+                                mergenames = basicInformation.items;
+                            }
+
+                            if (vnNamePage > 1)
+                            {
+                                mergenames = mergenames.Concat(_basicItem).ToList();
+                            }
+
+                            if (basicInformation.more == false)
+                            {
+                                break;
+                            }
+                            vnNamePage++;
+                        }
+
+                        else if (responseCode == -1)
+                        {
+                            var error = JsonConvert.DeserializeObject<ErrorRootObject>(conn.JsonResponse);
+                            if (error.id == "throttled")
+                            {
+                                Thread.Sleep(Convert.ToInt32(error.minwait) + 4000);
+                            }
+                            else
+                            {
+                                MessageBox.Show("Error while requesting information. Response: " + conn.JsonResponse, "Query Error", MessageBoxButton.OK);
+                            }
+                        }
+
+                    }
+
+                    #endregion
+
+                    //get list of names from the basic data
+                    #region get list of names from the basic data
+                    List<string> VnNameList = new List<string>();
+                    foreach (var vn in mergenames)
+                    {
+                        VnNameList.Add(vn.title);
+                    }
+                    #endregion
+
+
+                    await conn.Close();
+                    
+                    return VnNameList;
                 }
                 else
                 {
@@ -316,7 +384,6 @@ namespace Visual_Novel_Manager.ViewModel
                     return null;
                 }
                 
-                return null;
             }
             catch (Exception)
             {
@@ -327,6 +394,144 @@ namespace Visual_Novel_Manager.ViewModel
 
 
         }
+
+
+
+        private async Task<List<string>> GetItemInfo(int vnid)
+        {
+            try
+            {
+                List<string> vnDataList= new List<string>();
+
+                var conn = new Connection();
+                await conn.Open();
+                int responseCode = Convert.ToInt32(await conn.Login(Username, ConvertToUnsecureString(EncryptedPassword)));
+                if (responseCode != -1)
+                {
+                    responseCode = Convert.ToInt32(await conn.Query("get vn details (id=" + vnid + ")"));
+                    if (responseCode != -1)
+                    {
+                        DetailsRootObject detailsInformation = JsonConvert.DeserializeObject<DetailsRootObject>(conn.JsonResponse); //deserialize it
+                        _detailsItem = detailsInformation.items;
+
+
+
+                        int userindex = 0;
+                        for (int i = 0; i < _userVnListItem.Count; i++)
+                        {
+                            if (_userVnListItem[i].vn == vnid)
+                            {
+                                userindex = i;
+                                break;
+                            }
+                        }
+
+                        int voteindex = 0;
+                        for (int i = 0; i < _userVoteList.Count; i++)
+                        {
+                            if (_userVoteList[i].vn == vnid)
+                            {
+                                voteindex = i;
+                                break;
+                            }
+                        }
+
+
+
+                        if (_detailsItem[0] != null && _userVnListItem[userindex] != null)
+                        {
+                            vnDataList.Add(_userVnListItem[userindex].vn.ToString());
+                            vnDataList.Add(_userVnListItem[userindex].status.ToString());
+                            vnDataList.Add(_userVnListItem[userindex].notes != null ? _userVnListItem[userindex].notes.ToString() : string.Empty);
+                            vnDataList.Add(_detailsItem[0].image_nsfw.ToString());
+                            vnDataList.Add(_userVoteList[voteindex].vote.ToString());
+                            vnDataList.Add(_detailsItem[0].image);
+                        }
+
+
+                    }
+
+                    
+                }
+
+
+                return vnDataList;
+
+            }
+            catch (Exception)
+            {
+                
+                throw;
+            }
+        }
+
+
+        private async Task<List<string>> GetVnName(List<int> currentVnList, List<int> SqlVnList)
+        {
+
+            try
+            {
+                List<string> vnNameList = new List<string>();
+                var conn = new Connection();
+                await conn.Open();
+                int responseCode = Convert.ToInt32(await conn.Login(null, null));
+                if (responseCode == -1)
+                {
+                    MessageBox.Show("Error while requesting information. Response: " + conn.JsonResponse, "Query Error", MessageBoxButton.OK);
+                    await conn.Close();
+                }
+                else if (responseCode == 0)
+                {
+                    await conn.Close();
+                    
+                    //create a string of ids from currentVnList
+                    #region create a string of ids from currentVnList
+                    string idString = null;
+                    foreach (var id in currentVnList)
+                    {
+                        idString = idString + id.ToString() + ",";
+                    }
+                    idString = idString.TrimEnd(',');
+                    #endregion
+
+
+                    while (true)
+                    {
+                        responseCode = Convert.ToInt32(await conn.Query("get vn basic (id = [" + idString + "] )" + "{\"results\":25,\"page\":" + 1 + "}"));
+                        if (responseCode == -1)
+                        {
+                            var error = JsonConvert.DeserializeObject<ErrorRootObject>(conn.JsonResponse);
+                            if (error.id == "throttled")
+                            {
+                                Thread.Sleep(Convert.ToInt32(error.minwait) + 4000);
+                            }
+                            else
+                            {
+                                MessageBox.Show("Error while requesting information. Response: " + conn.JsonResponse, "Query Error", MessageBoxButton.OK);
+                            }
+                        }
+
+                        else if (responseCode == 0)
+                        {
+                            BasicRootObject basicInformation = JsonConvert.DeserializeObject<BasicRootObject>(conn.JsonResponse); //deserialize it
+                            _basicItem = basicInformation.items;
+
+                            List<List<string>> sqlList = new List<List<string>>();
+
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                
+                throw;
+            }
+            return null;
+        }
+
+
+
         #endregion
 
 
