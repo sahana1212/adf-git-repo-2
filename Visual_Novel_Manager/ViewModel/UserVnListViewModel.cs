@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.SQLite;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
@@ -168,6 +170,10 @@ namespace Visual_Novel_Manager.ViewModel
         }
 
         public ICommand GetUserVnListCommand { get { return new AwaitableDelegateCommand(GetUserVnList);} }
+        public ICommand BindUserVnCommand
+        {
+            get { return new AwaitableDelegateCommand(BindUserVnExecute); }
+        }
 
 
         #endregion
@@ -200,19 +206,22 @@ namespace Visual_Novel_Manager.ViewModel
 
 
 
-            List<int> currentVnList = null;
-            List<int> SqlVnList = null;
-            //put in async Task.Run()
+            List<string> vnNames = new List<string>();
+            List<string> selectedVnData = new List<string>();
             await Task.Run(() =>
             {
 
 
-                var vnNames = GetVnListInfo().Result;
+                 vnNames = GetVnListInfo().Result;
 
 
-                var selectedVnData = GetItemInfo(93);
+                //selectedVnData = GetItemInfo(VnIdList[0]).Result;
             });
 
+
+            UserVnListCollection.AddRange(vnNames);
+
+            BindUserVnCommand.Execute(null);
 
         }
 
@@ -220,7 +229,73 @@ namespace Visual_Novel_Manager.ViewModel
 
         private async Task BindUserVnExecute()
         {
-            
+
+            List<string> vnNames = new List<string>();
+            List<string> selectedVnData = new List<string>();
+            await Task.Run(() =>
+            {
+
+
+                //vnNames = GetVnListInfo().Result;
+
+
+                selectedVnData = GetItemInfo(VnIdList[ListboxSelectedIndex]).Result;
+            });
+
+
+            UserVnListModel.StatusInfo = "";
+            UserVnListModel.VoteInfo = "";
+            UserVnListModel.VnImage = null;
+
+            var selectedVnId = VnIdList[ListboxSelectedIndex];
+            var conn = new Connection();
+            await conn.Open();
+            int responseCode = Convert.ToInt32(await conn.Login(null, null));
+            if (responseCode != -1)
+            {
+                if (!Directory.Exists(StaticClass.CurrentDirectory + @"\data\vnlist\"))
+                {
+                    Directory.CreateDirectory(StaticClass.CurrentDirectory + @"\data\vnlist\");
+                }
+
+                //binds the image to the UI. if it doesn't exist, it downloads it. Uses extensionless files for NSFW images
+                if (_detailsItem[0].image_nsfw.ToString() == "True")
+                {
+                    if (StaticClass.NsfwEnabled == false)
+                    {
+                        UserVnListModel.VnImage = StaticClass.CurrentDirectory + @"\res\nsfw\cover.jpg";
+                    }
+                    else
+                    {
+                        string vnListImage = StaticClass.CurrentDirectory + @"\data\vnlist\" + selectedVnId;
+                        if (!File.Exists(vnListImage))
+                        {
+                            WebClient client = new WebClient();
+                            client.DownloadFile(new Uri(_detailsItem[0].image), StaticClass.CurrentDirectory + @"\data\vnlist\" + selectedVnId);
+                        }
+                        UserVnListModel.VnImage = vnListImage;
+                    }
+
+
+                }
+                else if (_detailsItem[0].image_nsfw.ToString() == "False")
+                {
+                    string vnListImage = StaticClass.CurrentDirectory + @"\data\vnlist\" + selectedVnId + ".jpg";
+
+
+                    if (!File.Exists(vnListImage))
+                    {
+                        WebClient client = new WebClient();
+                        client.DownloadFile(new Uri(_detailsItem[0].image), StaticClass.CurrentDirectory + @"\data\vnlist\" + selectedVnId + ".jpg");
+                    }
+                    UserVnListModel.VnImage = vnListImage;
+
+                }
+            }
+            else
+            {
+                MessageBox.Show("Error while logging in. Response: " + conn.JsonResponse, "Login Error", MessageBoxButton.OK);
+            }
         }
 
 

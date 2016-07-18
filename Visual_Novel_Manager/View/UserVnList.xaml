@@ -27,8 +27,8 @@
 
         <GroupBox Header="Visual Novel List" HorizontalAlignment="Left" VerticalAlignment="Top" Height="700" Width="350" BorderBrush="Gray">
             <Grid>
-                <ListBox x:Name="VnListBox" HorizontalAlignment="Left" Height="675" VerticalAlignment="Top" Width="338"  
-                         ItemsSource="{Binding UserVnListCollection}" SelectedIndex="{Binding ListboxSelectedIndex}">
+                <ListBox x:Name="VnListBox" HorizontalAlignment="Left" Height="675" VerticalAlignment="Top" Width="338" SelectionChanged="VnListBox_OnSelectionChanged"
+                         ItemsSource="{Binding UserVnListCollection}" SelectedIndex="{Binding ListboxSelectedIndex}" >
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Grid Margin="0,2">

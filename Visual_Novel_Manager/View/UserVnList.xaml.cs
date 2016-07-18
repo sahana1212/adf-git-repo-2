@@ -32,5 +32,10 @@ namespace Visual_Novel_Manager.View
             StaticClass.UserVnListViewModelStatic.SetEncPassCommand.Execute(passwordTxt.SecurePassword);
             StaticClass.UserVnListViewModelStatic.GetUserVnListCommand.Execute(null);
         }
+
+        private void VnListBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            StaticClass.UserVnListViewModelStatic.BindUserVnCommand.Execute(null);
+        }
     }
 }
