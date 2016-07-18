@@ -97,11 +97,50 @@ namespace Visual_Novel_Manager.ViewModel
 
         #endregion
 
+        #region collection
+        ObservableCollectionWithRange _userVnListCollection = new ObservableCollectionWithRange();
+
+        public ObservableCollectionWithRange UserVnListCollection
+        {
+            get { return _userVnListCollection; }
+            set { _userVnListCollection = value; }
+        }
+
+
+        #endregion
+
+
+        #region static properties
+        private double _progbarValue;
+        public double ProgbarValue
+        {
+            get { return _progbarValue; }
+            set
+            {
+                _progbarValue = value;
+                RaisePropertyChanged("ProgbarValue");
+            }
+        }
+
+
+        private int _listboxSectedIndex;
+        public int ListboxSelectedIndex
+        {
+            get { return _listboxSectedIndex; }
+            set
+            {
+                _listboxSectedIndex = value;
+                RaisePropertyChanged("ListboxSelectedIndex");
+            }
+        }
+
+
+        #endregion
+
 
         private List<BasicItem> _basicItem;
         private List<DetailsItem> _detailsItem;
         private static readonly List<int> VnIdList = new List<int>();
-        private static readonly List<string> NsfwList = new List<string>();
         private List<JSON.UserVnList> _userVnListItem;
         private List<JSON.UserVoteList> _userVoteList;
 
@@ -168,14 +207,137 @@ namespace Visual_Novel_Manager.ViewModel
             {
 
 
-                var vninfo = GetVnListInfo().Result;
+                var vnNames = GetVnListInfo().Result;
 
 
-                var foo = GetItemInfo(93);
+                var selectedVnData = GetItemInfo(93);
             });
 
 
         }
+
+
+
+        private async Task BindUserVnExecute()
+        {
+            
+        }
+
+
+
+        private void UpdateVnList(int voteindex, int userindex, int vnid)
+        {
+            try
+            {
+                List<int> vnIdList = new List<int>();
+                using (SQLiteConnection dbConnection = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
+                {
+                    dbConnection.Open();
+                    SQLiteCommand command = new SQLiteCommand("SELECT VnId FROM NovelPath", dbConnection);
+                    SQLiteDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        vnIdList.Add(reader.GetInt32(0));
+                    }
+                    reader.Close();
+                    dbConnection.Close();
+                }
+
+                if (!vnIdList.Contains(vnid))
+                {
+                    using (SQLiteConnection dbConnection = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
+                    {
+                        dbConnection.Open();
+                        SQLiteCommand command = new SQLiteCommand("INSERT INTO VnList(VnId, Title, NSFW, Vote, Status, Note) VALUES(@VnId, @Title, @NSFW, @Vote, @Status, @Note)", dbConnection);
+                        command.Parameters.AddWithValue("@VnId",CheckForDbNull(vnid) );
+                        command.Parameters.AddWithValue("@Title",CheckForDbNull(_basicItem[0].title));
+                        command.Parameters.AddWithValue("@NSFW", CheckForDbNull(_detailsItem[0].image_nsfw.ToString()));
+                        command.Parameters.AddWithValue("@Vote", CheckForDbNull(_userVoteList[voteindex].vote));
+                        command.Parameters.AddWithValue("@Status",CheckForDbNull(_userVnListItem[userindex].status.ToString()) );
+                        command.Parameters.AddWithValue("@Note", CheckForDbNull(_userVnListItem[userindex].notes != null ? _userVnListItem[userindex].notes.ToString() : ""));
+                        command.ExecuteNonQuery();
+                        dbConnection.Close();
+                    }
+                }
+
+                else
+                {
+                    List<string> VnData = new List<string>();
+                    using (SQLiteConnection dbConnection = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
+                    {
+                        dbConnection.Open();
+                        SQLiteCommand command = new SQLiteCommand("SELECT * FROM VnList WHERE VnId=@VnId", dbConnection);
+                        command.Parameters.AddWithValue("@VnId", vnid);
+                        SQLiteDataReader reader = command.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            VnData.Add((string)reader["Vote"]);
+                            VnData.Add((string)reader["Status"]);
+                            VnData.Add((string)reader["Note"]);
+                        }
+                        reader.Close();
+                        dbConnection.Close();
+                    }
+
+
+                    var notes = "";
+                    if (_userVnListItem[userindex].notes == null)
+                    {
+                        notes = null;
+                    }
+                    else if (_userVnListItem[userindex].notes != null)
+                    {
+                        notes = _userVnListItem[userindex].notes.ToString();
+                    }
+
+
+                    bool needUpdate = false;
+
+
+                    if (_userVoteList[voteindex].vote.ToString() != VnData[0])
+                    {
+                        needUpdate = true;
+                    }
+                    else if (_userVnListItem[userindex].status.ToString() != VnData[1])
+                    {
+                        needUpdate = true;
+                    }
+
+                    else if (notes != VnData[2])
+                    {
+                        needUpdate = true;
+                    }
+
+                    if (needUpdate == true)
+                    {
+                        using (SQLiteConnection dbConnection = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
+                        {
+                            dbConnection.Open();
+                            SQLiteCommand command = new SQLiteCommand("UPDATE VnList SET Vote=@Vote, Status=@Status, Note=@Note WHERE VnId=@VnId", dbConnection);
+                            command.Parameters.AddWithValue("@VnId", vnid);
+                            command.Parameters.AddWithValue("@Vote", _userVoteList[voteindex].vote.ToString());
+                            command.Parameters.AddWithValue("@Status", _userVnListItem[userindex].status.ToString());
+                            command.Parameters.AddWithValue("@Note", notes);
+                            command.ExecuteNonQuery();
+
+
+                        }
+                    }
+                }
+
+
+                
+            }
+            catch (Exception)
+            {
+                
+                throw;
+            }
+
+            
+
+        }
+
 
         #endregion
 
@@ -448,7 +610,7 @@ namespace Visual_Novel_Manager.ViewModel
                             vnDataList.Add(_detailsItem[0].image);
                         }
 
-
+                        UpdateVnList(voteindex, userindex, vnid);
                     }
 
                     
@@ -466,69 +628,7 @@ namespace Visual_Novel_Manager.ViewModel
         }
 
 
-        private async Task<List<string>> GetVnName(List<int> currentVnList, List<int> SqlVnList)
-        {
-
-            try
-            {
-                List<string> vnNameList = new List<string>();
-                var conn = new Connection();
-                await conn.Open();
-                int responseCode = Convert.ToInt32(await conn.Login(null, null));
-                if (responseCode == -1)
-                {
-                    MessageBox.Show("Error while requesting information. Response: " + conn.JsonResponse, "Query Error", MessageBoxButton.OK);
-                    await conn.Close();
-                }
-                else if (responseCode == 0)
-                {
-                    await conn.Close();
-                    
-                    //create a string of ids from currentVnList
-                    #region create a string of ids from currentVnList
-                    string idString = null;
-                    foreach (var id in currentVnList)
-                    {
-                        idString = idString + id.ToString() + ",";
-                    }
-                    idString = idString.TrimEnd(',');
-                    #endregion
-
-
-                    while (true)
-                    {
-                        responseCode = Convert.ToInt32(await conn.Query("get vn basic (id = [" + idString + "] )" + "{\"results\":25,\"page\":" + 1 + "}"));
-                        if (responseCode == -1)
-                        {
-                            var error = JsonConvert.DeserializeObject<ErrorRootObject>(conn.JsonResponse);
-                            if (error.id == "throttled")
-                            {
-                                Thread.Sleep(Convert.ToInt32(error.minwait) + 4000);
-                            }
-                            else
-                            {
-                                MessageBox.Show("Error while requesting information. Response: " + conn.JsonResponse, "Query Error", MessageBoxButton.OK);
-                            }
-                        }
-
-                        else if (responseCode == 0)
-                        {
-                            BasicRootObject basicInformation = JsonConvert.DeserializeObject<BasicRootObject>(conn.JsonResponse); //deserialize it
-                            _basicItem = basicInformation.items;
-
-                            List<List<string>> sqlList = new List<List<string>>();
-
-                        }
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                
-                throw;
-            }
-            return null;
-        }
+        
 
 
 

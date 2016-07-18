@@ -173,6 +173,7 @@ namespace Visual_Novel_Manager.ViewModel
                     vnIdList.Add(reader.GetInt32(0));                   
                 }
                 reader.Close();
+                dbConnection.Close();
             }
             
             //checks if an id already exists in the sql db
