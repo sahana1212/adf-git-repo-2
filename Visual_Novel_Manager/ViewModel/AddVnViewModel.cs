@@ -399,6 +399,7 @@ namespace Visual_Novel_Manager.ViewModel
             AddVnModel.ProgressBar = 0.0;
             AddVnModel.ProgressPercent = null;
 
+            StaticClass.VnListboxViewModelStatic.BindListboxInitialCommand.Execute(null);
             //bind the listbox ICommand here
 
         }

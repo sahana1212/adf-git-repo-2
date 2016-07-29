@@ -82,7 +82,7 @@
                 <TextBlock HorizontalAlignment="Left" Margin="10,179,0,0" TextWrapping="Wrap" Text="Clear Notes:" VerticalAlignment="Top"/>
                 <CheckBox x:Name="ClearNotesChk" Content="" HorizontalAlignment="Left" Margin="79,180,0,0" VerticalAlignment="Top" IsChecked="{Binding UserVnListModel.ClearNote}"/>
 
-                <Button Content="Update" HorizontalAlignment="Left" Margin="49,218,0,0" VerticalAlignment="Top" Width="75" />
+                <Button Content="Update" HorizontalAlignment="Left" Margin="49,218,0,0" VerticalAlignment="Top" Width="75" Command="{Binding UpdateUserVnListCommand}"/>
 
 
             </Grid>
@@ -118,7 +118,7 @@
 
 
         <!--bottomm statusbar-->
-        <StatusBar HorizontalAlignment="Stretch" Height="25" Margin="0,0,0,0" Grid.Row="2" VerticalAlignment="Top" Width="Auto" Background="DarkGray"  Grid.ColumnSpan="2"
-                               Grid.Column="0"/>
+        <!--<StatusBar HorizontalAlignment="Stretch" Height="25" Margin="0,0,0,0" Grid.Row="2" VerticalAlignment="Top" Width="Auto" Background="DarkGray"  Grid.ColumnSpan="2"
+                               Grid.Column="0"/>-->
     </Grid>
 </UserControl>
