@@ -127,136 +127,158 @@ namespace Visual_Novel_Manager.ViewModel
 
         async Task<int> CheckVnId()
         {
-            if (string.IsNullOrEmpty(AddVnModel.VnId))
+            try
             {
-                MessageBox.Show("You have to enter an ID first!", "No ID");
-                return -1;
-            }
-
-            if (AddVnModel.VnId == "0")
-            {
-                MessageBox.Show("A VNDB ID cannot be zero!");
-                return -1;
-            }
-
-            if (string.IsNullOrEmpty(AddVnModel.ExePath))
-            {
-                MessageBox.Show("You have not entered a path to the application", "No path added", MessageBoxButton.OK);
-
-                return -1;
-            }
-
-            if (File.Exists(AddVnModel.ExePath))
-            {
-                var twoBytes = new byte[2];
-                var file = new FileInfo(AddVnModel.ExePath);
-                using (var fileStream = file.OpenRead())
+                if (string.IsNullOrEmpty(AddVnModel.VnId))
                 {
-                    fileStream.Read(twoBytes, 0, 2);
-                }
-                if (Encoding.UTF8.GetString(twoBytes) != "MZ")//checks the firsst two bytes tto see if the exe can be run(prevents adding non runnable exe files)
-                {
+                    MessageBox.Show("You have to enter an ID first!", "No ID");
                     return -1;
                 }
-                //use file.Extension to check for .ink shortcuts if I want to
-            }
 
-            
-            List<int>vnIdList = new List<int>();
-            using (SQLiteConnection dbConnection = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
-            {
-                dbConnection.Open();
-                SQLiteCommand command= new SQLiteCommand("SELECT VnId FROM NovelPath",dbConnection);
-                SQLiteDataReader reader = command.ExecuteReader();
-                while (reader.Read())
+                if (AddVnModel.VnId == "0")
                 {
-                    vnIdList.Add(reader.GetInt32(0));                   
+                    MessageBox.Show("A VNDB ID cannot be zero!");
+                    return -1;
                 }
-                reader.Close();
-                dbConnection.Close();
-            }
-            
-            //checks if an id already exists in the sql db
-            List<int> x= new List<int>();
-            if (vnIdList.Any(id => Convert.ToInt32(AddVnModel.VnId) == id))
-            {
-                MessageBox.Show("This Vn is already in the database", "Duplicate Entry", MessageBoxButton.OK);
+
+                if (string.IsNullOrEmpty(AddVnModel.ExePath))
+                {
+                    MessageBox.Show("You have not entered a path to the application", "No path added", MessageBoxButton.OK);
+
+                    return -1;
+                }
+
+                if (File.Exists(AddVnModel.ExePath))
+                {
+                    var twoBytes = new byte[2];
+                    var file = new FileInfo(AddVnModel.ExePath);
+                    using (var fileStream = file.OpenRead())
+                    {
+                        fileStream.Read(twoBytes, 0, 2);
+                    }
+                    if (Encoding.UTF8.GetString(twoBytes) != "MZ")//checks the firsst two bytes tto see if the exe can be run(prevents adding non runnable exe files)
+                    {
+                        return -1;
+                    }
+                    //use file.Extension to check for .ink shortcuts if I want to
+                }
+
+
+                List<int> vnIdList = new List<int>();
+                using (SQLiteConnection dbConnection = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
+                {
+                    dbConnection.Open();
+                    SQLiteCommand command = new SQLiteCommand("SELECT VnId FROM NovelPath", dbConnection);
+                    SQLiteDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        vnIdList.Add(reader.GetInt32(0));
+                    }
+                    reader.Close();
+                    dbConnection.Close();
+                }
+
+                //checks if an id already exists in the sql db
+                List<int> x = new List<int>();
+                if (vnIdList.Any(id => Convert.ToInt32(AddVnModel.VnId) == id))
+                {
+                    MessageBox.Show("This Vn is already in the database", "Duplicate Entry", MessageBoxButton.OK);
+                    return -1;
+                }
+
+
+                //I need to have it check from the database for the id, if not found, then if not found from the DB, return a warning or error
+                if (Regex.IsMatch(AddVnModel.VnId, @"^([1-9][0-9]*)$"))
+                {
+                    var conn = new Connection();
+                    await conn.Open();
+                    int responseCode = Convert.ToInt32(await conn.Login(null, null));
+
+                    if (responseCode == -1)
+                    { MessageBox.Show("Error while logging in. Response: " + conn.JsonResponse, "Login Error", MessageBoxButton.OK); }
+
+                    while (true)
+                    {
+                        responseCode = Convert.ToInt32(await conn.Query("get vn basic (id = " + AddVnModel.VnId + " )"));
+                        if (responseCode == -1)
+                        {
+                            var error = JsonConvert.DeserializeObject<ErrorRootObject>(conn.JsonResponse);
+                            if (error.id == "throttled")
+                            {
+                                Thread.Sleep(Convert.ToInt32(error.minwait) + 4000);
+                            }
+                            else
+                            {
+                                MessageBox.Show("Error while requesting information. Response: " + conn.JsonResponse, "Query Error", MessageBoxButton.OK);
+                            }
+                        }
+
+                        if (responseCode == 0)
+                        {
+
+                            var vn = JsonConvert.DeserializeObject<BasicRootObject>(conn.JsonResponse);
+                            await conn.Close();
+
+                            if (vn.items.Count > 0)
+                            {
+                                //this should run only if the id entered is a valid vn #
+
+                                //!!!Put the AddToDatabase code here
+
+
+
+                                //perhaps set the spoiler levels to the static spoiler levels
+                                var oldJson = File.ReadAllText(StaticClass.CurrentDirectory + @"\config.json");
+                                var json = JsonConvert.DeserializeObject<ConfigRootObject>(oldJson);
+                                foreach (var match in json.unique)//removes ALL previous entries that have the samme VnId
+                                {
+                                    if (match.VnId.ToString() == AddVnModel.VnId)
+                                    {
+                                        json.unique.Remove(match);
+                                    }
+                                }
+                                json.unique.Add(new Unique { VnId = Convert.ToInt32(AddVnModel.VnId), VnSpoilerLevel = 0, CharacterSpoilerLevel = 0 });
+                                File.WriteAllText(StaticClass.CurrentDirectory + @"\config.json", JsonConvert.SerializeObject(json));
+
+                                //adds the new data to the json object, then serializes it, and writes it to the file
+                                return 0;
+                            }
+                            else if (vn.items.Count <= 0)
+                            {
+                                MessageBox.Show("Not a valid VNDB ID");
+                                return -1;
+                            }
+                            break;
+                        }
+
+
+                    }
+                }
+
+
+
+                MessageBox.Show("Please enter a valid VNDB number ID");
                 return -1;
             }
-
-
-            //I need to have it check from the database for the id, if not found, then if not found from the DB, return a warning or error
-            if (Regex.IsMatch(AddVnModel.VnId, @"^([1-9][0-9]*)$"))
+            catch (Exception ex)
             {
-                var conn = new Connection();
-                await conn.Open();
-                int responseCode = Convert.ToInt32(await conn.Login(null, null));
-
-                if (responseCode == -1)
-                { MessageBox.Show("Error while logging in. Response: " + conn.JsonResponse, "Login Error", MessageBoxButton.OK); }
-
-                while (true)
+                using (StreamWriter sw = File.AppendText(StaticClass.CurrentDirectory + @"\debug.log"))
                 {
-                    responseCode = Convert.ToInt32(await conn.Query("get vn basic (id = " + AddVnModel.VnId + " )"));
-                    if (responseCode == -1)
-                    {
-                        var error = JsonConvert.DeserializeObject<ErrorRootObject>(conn.JsonResponse);
-                        if (error.id == "throttled")
-                        {
-                            Thread.Sleep(Convert.ToInt32(error.minwait) + 4000);
-                        }
-                        else
-                        {
-                            MessageBox.Show("Error while requesting information. Response: " + conn.JsonResponse, "Query Error", MessageBoxButton.OK);
-                        }
-                    }
-
-                    if (responseCode == 0)
-                    {
-
-                        var vn = JsonConvert.DeserializeObject<BasicRootObject>(conn.JsonResponse);
-                        await conn.Close();
-
-                        if (vn.items.Count > 0)
-                        {
-                            //this should run only if the id entered is a valid vn #
-
-                            //!!!Put the AddToDatabase code here
+                    sw.WriteLine(DateTime.Now);
+                    sw.WriteLine("Exception Found:\tType: {0}", ex.GetType().FullName);
+                    sw.WriteLine("Class File: AddVnViewModel.cs");
+                    sw.WriteLine("Method Name: CheckVnId");
+                    sw.WriteLine("\nMessage: {0}", ex.Message);
+                    sw.WriteLine("Source: {0}", ex.Source);
+                    sw.WriteLine("StackTrace: {0}", ex.StackTrace);
+                    sw.WriteLine("Target Site: {0}", ex.TargetSite);
 
 
-
-                            //perhaps set the spoiler levels to the static spoiler levels
-                            var oldJson = File.ReadAllText(StaticClass.CurrentDirectory + @"\config.json");
-                            var json = JsonConvert.DeserializeObject<ConfigRootObject>(oldJson);
-                            foreach (var match in json.unique)//removes ALL previous entries that have the samme VnId
-                            {
-                                if (match.VnId.ToString() == AddVnModel.VnId)
-                                {
-                                    json.unique.Remove(match);
-                                }                                
-                            }
-                            json.unique.Add(new Unique { VnId = Convert.ToInt32(AddVnModel.VnId), VnSpoilerLevel = 0, CharacterSpoilerLevel = 0 });
-                            File.WriteAllText(StaticClass.CurrentDirectory + @"\config.json", JsonConvert.SerializeObject(json));
-                            
-                            //adds the new data to the json object, then serializes it, and writes it to the file
-                            return 0;
-                        }
-                        else if (vn.items.Count <= 0)
-                        {
-                            MessageBox.Show("Not a valid VNDB ID");
-                            return -1;
-                        }
-                        break;
-                    }
-
-
+                    sw.WriteLine("\n\n");
                 }
+                throw;
             }
-
-
-
-            MessageBox.Show("Please enter a valid VNDB number ID");
-            return -1;
+            
         }
 
 

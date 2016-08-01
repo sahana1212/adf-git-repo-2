@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.SQLite;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -70,57 +71,79 @@ namespace Visual_Novel_Manager.ViewModel
 
         private void CreateCategory()
         {
-            if (string.IsNullOrEmpty(MainWindowModel.CategoryText))
+            try
             {
-                MessageBox.Show("Enter a category name first", "No category name", MessageBoxButton.OK);
-                return;
-            }
-            else
-            {                
-
-                int addCategory = 0;
-                var CatComboBox = new View.VisualNovelsListBox();
-                foreach (string existingCategory in CatComboBox.cbCategory.Items)
+                if (string.IsNullOrEmpty(MainWindowModel.CategoryText))
                 {
-                    if (existingCategory.ToLower() == MainWindowModel.CategoryText.ToLower())
-                        addCategory = -1;//set to -1 if the category already exists
+                    MessageBox.Show("Enter a category name first", "No category name", MessageBoxButton.OK);
+                    return;
                 }
-
-                if (addCategory == 0)
+                else
                 {
-                    using (SQLiteConnection con = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
+
+                    int addCategory = 0;
+                    var CatComboBox = new View.VisualNovelsListBox();
+                    foreach (string existingCategory in CatComboBox.cbCategory.Items)
                     {
-                        con.Open();
-                        SQLiteCommand cmd = new SQLiteCommand("INSERT INTO Categories(Category) VALUES(@Category)", con);
-                        cmd.Parameters.AddWithValue("@Category", CheckForDbNull(MainWindowModel.CategoryText));
-                        cmd.ExecuteNonQuery();
-                        con.Close();
+                        if (existingCategory.ToLower() == MainWindowModel.CategoryText.ToLower())
+                            addCategory = -1;//set to -1 if the category already exists
+                    }
+
+                    if (addCategory == 0)
+                    {
+                        using (SQLiteConnection con = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
+                        {
+                            con.Open();
+                            SQLiteCommand cmd = new SQLiteCommand("INSERT INTO Categories(Category) VALUES(@Category)", con);
+                            cmd.Parameters.AddWithValue("@Category", CheckForDbNull(MainWindowModel.CategoryText));
+                            cmd.ExecuteNonQuery();
+                            con.Close();
+                        }
+
+
+                        MenuItem addItem = new MenuItem();
+                        addItem.Header = MainWindowModel.CategoryText;
+                        addItem.Click += CatComboBox.AddToCategory;
+                        CatComboBox.AddCategory.Items.Add(addItem);//might be violating MVVM. Need to check on it
+
+                        MenuItem remItem = new MenuItem();
+                        remItem.Header = MainWindowModel.CategoryText;
+                        remItem.Click += CatComboBox.RemoveFromCategory;
+                        CatComboBox.RemoveCategory.Items.Add(remItem);//might be violating MVVM
+
+                        StaticClass.VnListboxViewModelStatic.LoadCategoriesDropdownCommand.Execute(null);
+                    }
+
+                    if (addCategory == -1)
+                    {
+                        MainWindowModel.CategoryText = "";
                     }
 
 
-                    MenuItem addItem = new MenuItem();
-                    addItem.Header = MainWindowModel.CategoryText;
-                    addItem.Click += CatComboBox.AddToCategory;
-                    CatComboBox.AddCategory.Items.Add(addItem);//might be violating MVVM. Need to check on it
 
-                    MenuItem remItem = new MenuItem();
-                    remItem.Header = MainWindowModel.CategoryText;
-                    remItem.Click += CatComboBox.RemoveFromCategory;
-                    CatComboBox.RemoveCategory.Items.Add(remItem);//might be violating MVVM
-
-                    StaticClass.VnListboxViewModelStatic.LoadCategoriesDropdownCommand.Execute(null);
+                    //
+                    AddCategoryVisibility = false;
                 }
-
-                if (addCategory==-1)
-                {
-                    MainWindowModel.CategoryText = "";
-                }
-
-                
-
-                //
-                AddCategoryVisibility = false;
             }
+            catch (Exception ex)
+            {
+                using (StreamWriter sw = File.AppendText(StaticClass.CurrentDirectory + @"\debug.log"))
+                {
+                    sw.WriteLine(DateTime.Now);
+                    sw.WriteLine("Exception Found:\tType: {0}", ex.GetType().FullName);
+                    sw.WriteLine("Class File: MainWindowViewModel.cs");
+                    sw.WriteLine("Method Name: CreateCategory");
+                    sw.WriteLine("\nMessage: {0}", ex.Message);
+                    sw.WriteLine("Source: {0}", ex.Source);
+                    sw.WriteLine("StackTrace: {0}", ex.StackTrace);
+                    sw.WriteLine("Target Site: {0}", ex.TargetSite);
+
+
+                    sw.WriteLine("\n\n");
+                }
+                throw;
+            }
+            
         }
 
 

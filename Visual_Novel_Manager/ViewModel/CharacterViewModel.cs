@@ -49,8 +49,12 @@ namespace Visual_Novel_Manager.ViewModel
         {
             _characterModel = new CharacterModel();
 
-            PreviousButtonEnabled = true;
-            NextButtonEnabled = true;
+            if (StaticClass.Vnid > 0)
+            {
+                PreviousButtonEnabled = true;
+                NextButtonEnabled = true;
+            }
+            
         }
         #endregion
 
@@ -133,117 +137,145 @@ namespace Visual_Novel_Manager.ViewModel
         #region commands
         async Task BindCharacterDataExecute()
         {
-            var charData = new List<List<string[]>>();
-            var TraitList = new List<string[]>();
-
-            if (File.Exists(StaticClass.CurrentDirectory + @"\config.json"))
+            try
             {
-                var jsonString = File.ReadAllText(StaticClass.CurrentDirectory + @"\config.json");
-                var jsonData = JsonConvert.DeserializeObject<ConfigRootObject>(jsonString);
-                foreach (var vn in jsonData.unique)
+                if (StaticClass.Vnid > 0)
                 {
-                    if (vn.VnId == StaticClass.Vnid)
+                    PreviousButtonEnabled = true;
+                    NextButtonEnabled = true;
+                }
+                var charData = new List<List<string[]>>();
+                var TraitList = new List<string[]>();
+
+                if (File.Exists(StaticClass.CurrentDirectory + @"\config.json"))
+                {
+                    var jsonString = File.ReadAllText(StaticClass.CurrentDirectory + @"\config.json");
+                    var jsonData = JsonConvert.DeserializeObject<ConfigRootObject>(jsonString);
+                    foreach (var vn in jsonData.unique)
                     {
-                        StaticClass.CharacterSpoilerLevel = vn.CharacterSpoilerLevel;
-                        break;
+                        if (vn.VnId == StaticClass.Vnid)
+                        {
+                            StaticClass.CharacterSpoilerLevel = vn.CharacterSpoilerLevel;
+                            break;
+                        }
                     }
                 }
-            }
 
 
 
-            await Task.Run(() =>
-            {
-                charData = LoadMainCharacterData().Result;
-            });
-
-
-            if (Convert.ToInt32(charData[CurrentCharacterCount][0][14]) > StaticClass.CharacterSpoilerLevel)
-            {
-                await NextCharacterDataExecute();
-                //loads the next image if the first character is a spoiler
-            }
-
-
-            CurrentCharacterId = charData[CurrentCharacterCount][0][0];
-            ConvertRichTextDocument convRTD = new ConvertRichTextDocument();
-            CharacterModel.Description = convRTD.ConvertToFlowDocument(charData[CurrentCharacterCount][0][7]);
-
-            CharacterModel.Name = charData[CurrentCharacterCount][0][1];
-            CharacterModel.Original = charData[CurrentCharacterCount][0][2];
-            CharacterModel.Gender = charData[CurrentCharacterCount][0][3];
-            CharacterModel.BloodType = charData[CurrentCharacterCount][0][4];
-            CharacterModel.Birthday = charData[CurrentCharacterCount][0][5];
-            CharacterModel.Aliases = charData[CurrentCharacterCount][0][6];
-            //CharacterModel.Description = charData[CurrentCharacterCount][0][7];            
-            CharacterModel.Bust = charData[CurrentCharacterCount][0][9];
-            CharacterModel.Waist = charData[CurrentCharacterCount][0][10];
-            CharacterModel.Hips = charData[CurrentCharacterCount][0][11];
-            CharacterModel.Height = charData[CurrentCharacterCount][0][12];
-            CharacterModel.Weight = charData[CurrentCharacterCount][0][13];
-
-
-
-
-            if (!Directory.Exists(StaticClass.CurrentDirectory + @"\data\character\" + StaticClass.Vnid))
-            {
-                Directory.CreateDirectory(StaticClass.CurrentDirectory + @"\data\character\" + StaticClass.Vnid);
-            }
-            string charimg = StaticClass.CurrentDirectory + @"\data\character\" + StaticClass.Vnid + @"\" + charData[CurrentCharacterCount][0][0] + ".jpg";
-            if (File.Exists(charimg))
-            {
-
-                var source = new BitmapImage();
-                source.BeginInit();
-                source.UriSource = new Uri(charimg, UriKind.RelativeOrAbsolute);
-                source.CacheOption = BitmapCacheOption.OnLoad;
-                source.EndInit();
-
-                CharacterModel.CharImage = source;
-            }
-            else
-            {
-                WebClient client = new WebClient();
-                client.DownloadFile(new Uri(charData[CurrentCharacterCount][0][8]), StaticClass.CurrentDirectory + @"\data\character\" + StaticClass.Vnid + @"\" + CurrentCharacterId + ".jpg");
-                string path = StaticClass.CurrentDirectory + @"\data\character\" + StaticClass.Vnid + @"\" + CurrentCharacterId + ".jpg";
-                var source = new BitmapImage();
-                source.BeginInit();
-                source.UriSource = new Uri(charimg, UriKind.RelativeOrAbsolute);
-                source.CacheOption = BitmapCacheOption.OnLoad;
-                source.EndInit();
-                CharacterModel.CharImage = source;
-            }
-
-            await Task.Run(() =>
-            {
-                TraitList = LoadTraits(charData[CurrentCharacterCount][0][0]).Result;
-            });
-
-
-            if (_charTraits != null)
-            {
-                List<string> traitList = new List<string>();
-                _charTraits.Clear();
-
-                for (int i = 0; i < TraitList.Count; (i)++)
+                await Task.Run(() =>
                 {
-                    if (Convert.ToInt32(TraitList[i][1]) <= StaticClass.CharacterSpoilerLevel)
-                    {
-                        traitList.Add(TraitList[i][0]);
-                    }
+                    charData = LoadMainCharacterData().Result;
+                });
+
+
+                if (Convert.ToInt32(charData[CurrentCharacterCount][0][14]) > StaticClass.CharacterSpoilerLevel)
+                {
+                    await NextCharacterDataExecute();
+                    //loads the next image if the first character is a spoiler
                 }
-                CharacterViewModelTraits.AddRange(traitList);
+
+
+                CurrentCharacterId = charData[CurrentCharacterCount][0][0];
+                ConvertRichTextDocument convRTD = new ConvertRichTextDocument();
+                CharacterModel.Description = convRTD.ConvertToFlowDocument(charData[CurrentCharacterCount][0][7]);
+
+                CharacterModel.Name = charData[CurrentCharacterCount][0][1];
+                CharacterModel.Original = charData[CurrentCharacterCount][0][2];
+                CharacterModel.Gender = charData[CurrentCharacterCount][0][3];
+                CharacterModel.BloodType = charData[CurrentCharacterCount][0][4];
+                CharacterModel.Birthday = charData[CurrentCharacterCount][0][5];
+                CharacterModel.Aliases = charData[CurrentCharacterCount][0][6];
+                //CharacterModel.Description = charData[CurrentCharacterCount][0][7];            
+                CharacterModel.Bust = charData[CurrentCharacterCount][0][9];
+                CharacterModel.Waist = charData[CurrentCharacterCount][0][10];
+                CharacterModel.Hips = charData[CurrentCharacterCount][0][11];
+                CharacterModel.Height = charData[CurrentCharacterCount][0][12];
+                CharacterModel.Weight = charData[CurrentCharacterCount][0][13];
+
+
+
+
+                if (!Directory.Exists(StaticClass.CurrentDirectory + @"\data\character\" + StaticClass.Vnid))
+                {
+                    Directory.CreateDirectory(StaticClass.CurrentDirectory + @"\data\character\" + StaticClass.Vnid);
+                }
+                string charimg = StaticClass.CurrentDirectory + @"\data\character\" + StaticClass.Vnid + @"\" + charData[CurrentCharacterCount][0][0] + ".jpg";
+                if (File.Exists(charimg))
+                {
+
+                    var source = new BitmapImage();
+                    source.BeginInit();
+                    source.UriSource = new Uri(charimg, UriKind.RelativeOrAbsolute);
+                    source.CacheOption = BitmapCacheOption.OnLoad;
+                    source.EndInit();
+
+                    CharacterModel.CharImage = source;
+                }
+                else
+                {
+                    WebClient client = new WebClient();
+                    client.DownloadFile(new Uri(charData[CurrentCharacterCount][0][8]), StaticClass.CurrentDirectory + @"\data\character\" + StaticClass.Vnid + @"\" + CurrentCharacterId + ".jpg");
+                    string path = StaticClass.CurrentDirectory + @"\data\character\" + StaticClass.Vnid + @"\" + CurrentCharacterId + ".jpg";
+                    var source = new BitmapImage();
+                    source.BeginInit();
+                    source.UriSource = new Uri(charimg, UriKind.RelativeOrAbsolute);
+                    source.CacheOption = BitmapCacheOption.OnLoad;
+                    source.EndInit();
+                    CharacterModel.CharImage = source;
+                }
+
+                await Task.Run(() =>
+                {
+                    TraitList = LoadTraits(charData[CurrentCharacterCount][0][0]).Result;
+                });
+
+
+                if (_charTraits != null)
+                {
+                    List<string> traitList = new List<string>();
+                    _charTraits.Clear();
+
+                    for (int i = 0; i < TraitList.Count; (i)++)
+                    {
+                        if (Convert.ToInt32(TraitList[i][1]) <= StaticClass.CharacterSpoilerLevel)
+                        {
+                            traitList.Add(TraitList[i][0]);
+                        }
+                    }
+                    CharacterViewModelTraits.AddRange(traitList);
+                }
+
+
+                if (CurrentCharacterCount == 0)
+                {
+                    PreviousButtonEnabled = false;
+                }
+                else if (CurrentCharacterCount == CharacterCountMax)
+                {
+                    NextButtonEnabled = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter sw = File.AppendText(StaticClass.CurrentDirectory + @"\debug.log"))
+                {
+                    sw.WriteLine(DateTime.Now);
+                    sw.WriteLine("Exception Found:\tType: {0}", ex.GetType().FullName);
+                    sw.WriteLine("Class File: CharacterViewModel.cs");
+                    sw.WriteLine("Method Name: BindCharacterDataExecute");
+                    sw.WriteLine("\nMessage: {0}", ex.Message);
+                    sw.WriteLine("Source: {0}", ex.Source);
+                    sw.WriteLine("StackTrace: {0}", ex.StackTrace);
+                    sw.WriteLine("Target Site: {0}", ex.TargetSite);
+
+
+                    sw.WriteLine("\n\n");
+                }
+                throw;
             }
 
 
-            if (CurrentCharacterCount == 0)
-            {
-                PreviousButtonEnabled = false;
-            }
-            else if (CurrentCharacterCount == CharacterCountMax)
-            {
-                NextButtonEnabled = false;
-            }
 
 
         }
@@ -255,207 +287,65 @@ namespace Visual_Novel_Manager.ViewModel
 
         async Task PreviousCharacterDataExecute()
         {
-            //should be redundant, but keep it anyway
-            if (CurrentCharacterCount == 0)
+            try
             {
-                PreviousButtonEnabled = false;
-            }
-            if (CurrentCharacterCount > 0)
-            {
-                PreviousButtonEnabled = true;
-            }
-            if (CurrentCharacterCount == CharacterCountMax)
-            {
-                NextButtonEnabled = false;
-            }
-            if (CurrentCharacterCount < CharacterCountMax)
-            {
-                NextButtonEnabled = true;
-            }
-            CurrentCharacterCount--;
-            //end redundancy
-
-            var charData = new List<List<string[]>>();
-            var TraitList = new List<string[]>();
-
-            await Task.Run(() =>
-            {
-                charData = LoadMainCharacterData().Result;
-            });
-
-            if (Convert.ToInt32(charData[CurrentCharacterCount][0][14]) > StaticClass.CharacterSpoilerLevel)
-            {
-
-                if (CurrentCharacterCount == CharacterCountMax)
-                { NextButtonEnabled = false; }
+                //should be redundant, but keep it anyway
                 if (CurrentCharacterCount == 0)
-                { PreviousButtonEnabled = false; }
-
+                {
+                    PreviousButtonEnabled = false;
+                }
                 if (CurrentCharacterCount > 0)
                 {
                     PreviousButtonEnabled = true;
-                    PreviousCharacterDataCommand.Execute(null);
                 }
-
-                else if (CurrentCharacterCount < CharacterCountMax)
-                {
-                    NextButtonEnabled = true;
-                    NextCharacterDataCommand.Execute(null);
-                }
-
-
-
-                //loads the next non spoiler image
-            }
-
-
-
-
-
-            CurrentCharacterId = charData[CurrentCharacterCount][0][0];
-            ConvertRichTextDocument convRTD = new ConvertRichTextDocument();
-            CharacterModel.Description = convRTD.ConvertToFlowDocument(charData[CurrentCharacterCount][0][7]);
-
-            CharacterModel.Name = charData[CurrentCharacterCount][0][1];
-            CharacterModel.Original = charData[CurrentCharacterCount][0][2];
-            CharacterModel.Gender = charData[CurrentCharacterCount][0][3];
-            CharacterModel.BloodType = charData[CurrentCharacterCount][0][4];
-            CharacterModel.Birthday = charData[CurrentCharacterCount][0][5];
-            CharacterModel.Aliases = charData[CurrentCharacterCount][0][6];
-            //CharacterModel.Description = charData[CurrentCharacterCount][0][7];
-            CharacterModel.Bust = charData[CurrentCharacterCount][0][9];
-            CharacterModel.Waist = charData[CurrentCharacterCount][0][10];
-            CharacterModel.Hips = charData[CurrentCharacterCount][0][11];
-            CharacterModel.Height = charData[CurrentCharacterCount][0][12];
-            CharacterModel.Weight = charData[CurrentCharacterCount][0][13];
-
-
-            string charimg = StaticClass.CurrentDirectory + @"\data\character\" + StaticClass.Vnid + @"\" + charData[CurrentCharacterCount][0][0] + ".jpg";
-            if (File.Exists(charimg))
-            {
-
-                var source = new BitmapImage();
-                source.BeginInit();
-                source.UriSource = new Uri(charimg, UriKind.RelativeOrAbsolute);
-                source.CacheOption = BitmapCacheOption.OnLoad;
-                source.EndInit();
-
-                CharacterModel.CharImage = source;
-            }
-            else
-            {
-                WebClient client = new WebClient();
-                client.DownloadFile(new Uri(charData[CurrentCharacterCount][0][8]), StaticClass.CurrentDirectory + @"\data\character\" + StaticClass.Vnid + @"\" + CurrentCharacterId + ".jpg");
-                string path = StaticClass.CurrentDirectory + @"\data\character\" + StaticClass.Vnid + @"\" + CurrentCharacterId + ".jpg";
-                var source = new BitmapImage();
-                source.BeginInit();
-                source.UriSource = new Uri(charimg, UriKind.RelativeOrAbsolute);
-                source.CacheOption = BitmapCacheOption.OnLoad;
-                source.EndInit();
-                CharacterModel.CharImage = source;
-            }
-
-
-
-            await Task.Run(() =>
-            {
-                TraitList = LoadTraits(charData[CurrentCharacterCount][0][0]).Result;
-            });
-
-
-            if (_charTraits != null)
-            {
-                List<string> traitList = new List<string>();
-                _charTraits.Clear();
-
-                for (int i = 0; i < TraitList.Count; (i)++)
-                {
-                    if (Convert.ToInt32(TraitList[i][1]) <= StaticClass.CharacterSpoilerLevel)
-                    {
-                        traitList.Add(TraitList[i][0]);
-                    }
-                }
-                CharacterViewModelTraits.AddRange(traitList);
-            }
-
-            if (CurrentCharacterCount == 0)
-            {
-                PreviousButtonEnabled = false;
-            }
-            else if (CurrentCharacterCount > 0)
-            {
-                PreviousButtonEnabled = true;
-            }
-            if (CurrentCharacterCount == CharacterCountMax)
-            {
-                NextButtonEnabled = false;
-            }
-            if (CurrentCharacterCount != CharacterCountMax)
-            {
-                NextButtonEnabled = true;
-            }
-
-
-        }
-
-        public ICommand PreviousCharacterDataCommand { get { return new AwaitableDelegateCommand(PreviousCharacterDataExecute); } }
-
-
-
-
-
-        async Task NextCharacterDataExecute()
-        {
-
-            if (CurrentCharacterCount == 0)
-            {
-                PreviousButtonEnabled = false;
-            }
-            else if (CurrentCharacterCount > 0)
-            {
-                PreviousButtonEnabled = true;
-            }
-            if (CurrentCharacterCount == CharacterCountMax)
-            {
-                NextButtonEnabled = false;
-                return;
-            }
-
-            CurrentCharacterCount++;
-
-            var charData = new List<List<string[]>>();
-            var TraitList = new List<string[]>();
-
-            await Task.Run(() =>
-            {
-                charData = LoadMainCharacterData().Result;
-            });
-
-
-            if (Convert.ToInt32(charData[CurrentCharacterCount][0][14]) > StaticClass.CharacterSpoilerLevel)
-            {
-
                 if (CurrentCharacterCount == CharacterCountMax)
-                { NextButtonEnabled = false; }
-                if (CurrentCharacterCount == 0)
-                { PreviousButtonEnabled = false; }
-
+                {
+                    NextButtonEnabled = false;
+                }
                 if (CurrentCharacterCount < CharacterCountMax)
                 {
                     NextButtonEnabled = true;
-                    NextCharacterDataCommand.Execute(null);
                 }
+                CurrentCharacterCount--;
+                //end redundancy
 
-                else if (CurrentCharacterCount > 0)
+                var charData = new List<List<string[]>>();
+                var TraitList = new List<string[]>();
+
+                await Task.Run(() =>
                 {
-                    PreviousButtonEnabled = true;
-                    PreviousCharacterDataCommand.Execute(null);
+                    charData = LoadMainCharacterData().Result;
+                });
+
+                if (Convert.ToInt32(charData[CurrentCharacterCount][0][14]) > StaticClass.CharacterSpoilerLevel)
+                {
+
+                    if (CurrentCharacterCount == CharacterCountMax)
+                    { NextButtonEnabled = false; }
+                    if (CurrentCharacterCount == 0)
+                    { PreviousButtonEnabled = false; }
+
+                    if (CurrentCharacterCount > 0)
+                    {
+                        PreviousButtonEnabled = true;
+                        PreviousCharacterDataCommand.Execute(null);
+                    }
+
+                    else if (CurrentCharacterCount < CharacterCountMax)
+                    {
+                        NextButtonEnabled = true;
+                        NextCharacterDataCommand.Execute(null);
+                    }
+
+
+
+                    //loads the next non spoiler image
                 }
 
-                //loads the next non spoiler image
-            }
-            else
-            {
+
+
+
+
                 CurrentCharacterId = charData[CurrentCharacterCount][0][0];
                 ConvertRichTextDocument convRTD = new ConvertRichTextDocument();
                 CharacterModel.Description = convRTD.ConvertToFlowDocument(charData[CurrentCharacterCount][0][7]);
@@ -472,7 +362,6 @@ namespace Visual_Novel_Manager.ViewModel
                 CharacterModel.Hips = charData[CurrentCharacterCount][0][11];
                 CharacterModel.Height = charData[CurrentCharacterCount][0][12];
                 CharacterModel.Weight = charData[CurrentCharacterCount][0][13];
-
 
 
                 string charimg = StaticClass.CurrentDirectory + @"\data\character\" + StaticClass.Vnid + @"\" + charData[CurrentCharacterCount][0][0] + ".jpg";
@@ -501,6 +390,7 @@ namespace Visual_Novel_Manager.ViewModel
                 }
 
 
+
                 await Task.Run(() =>
                 {
                     TraitList = LoadTraits(charData[CurrentCharacterCount][0][0]).Result;
@@ -522,12 +412,11 @@ namespace Visual_Novel_Manager.ViewModel
                     CharacterViewModelTraits.AddRange(traitList);
                 }
 
-
                 if (CurrentCharacterCount == 0)
                 {
                     PreviousButtonEnabled = false;
                 }
-                if (CurrentCharacterCount > 0)
+                else if (CurrentCharacterCount > 0)
                 {
                     PreviousButtonEnabled = true;
                 }
@@ -535,11 +424,197 @@ namespace Visual_Novel_Manager.ViewModel
                 {
                     NextButtonEnabled = false;
                 }
-                if (CurrentCharacterCount < CharacterCountMax)
+                if (CurrentCharacterCount != CharacterCountMax)
                 {
                     NextButtonEnabled = true;
                 }
             }
+            catch (Exception ex)
+            {
+                using (StreamWriter sw = File.AppendText(StaticClass.CurrentDirectory + @"\debug.log"))
+                {
+                    sw.WriteLine(DateTime.Now);
+                    sw.WriteLine("Exception Found:\tType: {0}", ex.GetType().FullName);
+                    sw.WriteLine("Class File: CharacterViewModel.cs");
+                    sw.WriteLine("Method Name: PreviousCharacterDataExecute");
+                    sw.WriteLine("\nMessage: {0}", ex.Message);
+                    sw.WriteLine("Source: {0}", ex.Source);
+                    sw.WriteLine("StackTrace: {0}", ex.StackTrace);
+                    sw.WriteLine("Target Site: {0}", ex.TargetSite);
+
+
+                    sw.WriteLine("\n\n");
+                }
+                throw;
+            }
+            
+
+
+        }
+
+        public ICommand PreviousCharacterDataCommand { get { return new AwaitableDelegateCommand(PreviousCharacterDataExecute); } }
+
+
+
+
+
+        async Task NextCharacterDataExecute()
+        {
+            try
+            {
+                if (CurrentCharacterCount == 0)
+                {
+                    PreviousButtonEnabled = false;
+                }
+                else if (CurrentCharacterCount > 0)
+                {
+                    PreviousButtonEnabled = true;
+                }
+                if (CurrentCharacterCount == CharacterCountMax)
+                {
+                    NextButtonEnabled = false;
+                    return;
+                }
+
+                CurrentCharacterCount++;
+
+                var charData = new List<List<string[]>>();
+                var TraitList = new List<string[]>();
+
+                await Task.Run(() =>
+                {
+                    charData = LoadMainCharacterData().Result;
+                });
+
+
+                if (Convert.ToInt32(charData[CurrentCharacterCount][0][14]) > StaticClass.CharacterSpoilerLevel)
+                {
+
+                    if (CurrentCharacterCount == CharacterCountMax)
+                    { NextButtonEnabled = false; }
+                    if (CurrentCharacterCount == 0)
+                    { PreviousButtonEnabled = false; }
+
+                    if (CurrentCharacterCount < CharacterCountMax)
+                    {
+                        NextButtonEnabled = true;
+                        NextCharacterDataCommand.Execute(null);
+                    }
+
+                    else if (CurrentCharacterCount > 0)
+                    {
+                        PreviousButtonEnabled = true;
+                        PreviousCharacterDataCommand.Execute(null);
+                    }
+
+                    //loads the next non spoiler image
+                }
+                else
+                {
+                    CurrentCharacterId = charData[CurrentCharacterCount][0][0];
+                    ConvertRichTextDocument convRTD = new ConvertRichTextDocument();
+                    CharacterModel.Description = convRTD.ConvertToFlowDocument(charData[CurrentCharacterCount][0][7]);
+
+                    CharacterModel.Name = charData[CurrentCharacterCount][0][1];
+                    CharacterModel.Original = charData[CurrentCharacterCount][0][2];
+                    CharacterModel.Gender = charData[CurrentCharacterCount][0][3];
+                    CharacterModel.BloodType = charData[CurrentCharacterCount][0][4];
+                    CharacterModel.Birthday = charData[CurrentCharacterCount][0][5];
+                    CharacterModel.Aliases = charData[CurrentCharacterCount][0][6];
+                    //CharacterModel.Description = charData[CurrentCharacterCount][0][7];
+                    CharacterModel.Bust = charData[CurrentCharacterCount][0][9];
+                    CharacterModel.Waist = charData[CurrentCharacterCount][0][10];
+                    CharacterModel.Hips = charData[CurrentCharacterCount][0][11];
+                    CharacterModel.Height = charData[CurrentCharacterCount][0][12];
+                    CharacterModel.Weight = charData[CurrentCharacterCount][0][13];
+
+
+
+                    string charimg = StaticClass.CurrentDirectory + @"\data\character\" + StaticClass.Vnid + @"\" + charData[CurrentCharacterCount][0][0] + ".jpg";
+                    if (File.Exists(charimg))
+                    {
+
+                        var source = new BitmapImage();
+                        source.BeginInit();
+                        source.UriSource = new Uri(charimg, UriKind.RelativeOrAbsolute);
+                        source.CacheOption = BitmapCacheOption.OnLoad;
+                        source.EndInit();
+
+                        CharacterModel.CharImage = source;
+                    }
+                    else
+                    {
+                        WebClient client = new WebClient();
+                        client.DownloadFile(new Uri(charData[CurrentCharacterCount][0][8]), StaticClass.CurrentDirectory + @"\data\character\" + StaticClass.Vnid + @"\" + CurrentCharacterId + ".jpg");
+                        string path = StaticClass.CurrentDirectory + @"\data\character\" + StaticClass.Vnid + @"\" + CurrentCharacterId + ".jpg";
+                        var source = new BitmapImage();
+                        source.BeginInit();
+                        source.UriSource = new Uri(charimg, UriKind.RelativeOrAbsolute);
+                        source.CacheOption = BitmapCacheOption.OnLoad;
+                        source.EndInit();
+                        CharacterModel.CharImage = source;
+                    }
+
+
+                    await Task.Run(() =>
+                    {
+                        TraitList = LoadTraits(charData[CurrentCharacterCount][0][0]).Result;
+                    });
+
+
+                    if (_charTraits != null)
+                    {
+                        List<string> traitList = new List<string>();
+                        _charTraits.Clear();
+
+                        for (int i = 0; i < TraitList.Count; (i)++)
+                        {
+                            if (Convert.ToInt32(TraitList[i][1]) <= StaticClass.CharacterSpoilerLevel)
+                            {
+                                traitList.Add(TraitList[i][0]);
+                            }
+                        }
+                        CharacterViewModelTraits.AddRange(traitList);
+                    }
+
+
+                    if (CurrentCharacterCount == 0)
+                    {
+                        PreviousButtonEnabled = false;
+                    }
+                    if (CurrentCharacterCount > 0)
+                    {
+                        PreviousButtonEnabled = true;
+                    }
+                    if (CurrentCharacterCount == CharacterCountMax)
+                    {
+                        NextButtonEnabled = false;
+                    }
+                    if (CurrentCharacterCount < CharacterCountMax)
+                    {
+                        NextButtonEnabled = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter sw = File.AppendText(StaticClass.CurrentDirectory + @"\debug.log"))
+                {
+                    sw.WriteLine(DateTime.Now);
+                    sw.WriteLine("Exception Found:\tType: {0}", ex.GetType().FullName);
+                    sw.WriteLine("Class File: CharacterViewModel.cs");
+                    sw.WriteLine("Method Name: NextCharacterDataExecute");
+                    sw.WriteLine("\nMessage: {0}", ex.Message);
+                    sw.WriteLine("Source: {0}", ex.Source);
+                    sw.WriteLine("StackTrace: {0}", ex.StackTrace);
+                    sw.WriteLine("Target Site: {0}", ex.TargetSite);
+
+
+                    sw.WriteLine("\n\n");
+                }
+                throw;
+            }
+            
 
         }
 
@@ -551,149 +626,214 @@ namespace Visual_Novel_Manager.ViewModel
 
         private async Task<List<List<string[]>>> LoadMainCharacterData()
         {
-
-            CharacterCountMax = 0;
-            int characterCount = 0;
-            var characterList = new List<List<string[]>>();
-
-            using (SQLiteConnection con = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
+            try
             {
-                con.Open();
+                CharacterCountMax = 0;
+                int characterCount = 0;
+                var characterList = new List<List<string[]>>();
+
+                using (SQLiteConnection con = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
+                {
+                    con.Open();
 
 
-                SQLiteCommand cmd2 = new SQLiteCommand("SELECT * FROM CharacterAPI WHERE VnId=@VnId", con);
-                cmd2.Parameters.AddWithValue("@VnId", StaticClass.Vnid);
-                SQLiteDataReader reader2 = cmd2.ExecuteReader();
-                while (reader2.Read())
-                {
-                    CharacterCountMax++;
-                    characterCount++;
-                }
-                CharacterCountMax = characterCount - 1;
-                for (int i = 0; i < characterCount; i++)
-                {
-                    var inlst = new List<string[]>();
-                    characterList.Add(inlst);
-                }
+                    SQLiteCommand cmd2 = new SQLiteCommand("SELECT * FROM CharacterAPI WHERE VnId=@VnId", con);
+                    cmd2.Parameters.AddWithValue("@VnId", StaticClass.Vnid);
+                    SQLiteDataReader reader2 = cmd2.ExecuteReader();
+                    while (reader2.Read())
+                    {
+                        CharacterCountMax++;
+                        characterCount++;
+                    }
+                    CharacterCountMax = characterCount - 1;
+                    for (int i = 0; i < characterCount; i++)
+                    {
+                        var inlst = new List<string[]>();
+                        characterList.Add(inlst);
+                    }
 
-                SQLiteCommand cmd = new SQLiteCommand("SELECT * FROM CharacterAPI WHERE VnId=@VnId", con);
-                cmd.Parameters.AddWithValue("@VnId", StaticClass.Vnid);
-                string[] sqlArr =
-                {
+                    SQLiteCommand cmd = new SQLiteCommand("SELECT * FROM CharacterAPI WHERE VnId=@VnId", con);
+                    cmd.Parameters.AddWithValue("@VnId", StaticClass.Vnid);
+                    string[] sqlArr =
+                    {
                    "CharacterId", "Name", "Original", "Gender", "BloodType", "Birthday", "Aliases", "Description",
                     "Image", "Bust", "Waist", "Hip", "Height", "Weight", "vns"
                 };
 
 
-                int h = 0;
-                SQLiteDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    var bindString = new string[15];
-                    int i = 0;
-                    foreach (string value in sqlArr)
+                    int h = 0;
+                    SQLiteDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
                     {
-                        bindString[i] = "";
-                        if (!reader.IsDBNull(reader.GetOrdinal(value)))
+                        var bindString = new string[15];
+                        int i = 0;
+                        foreach (string value in sqlArr)
                         {
-                            bindString[i] += reader[value];
+                            bindString[i] = "";
+                            if (!reader.IsDBNull(reader.GetOrdinal(value)))
+                            {
+                                bindString[i] += reader[value];
+                            }
+                            i++;
                         }
-                        i++;
+
+                        characterList[h].Add(bindString);
+
+                        h++;
                     }
-
-                    characterList[h].Add(bindString);
-
-                    h++;
+                    con.Close();
                 }
-                con.Close();
+
+
+                return characterList;
             }
+            catch (Exception ex)
+            {
+                using (StreamWriter sw = File.AppendText(StaticClass.CurrentDirectory + @"\debug.log"))
+                {
+                    sw.WriteLine(DateTime.Now);
+                    sw.WriteLine("Exception Found:\tType: {0}", ex.GetType().FullName);
+                    sw.WriteLine("Class File: CharacterViewModel.cs");
+                    sw.WriteLine("Method Name: LoadMainCharacterData");
+                    sw.WriteLine("\nMessage: {0}", ex.Message);
+                    sw.WriteLine("Source: {0}", ex.Source);
+                    sw.WriteLine("StackTrace: {0}", ex.StackTrace);
+                    sw.WriteLine("Target Site: {0}", ex.TargetSite);
 
 
-            return characterList;
+                    sw.WriteLine("\n\n");
+                }
+                throw;
+            }
+            
         }
 
         private async Task<List<string[]>> LoadTraits(string charid)
         {
-            List<string[]> traitList = new List<string[]>();
-
-
-            using (SQLiteConnection con = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
+            try
             {
-                con.Open();
+                List<string[]> traitList = new List<string[]>();
 
 
-                SQLiteCommand gettraitscmd = new SQLiteCommand("SELECT * FROM CharacterTraits WHERE VnId=@VnId AND CharacterId=@CharacterId", con);
-                gettraitscmd.Parameters.AddWithValue("@Vnid", StaticClass.Vnid);
-                gettraitscmd.Parameters.AddWithValue("@CharacterId", charid);
-                SQLiteDataReader traitsreader = gettraitscmd.ExecuteReader();
-                while (traitsreader.Read())
+                using (SQLiteConnection con = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
                 {
-                    string traitname = (string)traitsreader["TraitName"];
-                    int spoiler = (int)traitsreader["SpoilerLevel"];
-                    traitList.Add(new[] { traitname, spoiler.ToString() });
+                    con.Open();
+
+
+                    SQLiteCommand gettraitscmd = new SQLiteCommand("SELECT * FROM CharacterTraits WHERE VnId=@VnId AND CharacterId=@CharacterId", con);
+                    gettraitscmd.Parameters.AddWithValue("@Vnid", StaticClass.Vnid);
+                    gettraitscmd.Parameters.AddWithValue("@CharacterId", charid);
+                    SQLiteDataReader traitsreader = gettraitscmd.ExecuteReader();
+                    while (traitsreader.Read())
+                    {
+                        string traitname = (string)traitsreader["TraitName"];
+                        int spoiler = (int)traitsreader["SpoilerLevel"];
+                        traitList.Add(new[] { traitname, spoiler.ToString() });
+                    }
+                    con.Close();
                 }
-                con.Close();
+
+
+
+
+                return traitList;
             }
+            catch (Exception ex)
+            {
+                using (StreamWriter sw = File.AppendText(StaticClass.CurrentDirectory + @"\debug.log"))
+                {
+                    sw.WriteLine(DateTime.Now);
+                    sw.WriteLine("Exception Found:\tType: {0}", ex.GetType().FullName);
+                    sw.WriteLine("Class File: CharacterViewModel.cs");
+                    sw.WriteLine("Method Name: LoadTraits");
+                    sw.WriteLine("\nMessage: {0}", ex.Message);
+                    sw.WriteLine("Source: {0}", ex.Source);
+                    sw.WriteLine("StackTrace: {0}", ex.StackTrace);
+                    sw.WriteLine("Target Site: {0}", ex.TargetSite);
 
 
-
-
-            return traitList;
+                    sw.WriteLine("\n\n");
+                }
+                throw;
+            }
+            
         }
 
         private async Task<FlowDocument> LoadTraitDescription(string charid)
         {
-            string traitDescription = "";
-            int traitindex = SelectedTraitIndex;
-            if (traitindex < 0)
+            try
             {
-                //return "trait index was -1";
-            }
-
-
-
-            List<int> TraitListArray = new List<int>();
-
-
-            using (SQLiteConnection con = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
-            {
-                con.Open();
-
-
-
-                SQLiteCommand traitdesccmd = new SQLiteCommand("SELECT * FROM CharacterTraits WHERE VnId=@VnId AND CharacterId=@CharacterId AND SpoilerLevel<=@SpoilerLevel", con);
-                traitdesccmd.Parameters.AddWithValue("@VnId", StaticClass.Vnid);
-                traitdesccmd.Parameters.AddWithValue("@CharacterId", charid);
-                traitdesccmd.Parameters.AddWithValue("@SpoilerLevel", StaticClass.CharacterSpoilerLevel);
-                SQLiteDataReader traitdescreader = traitdesccmd.ExecuteReader();
-                while (traitdescreader.Read())
+                string traitDescription = "";
+                int traitindex = SelectedTraitIndex;
+                if (traitindex < 0)
                 {
-                    TraitListArray.Add((int)traitdescreader["TraitId"]);
-                }
-                con.Close();
-            }
-
-
-            foreach (var tmp2 in StaticClass.PlainTraits)
-            {
-                if (!TraitListArray.Any())
-                {
-                    //return "";
-                }
-                else if (TraitListArray[traitindex] == tmp2.id)
-                {
-                    traitDescription = tmp2.description;
+                    //return "trait index was -1";
                 }
 
+
+
+                List<int> TraitListArray = new List<int>();
+
+
+                using (SQLiteConnection con = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
+                {
+                    con.Open();
+
+
+
+                    SQLiteCommand traitdesccmd = new SQLiteCommand("SELECT * FROM CharacterTraits WHERE VnId=@VnId AND CharacterId=@CharacterId AND SpoilerLevel<=@SpoilerLevel", con);
+                    traitdesccmd.Parameters.AddWithValue("@VnId", StaticClass.Vnid);
+                    traitdesccmd.Parameters.AddWithValue("@CharacterId", charid);
+                    traitdesccmd.Parameters.AddWithValue("@SpoilerLevel", StaticClass.CharacterSpoilerLevel);
+                    SQLiteDataReader traitdescreader = traitdesccmd.ExecuteReader();
+                    while (traitdescreader.Read())
+                    {
+                        TraitListArray.Add((int)traitdescreader["TraitId"]);
+                    }
+                    con.Close();
+                }
+
+
+                foreach (var tmp2 in StaticClass.PlainTraits)
+                {
+                    if (!TraitListArray.Any())
+                    {
+                        //return "";
+                    }
+                    else if (TraitListArray[traitindex] == tmp2.id)
+                    {
+                        traitDescription = tmp2.description;
+                    }
+
+                }
+
+
+                ConvertRichTextDocument convRTD = new ConvertRichTextDocument();
+                return convRTD.ConvertToFlowDocument(traitDescription);
+
+
+
+                //return traitDescription;
             }
+            catch (Exception ex)
+            {
+                using (StreamWriter sw = File.AppendText(StaticClass.CurrentDirectory + @"\debug.log"))
+                {
+                    sw.WriteLine(DateTime.Now);
+                    sw.WriteLine("Exception Found:\tType: {0}", ex.GetType().FullName);
+                    sw.WriteLine("Class File: CharacterViewModel.cs");
+                    sw.WriteLine("Method Name: LoadTraitDescription");
+                    sw.WriteLine("\nMessage: {0}", ex.Message);
+                    sw.WriteLine("Source: {0}", ex.Source);
+                    sw.WriteLine("StackTrace: {0}", ex.StackTrace);
+                    sw.WriteLine("Target Site: {0}", ex.TargetSite);
 
 
-            ConvertRichTextDocument convRTD = new ConvertRichTextDocument();
-            return convRTD.ConvertToFlowDocument(traitDescription);
-
-
-
-            //return traitDescription;
+                    sw.WriteLine("\n\n");
+                }
+                throw;
+            }
+            
         }
 
 

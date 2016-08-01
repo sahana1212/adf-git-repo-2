@@ -55,7 +55,7 @@
                                 <ContextMenu>
                                     <MenuItem Header="Settings" Click="SettingsMenuItem_OnClick"/>
                                     <MenuItem Header="Add VN" Click="AddVnMenuItem_OnClick"/>
-                                    <MenuItem Header="TESTING COMMAND ONLY!" Click="Test_Click"/>
+                                    <!--<MenuItem Header="TESTING COMMAND ONLY!" Click="Test_Click"/>-->
                                     <MenuItem Header="Create Category" Command="{Binding ShowCategoryCommand}"/>
                                 </ContextMenu>
                             </Button.ContextMenu>

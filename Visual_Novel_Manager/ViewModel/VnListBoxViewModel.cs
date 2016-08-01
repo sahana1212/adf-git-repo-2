@@ -121,59 +121,80 @@ namespace Visual_Novel_Manager.ViewModel
 
         private void VnSelectedIndexChanged()
         {
-            Console.WriteLine(VnListboxModel.VnSelectedIndex);
-           // return;
-            //put the code to check if downloading here once I set it up
-            if (StaticClass.ScreenshotViewModelStatic.IsDownloading == true)
+            try
             {
-                VnListboxModel.VnSelectedIndex = -1;
-
-            }
-            else
-            {
-                if (VnListboxModel.VnSelectedIndex >= -1)
+                // return;
+                //put the code to check if downloading here once I set it up
+                if (StaticClass.ScreenshotViewModelStatic.IsDownloading == true)
                 {
-                    var VnIndex = VnListboxModel.VnSelectedIndex;
-                    VnIndex++;
-                    using (SQLiteConnection con = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
-                    {
-                        con.Open();
-                        List<int> vnList = new List<int>();
-                        if (SelectedCatChanged == null)
-                        {
-                            SelectedCatChanged = "All";
-                        }
-                        SQLiteCommand cmd = new SQLiteCommand("SELECT * FROM NovelCategories WHERE Category LIKE @query ", con);
-                        cmd.Parameters.AddWithValue("@query", "%" + SelectedCatChanged + "%");
-                        SQLiteDataReader reader = cmd.ExecuteReader();
-                        while (reader.Read())
-                        {
-                            vnList.Add((int)reader["VnId"]);
-                            StaticClass.Vnid = (int)reader["VnId"];
-                        }
+                    VnListboxModel.VnSelectedIndex = -1;
 
-                        StaticClass.Vnid = vnList[VnIndex -1];
-                        //SQLiteCommand cmd = new SQLiteCommand("SELECT * FROM VnAPI WHERE RowID=@SelectedIndex", con);
-                        //cmd.Parameters.AddWithValue("@SelectedIndex", VnIndex);
-                        //SQLiteDataReader reader = cmd.ExecuteReader();
-                        //while (reader.Read())
-                        //{
-                        //    StaticClass.Vnid = (int)reader["VnId"];
-                        //}
-
-                        con.Close();
-                    }
-                    StaticClass.VnInfoViewModelStatic.BindVnDataCommand.Execute(null);
-                    StaticClass.CharacterViewModelStatic.BindCharacterDataCommand.Execute(null);
-                    StaticClass.ReleasesViewModelStatic.BindReleasesCommand.Execute(null);
-                    StaticClass.ScreenshotViewModelStatic.BindScreenshotsCommand.Execute(null);
                 }
                 else
                 {
-                    
-                }
+                    if (VnListboxModel.VnSelectedIndex >= -1)
+                    {
+                        var VnIndex = VnListboxModel.VnSelectedIndex;
+                        VnIndex++;
+                        using (SQLiteConnection con = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
+                        {
+                            con.Open();
+                            List<int> vnList = new List<int>();
+                            if (SelectedCatChanged == null)
+                            {
+                                SelectedCatChanged = "All";
+                            }
+                            SQLiteCommand cmd = new SQLiteCommand("SELECT * FROM NovelCategories WHERE Category LIKE @query ", con);
+                            cmd.Parameters.AddWithValue("@query", "%" + SelectedCatChanged + "%");
+                            SQLiteDataReader reader = cmd.ExecuteReader();
+                            while (reader.Read())
+                            {
+                                vnList.Add((int)reader["VnId"]);
+                                StaticClass.Vnid = (int)reader["VnId"];
+                            }
 
+                            StaticClass.Vnid = vnList[VnIndex - 1];
+                            //SQLiteCommand cmd = new SQLiteCommand("SELECT * FROM VnAPI WHERE RowID=@SelectedIndex", con);
+                            //cmd.Parameters.AddWithValue("@SelectedIndex", VnIndex);
+                            //SQLiteDataReader reader = cmd.ExecuteReader();
+                            //while (reader.Read())
+                            //{
+                            //    StaticClass.Vnid = (int)reader["VnId"];
+                            //}
+
+                            con.Close();
+                        }
+                        StaticClass.VnInfoViewModelStatic.BindVnDataCommand.Execute(null);
+                        StaticClass.CharacterViewModelStatic.BindCharacterDataCommand.Execute(null);
+                        StaticClass.ReleasesViewModelStatic.BindReleasesCommand.Execute(null);
+                        StaticClass.ScreenshotViewModelStatic.BindScreenshotsCommand.Execute(null);
+                    }
+                    else
+                    {
+
+                    }
+
+                }
             }
+            catch (Exception ex)
+            {
+                using (StreamWriter sw = File.AppendText(StaticClass.CurrentDirectory + @"\debug.log"))
+                {
+                    sw.WriteLine(DateTime.Now);
+                    sw.WriteLine("Exception Found:\tType: {0}", ex.GetType().FullName);
+                    sw.WriteLine("Class File: VnListBoxViewModel.cs");
+                    sw.WriteLine("Method Name: VnSelectedIndexChanged");
+                    sw.WriteLine("\nMessage: {0}", ex.Message);
+                    sw.WriteLine("Source: {0}", ex.Source);
+                    sw.WriteLine("StackTrace: {0}", ex.StackTrace);
+                    sw.WriteLine("Target Site: {0}", ex.TargetSite);
+
+
+                    sw.WriteLine("\n\n");
+                }
+                throw;
+            }
+            
 
 
 
@@ -203,70 +224,92 @@ namespace Visual_Novel_Manager.ViewModel
 
         async Task LoadCategoriesDropdown()
         {
-            DropdownItems.Clear();
-            var CategoryListArr = new List<string>();
-            using (SQLiteConnection con = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
+            try
             {
-                con.Open();
-                SQLiteCommand cmd = new SQLiteCommand("SELECT * FROM Categories", con);
-                SQLiteDataReader reader = cmd.ExecuteReader();
-                string[] vnvalues = { "Category" };
-                while (reader.Read())
+                DropdownItems.Clear();
+                var CategoryListArr = new List<string>();
+                using (SQLiteConnection con = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
                 {
-                    int i = 0;
-                    foreach (string value in vnvalues)
+                    con.Open();
+                    SQLiteCommand cmd = new SQLiteCommand("SELECT * FROM Categories", con);
+                    SQLiteDataReader reader = cmd.ExecuteReader();
+                    string[] vnvalues = { "Category" };
+                    while (reader.Read())
                     {
-                        if (!reader.IsDBNull(reader.GetOrdinal(value)))
+                        int i = 0;
+                        foreach (string value in vnvalues)
                         {
-                            CategoryListArr.Add(reader[value].ToString());
+                            if (!reader.IsDBNull(reader.GetOrdinal(value)))
+                            {
+                                CategoryListArr.Add(reader[value].ToString());
 
+                            }
+                            i++;
                         }
-                        i++;
+                    }
+                    con.Close();
+                }
+
+                DropdownItems.AddRange(CategoryListArr);
+
+
+                //return;
+
+                //
+                AddCategory.Clear();
+                List<MenuItem> menuitmList = new List<MenuItem>();
+                foreach (string categoryName in CategoryListArr)//this loop adds the text to the dropdown menu
+                {
+
+                    if (categoryName.ToString() != "All")
+                    {
+                        MenuItem menuitm2 = new MenuItem();
+                        menuitm2.Header = categoryName;
+                        menuitm2.Click += VisualNovelsListBox.ListInstance.AddToCategory;
+                        //menuitm2.Command = AddToCategoryCommand;
+                        //menuitm2.Click += VisualNovelsListbox.ListInstance.AddToCategory_Click;
+                        menuitmList.Add(menuitm2);
+
+
                     }
                 }
-                con.Close();
-            }
-
-            DropdownItems.AddRange(CategoryListArr);
+                AddCategory.AddMenuItemRange(menuitmList);
 
 
-            //return;
-
-            //
-            AddCategory.Clear();
-            List<MenuItem> menuitmList = new List<MenuItem>();
-            foreach (string categoryName in CategoryListArr)//this loop adds the text to the dropdown menu
-            {
-
-                if (categoryName.ToString() != "All")
+                RemoveCategory.Clear();
+                menuitmList.Clear();
+                foreach (string categoryName in CategoryListArr)//this loop adds the text to the dropdown menu
                 {
-                    MenuItem menuitm2 = new MenuItem();
-                    menuitm2.Header = categoryName;
-                    menuitm2.Click += VisualNovelsListBox.ListInstance.AddToCategory;
-                    //menuitm2.Command = AddToCategoryCommand;
-                    //menuitm2.Click += VisualNovelsListbox.ListInstance.AddToCategory_Click;
-                    menuitmList.Add(menuitm2);
-                    
 
+                    if (categoryName.ToString() != "All")
+                    {
+                        MenuItem menuitm2 = new MenuItem();
+                        menuitm2.Header = categoryName;
+                        menuitm2.Click += VisualNovelsListBox.ListInstance.RemoveFromCategory;
+                        menuitmList.Add(menuitm2);
+                    }
                 }
+                RemoveCategory.AddMenuItemRange(menuitmList);
             }
-            AddCategory.AddMenuItemRange(menuitmList);
-
-
-            RemoveCategory.Clear();
-            menuitmList.Clear();
-            foreach (string categoryName in CategoryListArr)//this loop adds the text to the dropdown menu
+            catch (Exception ex)
             {
-
-                if (categoryName.ToString() != "All")
+                using (StreamWriter sw = File.AppendText(StaticClass.CurrentDirectory + @"\debug.log"))
                 {
-                    MenuItem menuitm2 = new MenuItem();
-                    menuitm2.Header = categoryName;
-                    menuitm2.Click += VisualNovelsListBox.ListInstance.RemoveFromCategory;
-                    menuitmList.Add(menuitm2);
+                    sw.WriteLine(DateTime.Now);
+                    sw.WriteLine("Exception Found:\tType: {0}", ex.GetType().FullName);
+                    sw.WriteLine("Class File: VnListBoxViewModel.cs");
+                    sw.WriteLine("Method Name: LoadCategoriesDropdown");
+                    sw.WriteLine("\nMessage: {0}", ex.Message);
+                    sw.WriteLine("Source: {0}", ex.Source);
+                    sw.WriteLine("StackTrace: {0}", ex.StackTrace);
+                    sw.WriteLine("Target Site: {0}", ex.TargetSite);
+
+
+                    sw.WriteLine("\n\n");
                 }
+                throw;
             }
-            RemoveCategory.AddMenuItemRange(menuitmList);
+            
         }
 
 
@@ -288,47 +331,68 @@ namespace Visual_Novel_Manager.ViewModel
 
         private void AddToCategory_Click(object header)
         {
-
-            int SelIndex = VnListboxModel.VnSelectedIndex;
-            SelIndex++;
-
-
-            using (SQLiteConnection con = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
+            try
             {
-                con.Open();
+                int SelIndex = VnListboxModel.VnSelectedIndex;
+                SelIndex++;
 
-                //MenuItem item = new MenuItem();
-                MenuItem item = header as MenuItem;
-                if (item != null)
+
+                using (SQLiteConnection con = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
                 {
-                    var categoryname = item.Header.ToString();
+                    con.Open();
 
-                    int CategoryCounter = 0;
-                    SQLiteCommand checkcmd = new SQLiteCommand("SELECT * FROM NovelCategories WHERE VnId=@VnId", con);
-                    checkcmd.Parameters.AddWithValue("@VnId", StaticClass.Vnid);
-                    SQLiteDataReader checkreader = checkcmd.ExecuteReader();
-                    while (checkreader.Read())
+                    //MenuItem item = new MenuItem();
+                    MenuItem item = header as MenuItem;
+                    if (item != null)
                     {
-                        string category = (string)checkreader["Category"];
-                        if (category == categoryname)
+                        var categoryname = item.Header.ToString();
+
+                        int CategoryCounter = 0;
+                        SQLiteCommand checkcmd = new SQLiteCommand("SELECT * FROM NovelCategories WHERE VnId=@VnId", con);
+                        checkcmd.Parameters.AddWithValue("@VnId", StaticClass.Vnid);
+                        SQLiteDataReader checkreader = checkcmd.ExecuteReader();
+                        while (checkreader.Read())
                         {
-                            CategoryCounter++;
+                            string category = (string)checkreader["Category"];
+                            if (category == categoryname)
+                            {
+                                CategoryCounter++;
+                            }
                         }
-                    }
 
-                    if (!(CategoryCounter >= 1))
-                    {
-                        SQLiteCommand cmd2 = new SQLiteCommand("INSERT INTO NovelCategories(VnId, Category) VALUES(@VnId, @Category)", con);
-                        cmd2.Parameters.AddWithValue("@VnId", StaticClass.Vnid);
-                        cmd2.Parameters.AddWithValue("@Category", categoryname);
-                        cmd2.ExecuteNonQuery();
-                    }
+                        if (!(CategoryCounter >= 1))
+                        {
+                            SQLiteCommand cmd2 = new SQLiteCommand("INSERT INTO NovelCategories(VnId, Category) VALUES(@VnId, @Category)", con);
+                            cmd2.Parameters.AddWithValue("@VnId", StaticClass.Vnid);
+                            cmd2.Parameters.AddWithValue("@Category", categoryname);
+                            cmd2.ExecuteNonQuery();
+                        }
 
+
+                    }
+                    con.Close();
 
                 }
-                con.Close();
-
             }
+            catch (Exception ex)
+            {
+                using (StreamWriter sw = File.AppendText(StaticClass.CurrentDirectory + @"\debug.log"))
+                {
+                    sw.WriteLine(DateTime.Now);
+                    sw.WriteLine("Exception Found:\tType: {0}", ex.GetType().FullName);
+                    sw.WriteLine("Class File: VnListBoxViewModel.cs");
+                    sw.WriteLine("Method Name: AddToCategory_Click");
+                    sw.WriteLine("\nMessage: {0}", ex.Message);
+                    sw.WriteLine("Source: {0}", ex.Source);
+                    sw.WriteLine("StackTrace: {0}", ex.StackTrace);
+                    sw.WriteLine("Target Site: {0}", ex.TargetSite);
+
+
+                    sw.WriteLine("\n\n");
+                }
+                throw;
+            }
+            
 
         }
 
@@ -345,71 +409,93 @@ namespace Visual_Novel_Manager.ViewModel
         }
         private void RemoveFromCategory_Click(object header)
         {
-            int SelIndex = VnListboxModel.VnSelectedIndex;
-            SelIndex++;
-            if (VnListboxModel.VnSelectedIndex > -1 && VnListboxModel.VnSelectedIndex != -1)
-            //runs as long as the selected index is 0 or greater
+            try
             {
-
-
-                MenuItem item = header as MenuItem;
-                if (item != null)
+                int SelIndex = VnListboxModel.VnSelectedIndex;
+                SelIndex++;
+                if (VnListboxModel.VnSelectedIndex > -1 && VnListboxModel.VnSelectedIndex != -1)
+                //runs as long as the selected index is 0 or greater
                 {
-                    var categoryname = item.Header.ToString();//gets the name of the category to remove
-                    if (categoryname == "All")
+
+
+                    MenuItem item = header as MenuItem;
+                    if (item != null)
                     {
-                        MessageBox.Show("Visual Novels can't be removed from category: 'All'", "Removal impossible", MessageBoxButton.OK);
-                        return;
-                    }
-
-                    using (SQLiteConnection con = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
-                    {
-
-                        con.Open();
-
-
-                        int CategoryCounter = 0;
-                        SQLiteCommand checkallcmd = new SQLiteCommand("Select * FROM NovelCategories WHERE Category=@Category", con);
-                        checkallcmd.Parameters.AddWithValue("@Category", categoryname);
-                        SQLiteDataReader checker = checkallcmd.ExecuteReader();
-                        while (checker.Read())
+                        var categoryname = item.Header.ToString();//gets the name of the category to remove
+                        if (categoryname == "All")
                         {
-                            CategoryCounter++;
+                            MessageBox.Show("Visual Novels can't be removed from category: 'All'", "Removal impossible", MessageBoxButton.OK);
+                            return;
                         }
 
-
-                        SQLiteCommand deletecatcmd = new SQLiteCommand("DELETE FROM NovelCategories WHERE VnId=@VnId AND Category=@Category ", con);
-                        deletecatcmd.Parameters.AddWithValue("@VnId", StaticClass.Vnid);
-                        deletecatcmd.Parameters.AddWithValue("@Category", categoryname);
-                        deletecatcmd.ExecuteNonQuery();
-
-
-                        //string removeCatSql = "UPDATE NovelPath SET Category = REPLACE('" + novelCategories + "','," +
-                        //                      categoryname + "','') WHERE RowId=" + VnListBoxSelectedIndex;
-
-
-                        //SQLiteCommand cmd2 = new SQLiteCommand(removeCatSql, con);
-
-                        if (CategoryCounter == 1)
+                        using (SQLiteConnection con = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
                         {
-                            SQLiteCommand deleteAllcatcmd = new SQLiteCommand("DELETE FROM Categories WHERE Category=@Category", con);
-                            deleteAllcatcmd.Parameters.AddWithValue("@Category", categoryname);
-                            deleteAllcatcmd.ExecuteNonQuery();
-                            //cbCategory.Items.Remove(cbCategory.SelectedItem);
+
+                            con.Open();
+
+
+                            int CategoryCounter = 0;
+                            SQLiteCommand checkallcmd = new SQLiteCommand("Select * FROM NovelCategories WHERE Category=@Category", con);
+                            checkallcmd.Parameters.AddWithValue("@Category", categoryname);
+                            SQLiteDataReader checker = checkallcmd.ExecuteReader();
+                            while (checker.Read())
+                            {
+                                CategoryCounter++;
+                            }
+
+
+                            SQLiteCommand deletecatcmd = new SQLiteCommand("DELETE FROM NovelCategories WHERE VnId=@VnId AND Category=@Category ", con);
+                            deletecatcmd.Parameters.AddWithValue("@VnId", StaticClass.Vnid);
+                            deletecatcmd.Parameters.AddWithValue("@Category", categoryname);
+                            deletecatcmd.ExecuteNonQuery();
+
+
+                            //string removeCatSql = "UPDATE NovelPath SET Category = REPLACE('" + novelCategories + "','," +
+                            //                      categoryname + "','') WHERE RowId=" + VnListBoxSelectedIndex;
+
+
+                            //SQLiteCommand cmd2 = new SQLiteCommand(removeCatSql, con);
+
+                            if (CategoryCounter == 1)
+                            {
+                                SQLiteCommand deleteAllcatcmd = new SQLiteCommand("DELETE FROM Categories WHERE Category=@Category", con);
+                                deleteAllcatcmd.Parameters.AddWithValue("@Category", categoryname);
+                                deleteAllcatcmd.ExecuteNonQuery();
+                                //cbCategory.Items.Remove(cbCategory.SelectedItem);
+                            }
+                            //SQLiteEngine engine = new SQLiteEngine(@"Data Source=|DataDirectory|\Database.sdf");
+                            //engine.Shrink();
+                            //engine.Dispose();
+
+
+                            con.Close();
                         }
-                        //SQLiteEngine engine = new SQLiteEngine(@"Data Source=|DataDirectory|\Database.sdf");
-                        //engine.Shrink();
-                        //engine.Dispose();
-
-
-                        con.Close();
                     }
+
+
+                    //lblStatus2.Text = novel.englishName + " has been removed from category: " + novel.Category[index - 1].ToString();
                 }
-
-
-                //lblStatus2.Text = novel.englishName + " has been removed from category: " + novel.Category[index - 1].ToString();
+                StaticClass.VnListboxViewModelStatic.LoadCategoriesDropdownCommand.Execute(null);
             }
-            StaticClass.VnListboxViewModelStatic.LoadCategoriesDropdownCommand.Execute(null);
+            catch (Exception ex)
+            {
+                using (StreamWriter sw = File.AppendText(StaticClass.CurrentDirectory + @"\debug.log"))
+                {
+                    sw.WriteLine(DateTime.Now);
+                    sw.WriteLine("Exception Found:\tType: {0}", ex.GetType().FullName);
+                    sw.WriteLine("Class File: VnListBoxVIewModel.cs");
+                    sw.WriteLine("Method Name: RemoveFromCategory_Click");
+                    sw.WriteLine("\nMessage: {0}", ex.Message);
+                    sw.WriteLine("Source: {0}", ex.Source);
+                    sw.WriteLine("StackTrace: {0}", ex.StackTrace);
+                    sw.WriteLine("Target Site: {0}", ex.TargetSite);
+
+
+                    sw.WriteLine("\n\n");
+                }
+                throw;
+            }
+            
         }
 
 
@@ -422,83 +508,105 @@ namespace Visual_Novel_Manager.ViewModel
         //BindListboxEcecute binds items to listbox without checking category, used for 'All' category
         async Task BindListboxExecute()
         {
-            _listboxItems.Clear();
-            List<string> novelList = new List<string>();
-            List<BitmapSource> iconList = new List<BitmapSource>();
-
-
-            using (SQLiteConnection con = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
+            try
             {
-                con.Open();
-                using (SQLiteCommand cmd = new SQLiteCommand("SELECT * FROM NovelPath", con))
+                _listboxItems.Clear();
+                List<string> novelList = new List<string>();
+                List<BitmapSource> iconList = new List<BitmapSource>();
+
+
+                using (SQLiteConnection con = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
                 {
-                    SQLiteDataReader reader = cmd.ExecuteReader();
-                    while (reader.Read())
+                    con.Open();
+                    using (SQLiteCommand cmd = new SQLiteCommand("SELECT * FROM NovelPath", con))
                     {
-                        string exe = (string)reader["ExePath"];
-                        string nvl = (string)reader["Novel"];
-
-                        if (!reader.IsDBNull(reader.GetOrdinal("IconPath")))
+                        SQLiteDataReader reader = cmd.ExecuteReader();
+                        while (reader.Read())
                         {
-                            string icopth = (string)reader["IconPath"];
-                            if (File.Exists(icopth))
-                            {
-                                var sysicon = System.Drawing.Icon.ExtractAssociatedIcon(icopth);
-                                var bmpSrc = System.Windows.Interop.Imaging.CreateBitmapSourceFromHIcon(
-                                    sysicon.Handle,
-                                    System.Windows.Int32Rect.Empty,
-                                    System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
-                                sysicon.Dispose();
+                            string exe = (string)reader["ExePath"];
+                            string nvl = (string)reader["Novel"];
 
-                                novelList.Add(nvl);
-                                iconList.Add(bmpSrc);
+                            if (!reader.IsDBNull(reader.GetOrdinal("IconPath")))
+                            {
+                                string icopth = (string)reader["IconPath"];
+                                if (File.Exists(icopth))
+                                {
+                                    var sysicon = System.Drawing.Icon.ExtractAssociatedIcon(icopth);
+                                    var bmpSrc = System.Windows.Interop.Imaging.CreateBitmapSourceFromHIcon(
+                                        sysicon.Handle,
+                                        System.Windows.Int32Rect.Empty,
+                                        System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+                                    sysicon.Dispose();
+
+                                    novelList.Add(nvl);
+                                    iconList.Add(bmpSrc);
+                                }
+                                else
+                                {
+                                    var bmpSrc = BitmapSource.Create(1, 1, 96, 96, PixelFormats.Bgra32, null,
+                                        new byte[] { 0, 0, 0, 0 }, 4);
+                                    novelList.Add(nvl);
+                                    iconList.Add(bmpSrc);
+                                }
+
+
                             }
+                            else if (reader.IsDBNull(reader.GetOrdinal("IconPath")))
+                            {
+                                if (File.Exists(exe))
+                                {
+                                    var sysicon = System.Drawing.Icon.ExtractAssociatedIcon(exe);
+                                    var bmpSrc = System.Windows.Interop.Imaging.CreateBitmapSourceFromHIcon(
+                                                sysicon.Handle,
+                                                System.Windows.Int32Rect.Empty,
+                                                System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+                                    sysicon.Dispose();
+
+                                    novelList.Add(nvl);
+                                    iconList.Add(bmpSrc);
+                                }
+                                else
+                                {
+                                    var bmpSrc = BitmapSource.Create(1, 1, 96, 96, PixelFormats.Bgra32, null,
+                                        new byte[] { 0, 0, 0, 0 }, 4);
+                                    novelList.Add(nvl);
+                                    iconList.Add(bmpSrc);
+                                }
+
+                            }
+
                             else
                             {
-                                var bmpSrc = BitmapSource.Create(1, 1, 96, 96, PixelFormats.Bgra32, null,
-                                    new byte[] { 0, 0, 0, 0 }, 4);
-                                novelList.Add(nvl);
-                                iconList.Add(bmpSrc);
+                                //put code here for when the path or icon isn't valid
                             }
-                            
-
-                        }
-                        else if (reader.IsDBNull(reader.GetOrdinal("IconPath")))
-                        {
-                            if (File.Exists(exe))
-                            {
-                                var sysicon = System.Drawing.Icon.ExtractAssociatedIcon(exe);
-                                var bmpSrc = System.Windows.Interop.Imaging.CreateBitmapSourceFromHIcon(
-                                            sysicon.Handle,
-                                            System.Windows.Int32Rect.Empty,
-                                            System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
-                                sysicon.Dispose();
-
-                                novelList.Add(nvl);
-                                iconList.Add(bmpSrc);
-                            }
-                            else
-                            {
-                                var bmpSrc = BitmapSource.Create(1, 1, 96, 96, PixelFormats.Bgra32, null,
-                                    new byte[] {0, 0, 0, 0}, 4);
-                                novelList.Add(nvl);
-                                iconList.Add(bmpSrc);
-                            }
-                            
-                        }
-
-                        else
-                        {
-                            //put code here for when the path or icon isn't valid
                         }
                     }
+                    con.Close();
                 }
-                con.Close();
+                for (int i = 0; i < novelList.Count; i++)
+                {
+                    _listboxItems.Add(new VnListboxViewModelCollection { VnListboxModel = new VnListboxModel { ItemName = novelList[i], ItemIcon = iconList[i] } });
+                }
             }
-            for (int i = 0; i < novelList.Count; i++)
+            catch (Exception ex)
             {
-                _listboxItems.Add(new VnListboxViewModelCollection { VnListboxModel = new VnListboxModel { ItemName = novelList[i], ItemIcon = iconList[i] } });
+                using (StreamWriter sw = File.AppendText(StaticClass.CurrentDirectory + @"\debug.log"))
+                {
+                    sw.WriteLine(DateTime.Now);
+                    sw.WriteLine("Exception Found:\tType: {0}", ex.GetType().FullName);
+                    sw.WriteLine("Class File: VnListBoxViewModel.cs");
+                    sw.WriteLine("Method Name: BindListboxExecute");
+                    sw.WriteLine("\nMessage: {0}", ex.Message);
+                    sw.WriteLine("Source: {0}", ex.Source);
+                    sw.WriteLine("StackTrace: {0}", ex.StackTrace);
+                    sw.WriteLine("Target Site: {0}", ex.TargetSite);
+
+
+                    sw.WriteLine("\n\n");
+                }
+                throw;
             }
+            
 
 
         }
@@ -507,84 +615,106 @@ namespace Visual_Novel_Manager.ViewModel
 
          private void ListBoxSelectedCategoryChanged()
         {
-            var SelectedCategory = SelectedCatChanged;
-            _listboxItems.Clear();
-            List<string> novelList = new List<string>();
-            List<BitmapSource> iconList = new List<BitmapSource>();
-
-            using (SQLiteConnection con = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
+            try
             {
-                con.Open();
+                var SelectedCategory = SelectedCatChanged;
+                _listboxItems.Clear();
+                List<string> novelList = new List<string>();
+                List<BitmapSource> iconList = new List<BitmapSource>();
 
-                List<int> vnid = new List<int>();
-                using (SQLiteCommand cmd = new SQLiteCommand("SELECT * FROM NovelCategories WHERE Category LIKE '%" + SelectedCategory + "%'", con))
+                using (SQLiteConnection con = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
                 {
-                    SQLiteDataReader reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        if (!(vnid.Contains((int)reader["VnId"])))
-                        {
-                            vnid.Add((int)reader["VnId"]);
-                        }
-                    }
-                }
-                for (int i = 0; i < vnid.Count; i++)
-                {
-                    using (SQLiteCommand cmd = new SQLiteCommand("SELECT * FROM NovelPath WHERE VnId=" + vnid[i], con))
+                    con.Open();
+
+                    List<int> vnid = new List<int>();
+                    using (SQLiteCommand cmd = new SQLiteCommand("SELECT * FROM NovelCategories WHERE Category LIKE '%" + SelectedCategory + "%'", con))
                     {
                         SQLiteDataReader reader = cmd.ExecuteReader();
                         while (reader.Read())
                         {
-                            string exe = (string)reader["ExePath"];
-                            string nvl = (string)reader["Novel"];
-                            if (!reader.IsDBNull(reader.GetOrdinal("IconPath")))
+                            if (!(vnid.Contains((int)reader["VnId"])))
                             {
-                                string icopth = (string)reader["IconPath"];
-                                var sysicon = System.Drawing.Icon.ExtractAssociatedIcon(icopth);
-                                var bmpSrc = System.Windows.Interop.Imaging.CreateBitmapSourceFromHIcon(
-                                            sysicon.Handle,
-                                            System.Windows.Int32Rect.Empty,
-                                            System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
-                                sysicon.Dispose();
-                                novelList.Add(nvl);
-                                iconList.Add(bmpSrc);
-
-                            }
-                            else
-                            {
-                                var sysicon = System.Drawing.Icon.ExtractAssociatedIcon(exe);
-                                var bmpSrc = System.Windows.Interop.Imaging.CreateBitmapSourceFromHIcon(
-                                            sysicon.Handle,
-                                            System.Windows.Int32Rect.Empty,
-                                            System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
-                                sysicon.Dispose();
-                                novelList.Add(nvl);
-                                iconList.Add(bmpSrc);
-
+                                vnid.Add((int)reader["VnId"]);
                             }
                         }
                     }
+                    for (int i = 0; i < vnid.Count; i++)
+                    {
+                        using (SQLiteCommand cmd = new SQLiteCommand("SELECT * FROM NovelPath WHERE VnId=" + vnid[i], con))
+                        {
+                            SQLiteDataReader reader = cmd.ExecuteReader();
+                            while (reader.Read())
+                            {
+                                string exe = (string)reader["ExePath"];
+                                string nvl = (string)reader["Novel"];
+                                if (!reader.IsDBNull(reader.GetOrdinal("IconPath")))
+                                {
+                                    string icopth = (string)reader["IconPath"];
+                                    var sysicon = System.Drawing.Icon.ExtractAssociatedIcon(icopth);
+                                    var bmpSrc = System.Windows.Interop.Imaging.CreateBitmapSourceFromHIcon(
+                                                sysicon.Handle,
+                                                System.Windows.Int32Rect.Empty,
+                                                System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+                                    sysicon.Dispose();
+                                    novelList.Add(nvl);
+                                    iconList.Add(bmpSrc);
+
+                                }
+                                else
+                                {
+                                    var sysicon = System.Drawing.Icon.ExtractAssociatedIcon(exe);
+                                    var bmpSrc = System.Windows.Interop.Imaging.CreateBitmapSourceFromHIcon(
+                                                sysicon.Handle,
+                                                System.Windows.Int32Rect.Empty,
+                                                System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+                                    sysicon.Dispose();
+                                    novelList.Add(nvl);
+                                    iconList.Add(bmpSrc);
+
+                                }
+                            }
+                        }
+                    }
+                    con.Close();
+
+                    ////implement this code later on:
+
+                    //foreach (string VN in lbVN.Items)
+                    //    item_count++;
+
+                    //if (cbCategory.SelectedIndex != -1) //Count listbox items and display it in statusstrip
+                    //    lblNumberOfVNS.Text = item_count + " Visual Novel(s) in Category: " + cbCategory.SelectedItem;
+                    //else
+                    //    lblNumberOfVNS.Text = item_count + " Visual Novel(s) in Category: All";
+
+                    /////
+
                 }
-                con.Close();
 
-                ////implement this code later on:
-
-                //foreach (string VN in lbVN.Items)
-                //    item_count++;
-
-                //if (cbCategory.SelectedIndex != -1) //Count listbox items and display it in statusstrip
-                //    lblNumberOfVNS.Text = item_count + " Visual Novel(s) in Category: " + cbCategory.SelectedItem;
-                //else
-                //    lblNumberOfVNS.Text = item_count + " Visual Novel(s) in Category: All";
-
-                /////
-
+                for (int i = 0; i < novelList.Count; i++)
+                {
+                    _listboxItems.Add(new VnListboxViewModelCollection { VnListboxModel = new VnListboxModel { ItemName = novelList[i], ItemIcon = iconList[i] } });
+                }
             }
-
-            for (int i = 0; i < novelList.Count; i++)
+            catch (Exception ex)
             {
-                _listboxItems.Add(new VnListboxViewModelCollection { VnListboxModel = new VnListboxModel { ItemName = novelList[i], ItemIcon = iconList[i] } });
+                using (StreamWriter sw = File.AppendText(StaticClass.CurrentDirectory + @"\debug.log"))
+                {
+                    sw.WriteLine(DateTime.Now);
+                    sw.WriteLine("Exception Found:\tType: {0}", ex.GetType().FullName);
+                    sw.WriteLine("Class File: VnListBoxViewModel.cs");
+                    sw.WriteLine("Method Name: ListBoxSelectedCategoryChanged");
+                    sw.WriteLine("\nMessage: {0}", ex.Message);
+                    sw.WriteLine("Source: {0}", ex.Source);
+                    sw.WriteLine("StackTrace: {0}", ex.StackTrace);
+                    sw.WriteLine("Target Site: {0}", ex.TargetSite);
+
+
+                    sw.WriteLine("\n\n");
+                }
+                throw;
             }
+            
         }
 
         #endregion

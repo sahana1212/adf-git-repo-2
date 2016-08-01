@@ -54,47 +54,70 @@ namespace Visual_Novel_Manager.ViewModel
 
         public async Task SaveConfigSettings()
         {
-            #region
-            var oldJson = File.ReadAllText(StaticClass.CurrentDirectory + @"\config.json");
-            var json = JsonConvert.DeserializeObject<ConfigRootObject>(oldJson);
-            json.global.NsfwEnabled = SettingsModel.NsfwEnabledIndex == 0;//sets nsfw to true if first index, false if second
-
-            for (int i = 0; i < json.unique.Count; i++)
+            try
             {
-                if (json.unique[i].VnId == StaticClass.Vnid)
-                {
-                    switch (SettingsModel.VnSpoilerIndex)
-                    {
-                        case 0:
-                            json.unique[i].VnSpoilerLevel = 0;
-                            break;
-                        case 1:
-                            json.unique[i].VnSpoilerLevel = 1;
-                            break;
-                        case 2:
-                            json.unique[i].VnSpoilerLevel = 2;
-                            break;
-                    }
+                #region
+                var oldJson = File.ReadAllText(StaticClass.CurrentDirectory + @"\config.json");
+                var json = JsonConvert.DeserializeObject<ConfigRootObject>(oldJson);
+                json.global.NsfwEnabled = SettingsModel.NsfwEnabledIndex == 0;//sets nsfw to true if first index, false if second
 
-                    switch (SettingsModel.CharacterSpoilerIndex)
+                for (int i = 0; i < json.unique.Count; i++)
+                {
+                    if (json.unique[i].VnId == StaticClass.Vnid)
                     {
-                        case 0:
-                            json.unique[i].CharacterSpoilerLevel = 0;
-                            break;
-                        case 1:
-                            json.unique[i].CharacterSpoilerLevel = 1;
-                            break;
-                        case 2:
-                            json.unique[i].CharacterSpoilerLevel = 2;
-                            break;
+                        switch (SettingsModel.VnSpoilerIndex)
+                        {
+                            case 0:
+                                json.unique[i].VnSpoilerLevel = 0;
+                                break;
+                            case 1:
+                                json.unique[i].VnSpoilerLevel = 1;
+                                break;
+                            case 2:
+                                json.unique[i].VnSpoilerLevel = 2;
+                                break;
+                        }
+
+                        switch (SettingsModel.CharacterSpoilerIndex)
+                        {
+                            case 0:
+                                json.unique[i].CharacterSpoilerLevel = 0;
+                                break;
+                            case 1:
+                                json.unique[i].CharacterSpoilerLevel = 1;
+                                break;
+                            case 2:
+                                json.unique[i].CharacterSpoilerLevel = 2;
+                                break;
+                        }
                     }
+                    StaticClass.VnSpoilerLevel = json.unique[i].VnSpoilerLevel;
+                    StaticClass.CharacterSpoilerLevel = json.unique[i].CharacterSpoilerLevel;
                 }
-                StaticClass.VnSpoilerLevel = json.unique[i].VnSpoilerLevel;
-                StaticClass.CharacterSpoilerLevel = json.unique[i].CharacterSpoilerLevel;
+                File.WriteAllText(StaticClass.CurrentDirectory + @"\config.json", JsonConvert.SerializeObject(json));
+                StaticClass.NsfwEnabled = json.global.NsfwEnabled;
+                #endregion
             }
-            File.WriteAllText(StaticClass.CurrentDirectory + @"\config.json", JsonConvert.SerializeObject(json));
-            StaticClass.NsfwEnabled = json.global.NsfwEnabled;
-            #endregion
+            catch (Exception ex)
+            {
+                using (StreamWriter sw = File.AppendText(StaticClass.CurrentDirectory + @"\debug.log"))
+                {
+                    sw.WriteLine(DateTime.Now);
+                    sw.WriteLine("Exception Found:\tType: {0}", ex.GetType().FullName);
+                    sw.WriteLine("Class File: SettingsViewModel.cs");
+                    sw.WriteLine("Method Name: SaveConfigSettings");
+                    sw.WriteLine("\nMessage: {0}", ex.Message);
+                    sw.WriteLine("Source: {0}", ex.Source);
+                    sw.WriteLine("StackTrace: {0}", ex.StackTrace);
+                    sw.WriteLine("Target Site: {0}", ex.TargetSite);
+
+
+                    sw.WriteLine("\n\n");
+                }
+                throw;
+            }
+
+           
 
 
         }

@@ -192,40 +192,69 @@ namespace Visual_Novel_Manager.ViewModel
 
         private async Task GetUserVnList()
         {
-
-            var conn = new Connection();
-            await conn.Open();
-            int responseCode = Convert.ToInt32(await conn.Login(UserVnListModel.Username, ConvertToUnsecureString(EncryptedPassword)));
-            if (responseCode == -1)
+            try
             {
-                await conn.Close();
-                return;
+                var conn = new Connection();
+                await conn.Open();
+                int responseCode = Convert.ToInt32(await conn.Login(UserVnListModel.Username, ConvertToUnsecureString(EncryptedPassword)));
+                if (responseCode == -1)
+                {
+                    await conn.Close();
+                    return;
+                }
+                else if (responseCode == 0)
+                {
+                    await conn.Close();
+                    Username = UserVnListModel.Username;
+                }
+
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    ProgbarValue = Convert.ToDouble(10);
+                });
+
+
+                List<string> vnNames = new List<string>();
+                List<string> selectedVnData = new List<string>();
+                await Task.Run(() =>
+                {
+
+
+                    vnNames = GetVnNames().Result;
+
+
+                    //selectedVnData = GetItemInfo(VnIdList[0]).Result;
+                });
+
+
+                UserVnListCollection.AddRange(vnNames);
+
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    ProgbarValue = Convert.ToDouble(80);
+                });
+
+                BindUserVnCommand.Execute(null);
             }
-            else if (responseCode == 0)
+            catch (Exception ex)
             {
-                await conn.Close();
-                Username = UserVnListModel.Username;
+                using (StreamWriter sw = File.AppendText(StaticClass.CurrentDirectory + @"\debug.log"))
+                {
+                    sw.WriteLine(DateTime.Now);
+                    sw.WriteLine("Exception Found:\tType: {0}", ex.GetType().FullName);
+                    sw.WriteLine("Class File: UserVnListViewModel.cs");
+                    sw.WriteLine("Method Name: GetUserVnList");
+                    sw.WriteLine("\nMessage: {0}", ex.Message);
+                    sw.WriteLine("Source: {0}", ex.Source);
+                    sw.WriteLine("StackTrace: {0}", ex.StackTrace);
+                    sw.WriteLine("Target Site: {0}", ex.TargetSite);
+
+
+                    sw.WriteLine("\n\n");
+                }
+                throw;
             }
-
-
-
-
-            List<string> vnNames = new List<string>();
-            List<string> selectedVnData = new List<string>();
-            await Task.Run(() =>
-            {
-
-
-                vnNames = GetVnNames().Result;
-
-
-                //selectedVnData = GetItemInfo(VnIdList[0]).Result;
-            });
-
-
-            UserVnListCollection.AddRange(vnNames);
-
-            BindUserVnCommand.Execute(null);
+            
 
         }
 
@@ -241,279 +270,323 @@ namespace Visual_Novel_Manager.ViewModel
             //[4] is vote
             //[5] is image
 
-
-            List<string> VnData = new List<string>();
-            await Task.Run(() =>
+            try
             {
-
-                VnData = GetVnData().Result;
-            });
-
-
-            UserVnListModel.StatusInfo = "";
-            UserVnListModel.VoteInfo = "";
-            UserVnListModel.VnImage = null;
-
-            var selectedVnId = VnIdList[ListboxSelectedIndex];
-            var conn = new Connection();
-            await conn.Open();
-            int responseCode = Convert.ToInt32(await conn.Login(null, null));
-            if (responseCode != -1)
-            {
-                if (!Directory.Exists(StaticClass.CurrentDirectory + @"\data\vnlist\"))
+                List<string> VnData = new List<string>();
+                await Task.Run(() =>
                 {
-                    Directory.CreateDirectory(StaticClass.CurrentDirectory + @"\data\vnlist\");
-                }
 
-                //binds the image to the UI. if it doesn't exist, it downloads it. Uses extensionless files for NSFW images
-                #region binds the image to the UI. if it doesn't exist, it downloads it. Uses extensionless files for NSFW images
-                if (VnData[3] == "True")
+                    VnData = GetVnData().Result;
+                });
+
+
+                UserVnListModel.StatusInfo = "";
+                UserVnListModel.VoteInfo = "";
+                UserVnListModel.VnImage = null;
+
+                var selectedVnId = VnIdList[ListboxSelectedIndex];
+                var conn = new Connection();
+                await conn.Open();
+                int responseCode = Convert.ToInt32(await conn.Login(null, null));
+                if (responseCode != -1)
                 {
-                    if (StaticClass.NsfwEnabled == false)
+                    if (!Directory.Exists(StaticClass.CurrentDirectory + @"\data\vnlist\"))
                     {
-                        UserVnListModel.VnImage = StaticClass.CurrentDirectory + @"\res\nsfw\cover.jpg";
+                        Directory.CreateDirectory(StaticClass.CurrentDirectory + @"\data\vnlist\");
                     }
-                    else
+
+                    //binds the image to the UI. if it doesn't exist, it downloads it. Uses extensionless files for NSFW images
+                    #region binds the image to the UI. if it doesn't exist, it downloads it. Uses extensionless files for NSFW images
+                    if (VnData[3] == "True")
                     {
-                        string vnListImage = StaticClass.CurrentDirectory + @"\data\vnlist\" + selectedVnId;
+                        if (StaticClass.NsfwEnabled == false)
+                        {
+                            UserVnListModel.VnImage = StaticClass.CurrentDirectory + @"\res\nsfw\cover.jpg";
+                        }
+                        else
+                        {
+                            string vnListImage = StaticClass.CurrentDirectory + @"\data\vnlist\" + selectedVnId;
+                            if (!File.Exists(vnListImage))
+                            {
+                                WebClient client = new WebClient();
+                                client.DownloadFile(new Uri(VnData[5]), StaticClass.CurrentDirectory + @"\data\vnlist\" + selectedVnId);
+                            }
+                            UserVnListModel.VnImage = vnListImage;
+                        }
+
+
+                    }
+                    else if (VnData[3] == "False")
+                    {
+                        string vnListImage = StaticClass.CurrentDirectory + @"\data\vnlist\" + selectedVnId + ".jpg";
+
+
                         if (!File.Exists(vnListImage))
                         {
                             WebClient client = new WebClient();
-                            client.DownloadFile(new Uri(VnData[5]), StaticClass.CurrentDirectory + @"\data\vnlist\" + selectedVnId);
+                            client.DownloadFile(new Uri(VnData[5]), StaticClass.CurrentDirectory + @"\data\vnlist\" + selectedVnId + ".jpg");
                         }
                         UserVnListModel.VnImage = vnListImage;
+
                     }
+                    #endregion
 
+                    double d = Convert.ToDouble(VnData[4]) / 10;
+                    UserVnListModel.VoteInfo = d.ToString();
 
-                }
-                else if (VnData[3] == "False")
-                {
-                    string vnListImage = StaticClass.CurrentDirectory + @"\data\vnlist\" + selectedVnId + ".jpg";
-
-
-                    if (!File.Exists(vnListImage))
+                    if (VnData[1] == "0")
                     {
-                        WebClient client = new WebClient();
-                        client.DownloadFile(new Uri(VnData[5]), StaticClass.CurrentDirectory + @"\data\vnlist\" + selectedVnId + ".jpg");
+                        UserVnListModel.StatusInfo = "Unknown";
+                        //statusTextBlock.Text = "Unknown";
                     }
-                    UserVnListModel.VnImage = vnListImage;
-
+                    else if (VnData[1] == "1")
+                    {
+                        UserVnListModel.StatusInfo = "Playing";
+                    }
+                    else if (VnData[1] == "2")
+                    {
+                        UserVnListModel.StatusInfo = "Finished";
+                    }
+                    else if (VnData[1] == "3")
+                    {
+                        UserVnListModel.StatusInfo = "Stalled";
+                    }
+                    else if (VnData[1] == "4")
+                    {
+                        UserVnListModel.StatusInfo = "Dropped";
+                    }
                 }
-                #endregion
-
-                double d = Convert.ToDouble(VnData[4])/10;
-                UserVnListModel.VoteInfo = d.ToString();
-
-                if (VnData[1] == "0")
+                else
                 {
-                    UserVnListModel.StatusInfo = "Unknown";
-                    //statusTextBlock.Text = "Unknown";
-                }
-                else if (VnData[1] == "1")
-                {
-                    UserVnListModel.StatusInfo = "Playing";
-                }
-                else if (VnData[1] == "2")
-                {
-                    UserVnListModel.StatusInfo = "Finished";
-                }
-                else if (VnData[1] == "3")
-                {
-                    UserVnListModel.StatusInfo = "Stalled";
-                }
-                else if (VnData[1] == "4")
-                {
-                    UserVnListModel.StatusInfo = "Dropped";
+                    MessageBox.Show("Error while logging in. Response: " + conn.JsonResponse, "Login Error", MessageBoxButton.OK);
                 }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Error while logging in. Response: " + conn.JsonResponse, "Login Error", MessageBoxButton.OK);
+                using (StreamWriter sw = File.AppendText(StaticClass.CurrentDirectory + @"\debug.log"))
+                {
+                    sw.WriteLine(DateTime.Now);
+                    sw.WriteLine("Exception Found:\tType: {0}", ex.GetType().FullName);
+                    sw.WriteLine("Class File: UserVnListViewModel.cs");
+                    sw.WriteLine("Method Name: BindUserVnExecute");
+                    sw.WriteLine("\nMessage: {0}", ex.Message);
+                    sw.WriteLine("Source: {0}", ex.Source);
+                    sw.WriteLine("StackTrace: {0}", ex.StackTrace);
+                    sw.WriteLine("Target Site: {0}", ex.TargetSite);
+
+
+                    sw.WriteLine("\n\n");
+                }
+                throw;
             }
+
+            
         }
 
 
         private async Task UpdateUserVnListExecute()
         {
-
-            if (VnIdList[ListboxSelectedIndex] == -1)
+            try
             {
-                MessageBox.Show("You didn't select a vn to update", "No Vn Selected");
-                return;
-            }
-
-            if (!Regex.IsMatch(UserVnListModel.UpdateVote, @"^([1-9]|[1-9][.][1-9]|10)$"))//must match either 1-9, 1.1-9.9, or 10
-            {
-                if (UserVnListModel.UpdateVote != "")
+                if (VnIdList[ListboxSelectedIndex] == -1)
                 {
-                    MessageBox.Show(
-                    "Number must be greater than 1.0 and less than or equual to 10\n The number can only have one decimal",
-                    "Invalid number entered");
+                    MessageBox.Show("You didn't select a vn to update", "No Vn Selected");
                     return;
                 }
 
-            }
-
-            var conn = new Connection();
-            await conn.Open();
-            int responseCode = Convert.ToInt32(await conn.Login(UserVnListModel.Username, ConvertToUnsecureString(EncryptedPassword)));
-            if (responseCode == -1)
-            { MessageBox.Show("Error while logging in. Response: " + conn.JsonResponse, "Login Error", MessageBoxButton.OK); }
-
-            short status = new short();
-            if (UserVnListModel.StatusComboBoxIndex != -1)
-            {
-                if (UserVnListModel.StatusComboBoxIndex == 0)
+                if (!Regex.IsMatch(UserVnListModel.UpdateVote, @"^([1-9]|[1-9][.][1-9]|10)$"))//must match either 1-9, 1.1-9.9, or 10
                 {
-                    status = 0;
-                }
-
-                if (UserVnListModel.StatusComboBoxIndex == 1)
-                {
-                    status = 1;
-                }
-
-                if (UserVnListModel.StatusComboBoxIndex == 2)
-                {
-                    status = 2;
-                }
-
-                if (UserVnListModel.StatusComboBoxIndex == 3)
-                {
-                    status = 3;
-                }
-                if (UserVnListModel.StatusComboBoxIndex == 4)
-                {
-                    status = 4;
-                }
-            }
-
-
-            string query = null;
-            //update status only
-            if (status > 0 && UserVnListModel.UpdateNote == "" && UserVnListModel.ClearNote == false && UserVnListModel.ClearStatus == false)
-            {
-                query = "set vnlist " + VnIdList[ListboxSelectedIndex] + " {\"status\":\"" + status + "\"}";
-            }
-
-            //update status and clear notes
-            if (status > 0 && UserVnListModel.ClearNote == true && UserVnListModel.ClearStatus == false)
-            {
-                query = "set vnlist " + VnIdList[ListboxSelectedIndex] + " {\"status\":\"" + status + "\",\"notes\":\"" + "" + "\"}";
-            }
-
-            //add note only
-            if (UserVnListModel.UpdateNote != "" && UserVnListModel.ClearNote == false && UserVnListModel.ClearStatus == false)
-            {
-                query = "set vnlist " + VnIdList[ListboxSelectedIndex] + " {\"notes\":\"" + UserVnListModel.UpdateNote + "\"}";
-            }
-
-            //clear notes only
-            if (UserVnListModel.ClearNote == true && UserVnListModel.ClearStatus == false)
-            {
-                query = "set vnlist " + VnIdList[ListboxSelectedIndex] + " {\"notes\":\"" + "" + "\"}";
-            }
-
-            //clear status and add notes
-            if (UserVnListModel.ClearStatus == true && UserVnListModel.UpdateNote != "" && UserVnListModel.ClearNote == false)
-            {
-                query = "set vnlist " + VnIdList[ListboxSelectedIndex] + " {\"status\":\"\",\"notes\":\"" + UserVnListModel.UpdateNote + "\"}";
-            }
-
-            //clear status and clear notes
-            if (UserVnListModel.ClearStatus == true && UserVnListModel.ClearNote == true)
-            {
-                query = "set vnlist " + VnIdList[ListboxSelectedIndex] + " {\"status\":\"\",\"notes\":\"" + "" + "\"}";
-            }
-
-            //add status and notes
-            if (status > 0 && UserVnListModel.ClearStatus == false && UserVnListModel.UpdateNote != "" && UserVnListModel.ClearNote == false)
-            {
-                query = "set vnlist " + VnIdList[ListboxSelectedIndex] + " {\"status\":\"" + status + "\",\"notes\":\"" + UserVnListModel.UpdateNote + "\"}";
-            }
-
-            while (true)
-            {
-                responseCode = Convert.ToInt32(await conn.Query(query));
-                if (responseCode == -1)
-                {
-                    var error = JsonConvert.DeserializeObject<ErrorRootObject>(conn.JsonResponse);
-                    if (error.id == "throttled")
-                    {
-                        Thread.Sleep(Convert.ToInt32(error.minwait) + 4000);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Error while requesting information. Response: " + conn.JsonResponse, "Query Error", MessageBoxButton.OK);
-                    }
-                }
-                if (responseCode == 0)
-                {
-                    if (responseCode == -1)
-                    {
-                        MessageBox.Show("Error while requesting information. Response: " + conn.JsonResponse, "Query Error", MessageBoxButton.OK);
-                    }
-
-
                     if (UserVnListModel.UpdateVote != "")
                     {
-                        double voteDouble = Convert.ToDouble(UserVnListModel.UpdateVote);
-                        int vote = Convert.ToInt32(voteDouble * 10);
-
-                        while (true)
-                        {
-                            responseCode = Convert.ToInt32(await conn.Query("set votelist " + VnIdList[ListboxSelectedIndex] + " {\"vote\":\"" + vote + "\"}"));
-                            if (responseCode == -1)
-                            {
-                                var error = JsonConvert.DeserializeObject<ErrorRootObject>(conn.JsonResponse);
-                                if (error.id == "throttled")
-                                {
-                                    Thread.Sleep(Convert.ToInt32(error.minwait) + 4000);
-                                }
-                                else
-                                {
-                                    MessageBox.Show("Error while requesting information. Response: " + conn.JsonResponse, "Query Error", MessageBoxButton.OK);
-                                }
-                            }
-                            if (responseCode == 0)
-                            {
-                                //deserialize
-                                break;
-                            }
-                        }
+                        MessageBox.Show(
+                        "Number must be greater than 1.0 and less than or equual to 10\n The number can only have one decimal",
+                        "Invalid number entered");
+                        return;
                     }
 
+                }
 
-                    if (UserVnListModel.ClearVote == true)
+                var conn = new Connection();
+                await conn.Open();
+                int responseCode = Convert.ToInt32(await conn.Login(UserVnListModel.Username, ConvertToUnsecureString(EncryptedPassword)));
+                if (responseCode == -1)
+                { MessageBox.Show("Error while logging in. Response: " + conn.JsonResponse, "Login Error", MessageBoxButton.OK); }
+
+                short status = new short();
+                if (UserVnListModel.StatusComboBoxIndex != -1)
+                {
+                    if (UserVnListModel.StatusComboBoxIndex == 0)
                     {
+                        status = 0;
+                    }
 
-                        while (true)
+                    if (UserVnListModel.StatusComboBoxIndex == 1)
+                    {
+                        status = 1;
+                    }
+
+                    if (UserVnListModel.StatusComboBoxIndex == 2)
+                    {
+                        status = 2;
+                    }
+
+                    if (UserVnListModel.StatusComboBoxIndex == 3)
+                    {
+                        status = 3;
+                    }
+                    if (UserVnListModel.StatusComboBoxIndex == 4)
+                    {
+                        status = 4;
+                    }
+                }
+
+
+                string query = null;
+                //update status only
+                if (status > 0 && UserVnListModel.UpdateNote == "" && UserVnListModel.ClearNote == false && UserVnListModel.ClearStatus == false)
+                {
+                    query = "set vnlist " + VnIdList[ListboxSelectedIndex] + " {\"status\":\"" + status + "\"}";
+                }
+
+                //update status and clear notes
+                if (status > 0 && UserVnListModel.ClearNote == true && UserVnListModel.ClearStatus == false)
+                {
+                    query = "set vnlist " + VnIdList[ListboxSelectedIndex] + " {\"status\":\"" + status + "\",\"notes\":\"" + "" + "\"}";
+                }
+
+                //add note only
+                if (UserVnListModel.UpdateNote != "" && UserVnListModel.ClearNote == false && UserVnListModel.ClearStatus == false)
+                {
+                    query = "set vnlist " + VnIdList[ListboxSelectedIndex] + " {\"notes\":\"" + UserVnListModel.UpdateNote + "\"}";
+                }
+
+                //clear notes only
+                if (UserVnListModel.ClearNote == true && UserVnListModel.ClearStatus == false)
+                {
+                    query = "set vnlist " + VnIdList[ListboxSelectedIndex] + " {\"notes\":\"" + "" + "\"}";
+                }
+
+                //clear status and add notes
+                if (UserVnListModel.ClearStatus == true && UserVnListModel.UpdateNote != "" && UserVnListModel.ClearNote == false)
+                {
+                    query = "set vnlist " + VnIdList[ListboxSelectedIndex] + " {\"status\":\"\",\"notes\":\"" + UserVnListModel.UpdateNote + "\"}";
+                }
+
+                //clear status and clear notes
+                if (UserVnListModel.ClearStatus == true && UserVnListModel.ClearNote == true)
+                {
+                    query = "set vnlist " + VnIdList[ListboxSelectedIndex] + " {\"status\":\"\",\"notes\":\"" + "" + "\"}";
+                }
+
+                //add status and notes
+                if (status > 0 && UserVnListModel.ClearStatus == false && UserVnListModel.UpdateNote != "" && UserVnListModel.ClearNote == false)
+                {
+                    query = "set vnlist " + VnIdList[ListboxSelectedIndex] + " {\"status\":\"" + status + "\",\"notes\":\"" + UserVnListModel.UpdateNote + "\"}";
+                }
+
+                while (true)
+                {
+                    responseCode = Convert.ToInt32(await conn.Query(query));
+                    if (responseCode == -1)
+                    {
+                        var error = JsonConvert.DeserializeObject<ErrorRootObject>(conn.JsonResponse);
+                        if (error.id == "throttled")
                         {
-                            responseCode = Convert.ToInt32(await conn.Query("set votelist " + VnIdList[ListboxSelectedIndex]));
-                            if (responseCode == -1)
-                            {
-                                var error = JsonConvert.DeserializeObject<ErrorRootObject>(conn.JsonResponse);
-                                if (error.id == "throttled")
-                                {
-                                    Thread.Sleep(Convert.ToInt32(error.minwait) + 4000);
-                                }
-                                else
-                                {
-                                    MessageBox.Show("Error while requesting information. Response: " + conn.JsonResponse, "Query Error", MessageBoxButton.OK);
-                                }
-                            }
-                            if (responseCode == 0)
-                            {
-                                //deserialize
-                                await conn.Close();
-                                break;
-                            }
+                            Thread.Sleep(Convert.ToInt32(error.minwait) + 4000);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Error while requesting information. Response: " + conn.JsonResponse, "Query Error", MessageBoxButton.OK);
                         }
                     }
-                    await conn.Close();
-                    break;
+                    if (responseCode == 0)
+                    {
+                        if (responseCode == -1)
+                        {
+                            MessageBox.Show("Error while requesting information. Response: " + conn.JsonResponse, "Query Error", MessageBoxButton.OK);
+                        }
+
+
+                        if (UserVnListModel.UpdateVote != "")
+                        {
+                            double voteDouble = Convert.ToDouble(UserVnListModel.UpdateVote);
+                            int vote = Convert.ToInt32(voteDouble * 10);
+
+                            while (true)
+                            {
+                                responseCode = Convert.ToInt32(await conn.Query("set votelist " + VnIdList[ListboxSelectedIndex] + " {\"vote\":\"" + vote + "\"}"));
+                                if (responseCode == -1)
+                                {
+                                    var error = JsonConvert.DeserializeObject<ErrorRootObject>(conn.JsonResponse);
+                                    if (error.id == "throttled")
+                                    {
+                                        Thread.Sleep(Convert.ToInt32(error.minwait) + 4000);
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show("Error while requesting information. Response: " + conn.JsonResponse, "Query Error", MessageBoxButton.OK);
+                                    }
+                                }
+                                if (responseCode == 0)
+                                {
+                                    //deserialize
+                                    break;
+                                }
+                            }
+                        }
+
+
+                        if (UserVnListModel.ClearVote == true)
+                        {
+
+                            while (true)
+                            {
+                                responseCode = Convert.ToInt32(await conn.Query("set votelist " + VnIdList[ListboxSelectedIndex]));
+                                if (responseCode == -1)
+                                {
+                                    var error = JsonConvert.DeserializeObject<ErrorRootObject>(conn.JsonResponse);
+                                    if (error.id == "throttled")
+                                    {
+                                        Thread.Sleep(Convert.ToInt32(error.minwait) + 4000);
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show("Error while requesting information. Response: " + conn.JsonResponse, "Query Error", MessageBoxButton.OK);
+                                    }
+                                }
+                                if (responseCode == 0)
+                                {
+                                    //deserialize
+                                    await conn.Close();
+                                    break;
+                                }
+                            }
+                        }
+                        await conn.Close();
+                        break;
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                using (StreamWriter sw = File.AppendText(StaticClass.CurrentDirectory + @"\debug.log"))
+                {
+                    sw.WriteLine(DateTime.Now);
+                    sw.WriteLine("Exception Found:\tType: {0}", ex.GetType().FullName);
+                    sw.WriteLine("Class File: UserVnListViewModel.cs");
+                    sw.WriteLine("Method Name: UpdateUserVnListExecute");
+                    sw.WriteLine("\nMessage: {0}", ex.Message);
+                    sw.WriteLine("Source: {0}", ex.Source);
+                    sw.WriteLine("StackTrace: {0}", ex.StackTrace);
+                    sw.WriteLine("Target Site: {0}", ex.TargetSite);
+
+
+                    sw.WriteLine("\n\n");
+                }
+                throw;
+            }
+
+            
 
 
 
@@ -691,6 +764,11 @@ namespace Visual_Novel_Manager.ViewModel
                     #endregion
 
 
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        ProgbarValue = Convert.ToDouble(70);
+                    });
+
                     await conn.Close();
                     return VnNameList;
                 }
@@ -711,22 +789,29 @@ namespace Visual_Novel_Manager.ViewModel
                 return null;
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                
+                using (StreamWriter sw = File.CreateText(StaticClass.CurrentDirectory + @"\debug.log"))
+                {
+                    sw.WriteLine("Exception Found:\tType: {0}", ex.GetType().FullName);
+                    sw.WriteLine("\nClass File: UserVnListViewModel.cs");
+                    sw.WriteLine("\nMethod Name: GetVnNames");
+                    sw.WriteLine("\nMessage: {0}", ex.Message);
+                    sw.WriteLine("\nSource: {0}", ex.Source);
+                    sw.WriteLine("\nStackTrace: {0}", ex.StackTrace);
+                    sw.WriteLine("\n\n");
+                }
                 throw;
             }
 
-            return null;
         }
 
         private async Task<List<string>> GetVnData()
-        {
-            int vnid = VnIdList[ListboxSelectedIndex];
-            List<string> VnDataList = new List<string>();
-
+        {            
             try
             {
+                int vnid = VnIdList[ListboxSelectedIndex];
+                List<string> VnDataList = new List<string>();
 
                 var conn = new Connection();
                 await conn.Open();
@@ -784,23 +869,154 @@ namespace Visual_Novel_Manager.ViewModel
 
                 }
                 await conn.Close();
-
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    ProgbarValue = Convert.ToDouble(100);
+                });
                 return VnDataList;
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                using (StreamWriter sw = File.CreateText(StaticClass.CurrentDirectory + @"\debug.log"))
+                {
+                    sw.WriteLine("Exception Found:\tType: {0}", ex.GetType().FullName);
+                    sw.WriteLine("\nClass File: UserVnListViewModel.cs");
+                    sw.WriteLine("\nMethod Name: GetVnData");
+                    sw.WriteLine("\nMessage: {0}", ex.Message);
+                    sw.WriteLine("\nSource: {0}", ex.Source);
+                    sw.WriteLine("\nStackTrace: {0}", ex.StackTrace);
+                    sw.WriteLine("\n\n");
+                }
                 throw;
             }
 
-            return null;
         }
 
 
         #endregion
 
+        private void UpdateVnList(int voteindex, int userindex, int vnid)
+        {
+            try
+            {
+                List<int> vnIdList = new List<int>();
+                using (SQLiteConnection dbConnection = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
+                {
+                    dbConnection.Open();
+                    SQLiteCommand command = new SQLiteCommand("SELECT VnId FROM NovelPath", dbConnection);
+                    SQLiteDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        vnIdList.Add(reader.GetInt32(0));
+                    }
+                    reader.Close();
+                    dbConnection.Close();
+                }
 
+                if (!vnIdList.Contains(vnid))
+                {
+                    using (SQLiteConnection dbConnection = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
+                    {
+                        dbConnection.Open();
+                        SQLiteCommand command = new SQLiteCommand("INSERT INTO VnList(VnId, Title, NSFW, Vote, Status, Note) VALUES(@VnId, @Title, @NSFW, @Vote, @Status, @Note)", dbConnection);
+                        command.Parameters.AddWithValue("@VnId", CheckForDbNull(vnid));
+                        command.Parameters.AddWithValue("@Title", CheckForDbNull(_basicItem[0].title));
+                        command.Parameters.AddWithValue("@NSFW", CheckForDbNull(_detailsItem[0].image_nsfw.ToString()));
+                        command.Parameters.AddWithValue("@Vote", CheckForDbNull(_userVoteList[voteindex].vote));
+                        command.Parameters.AddWithValue("@Status", CheckForDbNull(_userVnListItem[userindex].status.ToString()));
+                        command.Parameters.AddWithValue("@Note", CheckForDbNull(_userVnListItem[userindex].notes != null ? _userVnListItem[userindex].notes.ToString() : ""));
+                        command.ExecuteNonQuery();
+                        dbConnection.Close();
+                    }
+                }
+
+                else
+                {
+                    List<string> VnData = new List<string>();
+                    using (SQLiteConnection dbConnection = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
+                    {
+                        dbConnection.Open();
+                        SQLiteCommand command = new SQLiteCommand("SELECT * FROM VnList WHERE VnId=@VnId", dbConnection);
+                        command.Parameters.AddWithValue("@VnId", vnid);
+                        SQLiteDataReader reader = command.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            VnData.Add((string)reader["Vote"]);
+                            VnData.Add((string)reader["Status"]);
+                            VnData.Add((string)reader["Note"]);
+                        }
+                        reader.Close();
+                        dbConnection.Close();
+                    }
+
+
+                    var notes = "";
+                    if (_userVnListItem[userindex].notes == null)
+                    {
+                        notes = null;
+                    }
+                    else if (_userVnListItem[userindex].notes != null)
+                    {
+                        notes = _userVnListItem[userindex].notes.ToString();
+                    }
+
+
+                    bool needUpdate = false;
+
+
+                    if (_userVoteList[voteindex].vote.ToString() != VnData[0])
+                    {
+                        needUpdate = true;
+                    }
+                    else if (_userVnListItem[userindex].status.ToString() != VnData[1])
+                    {
+                        needUpdate = true;
+                    }
+
+                    else if (notes != VnData[2])
+                    {
+                        needUpdate = true;
+                    }
+
+                    if (needUpdate == true)
+                    {
+                        using (SQLiteConnection dbConnection = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
+                        {
+                            dbConnection.Open();
+                            SQLiteCommand command = new SQLiteCommand("UPDATE VnList SET Vote=@Vote, Status=@Status, Note=@Note WHERE VnId=@VnId", dbConnection);
+                            command.Parameters.AddWithValue("@VnId", vnid);
+                            command.Parameters.AddWithValue("@Vote", _userVoteList[voteindex].vote.ToString());
+                            command.Parameters.AddWithValue("@Status", _userVnListItem[userindex].status.ToString());
+                            command.Parameters.AddWithValue("@Note", notes);
+                            command.ExecuteNonQuery();
+
+
+                        }
+                    }
+                }
+
+
+
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter sw = File.CreateText(StaticClass.CurrentDirectory + @"\debug.log"))
+                {
+                    sw.WriteLine("Exception Found:\tType: {0}", ex.GetType().FullName);
+                    sw.WriteLine("\nClass File: UserVnListViewModel.cs");
+                    sw.WriteLine("\nMethod Name: UpdateVnList");
+                    sw.WriteLine("\nMessage: {0}", ex.Message);
+                    sw.WriteLine("\nSource: {0}", ex.Source);
+                    sw.WriteLine("\nStackTrace: {0}", ex.StackTrace);
+                }
+                throw;
+
+            }
+
+
+
+        }
 
 
         #region old methods
@@ -1005,9 +1221,18 @@ namespace Visual_Novel_Manager.ViewModel
                 }
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                using (StreamWriter sw = File.CreateText(StaticClass.CurrentDirectory + @"\debug.log"))
+                {
+                    sw.WriteLine("Exception Found:\tType: {0}", ex.GetType().FullName);
+                    sw.WriteLine("\nClass File: UserVnListViewModel.cs");
+                    sw.WriteLine("\nMethod Name: GetVnListInfo");
+                    sw.WriteLine("\nMessage: {0}", ex.Message);
+                    sw.WriteLine("\nSource: {0}", ex.Source);
+                    sw.WriteLine("\nStackTrace: {0}", ex.StackTrace);
+                    sw.WriteLine("\n\n");
+                }
                 throw;
             }
 
@@ -1086,118 +1311,7 @@ namespace Visual_Novel_Manager.ViewModel
         }
 
 
-        private void UpdateVnList(int voteindex, int userindex, int vnid)
-        {
-            try
-            {
-                List<int> vnIdList = new List<int>();
-                using (SQLiteConnection dbConnection = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
-                {
-                    dbConnection.Open();
-                    SQLiteCommand command = new SQLiteCommand("SELECT VnId FROM NovelPath", dbConnection);
-                    SQLiteDataReader reader = command.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        vnIdList.Add(reader.GetInt32(0));
-                    }
-                    reader.Close();
-                    dbConnection.Close();
-                }
-
-                if (!vnIdList.Contains(vnid))
-                {
-                    using (SQLiteConnection dbConnection = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
-                    {
-                        dbConnection.Open();
-                        SQLiteCommand command = new SQLiteCommand("INSERT INTO VnList(VnId, Title, NSFW, Vote, Status, Note) VALUES(@VnId, @Title, @NSFW, @Vote, @Status, @Note)", dbConnection);
-                        command.Parameters.AddWithValue("@VnId", CheckForDbNull(vnid));
-                        command.Parameters.AddWithValue("@Title", CheckForDbNull(_basicItem[0].title));
-                        command.Parameters.AddWithValue("@NSFW", CheckForDbNull(_detailsItem[0].image_nsfw.ToString()));
-                        command.Parameters.AddWithValue("@Vote", CheckForDbNull(_userVoteList[voteindex].vote));
-                        command.Parameters.AddWithValue("@Status", CheckForDbNull(_userVnListItem[userindex].status.ToString()));
-                        command.Parameters.AddWithValue("@Note", CheckForDbNull(_userVnListItem[userindex].notes != null ? _userVnListItem[userindex].notes.ToString() : ""));
-                        command.ExecuteNonQuery();
-                        dbConnection.Close();
-                    }
-                }
-
-                else
-                {
-                    List<string> VnData = new List<string>();
-                    using (SQLiteConnection dbConnection = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
-                    {
-                        dbConnection.Open();
-                        SQLiteCommand command = new SQLiteCommand("SELECT * FROM VnList WHERE VnId=@VnId", dbConnection);
-                        command.Parameters.AddWithValue("@VnId", vnid);
-                        SQLiteDataReader reader = command.ExecuteReader();
-                        while (reader.Read())
-                        {
-                            VnData.Add((string)reader["Vote"]);
-                            VnData.Add((string)reader["Status"]);
-                            VnData.Add((string)reader["Note"]);
-                        }
-                        reader.Close();
-                        dbConnection.Close();
-                    }
-
-
-                    var notes = "";
-                    if (_userVnListItem[userindex].notes == null)
-                    {
-                        notes = null;
-                    }
-                    else if (_userVnListItem[userindex].notes != null)
-                    {
-                        notes = _userVnListItem[userindex].notes.ToString();
-                    }
-
-
-                    bool needUpdate = false;
-
-
-                    if (_userVoteList[voteindex].vote.ToString() != VnData[0])
-                    {
-                        needUpdate = true;
-                    }
-                    else if (_userVnListItem[userindex].status.ToString() != VnData[1])
-                    {
-                        needUpdate = true;
-                    }
-
-                    else if (notes != VnData[2])
-                    {
-                        needUpdate = true;
-                    }
-
-                    if (needUpdate == true)
-                    {
-                        using (SQLiteConnection dbConnection = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
-                        {
-                            dbConnection.Open();
-                            SQLiteCommand command = new SQLiteCommand("UPDATE VnList SET Vote=@Vote, Status=@Status, Note=@Note WHERE VnId=@VnId", dbConnection);
-                            command.Parameters.AddWithValue("@VnId", vnid);
-                            command.Parameters.AddWithValue("@Vote", _userVoteList[voteindex].vote.ToString());
-                            command.Parameters.AddWithValue("@Status", _userVnListItem[userindex].status.ToString());
-                            command.Parameters.AddWithValue("@Note", notes);
-                            command.ExecuteNonQuery();
-
-
-                        }
-                    }
-                }
-
-
-
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-
-
-
-        }
+        
 
         private async Task GetUserVnData()
         {

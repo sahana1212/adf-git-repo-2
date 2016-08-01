@@ -140,67 +140,96 @@ namespace Visual_Novel_Manager.ViewModel
 
         async Task BindScreenshotsExecute()
         {
-            Application.Current.Dispatcher.Invoke(() =>
+            try
             {
-                IsDownloading = true;
-            });
-
-            int vnId = StaticClass.Vnid;
-            var screenarray = new List<List<string>>();
-            await Task.Run(() =>
-            {
-                screenarray = GetScreenshotList().Result;
-            });
-
-
-
-            if (_screenshotCollection != null)
-            {
-                _screenshotCollection.Clear();
-
-
-                foreach (var image in screenarray)
+                Application.Current.Dispatcher.Invoke(() =>
                 {
+                    IsDownloading = true;
+                });
+
+                int vnId = StaticClass.Vnid;
+                var screenarray = new List<List<string>>();
+                await Task.Run(() =>
+                {
+                    screenarray = GetScreenshotList().Result;
+                });
 
 
-                    if (image[1] == "True")
+
+                if (_screenshotCollection != null)
+                {
+                    _screenshotCollection.Clear();
+
+
+                    foreach (var image in screenarray)
                     {
-                        string filenameNoExt = Path.GetFileNameWithoutExtension(image[0]);
-                        if (StaticClass.NsfwEnabled == false)
+
+
+                        if (image[1] == "True")
                         {
-                            string path = StaticClass.CurrentDirectory + @"\res\nsfw\thumb.jpg";
-                            var source = new BitmapImage();
-                            source.BeginInit();
-                            source.UriSource = new Uri(path, UriKind.RelativeOrAbsolute);
-                            source.CacheOption = BitmapCacheOption.OnLoad;
-                            source.EndInit();
-
-                            _screenshotCollection.Add(new ScreenshotViewModelCollection
+                            string filenameNoExt = Path.GetFileNameWithoutExtension(image[0]);
+                            if (StaticClass.NsfwEnabled == false)
                             {
-                                ScreenshotModel = new ScreenshotModel
+                                string path = StaticClass.CurrentDirectory + @"\res\nsfw\thumb.jpg";
+                                var source = new BitmapImage();
+                                source.BeginInit();
+                                source.UriSource = new Uri(path, UriKind.RelativeOrAbsolute);
+                                source.CacheOption = BitmapCacheOption.OnLoad;
+                                source.EndInit();
+
+                                _screenshotCollection.Add(new ScreenshotViewModelCollection
                                 {
-                                    Screenshot = source
+                                    ScreenshotModel = new ScreenshotModel
+                                    {
+                                        Screenshot = source
 
 
-                                }
-                            });
+                                    }
+                                });
+                            }
+                            else if (StaticClass.NsfwEnabled == true)
+                            {
+                                string path = StaticClass.CurrentDirectory + @"\data\screenshots\" + vnId + @"\" + filenameNoExt;
+                                var source = new BitmapImage();
+                                source.BeginInit();
+                                source.UriSource = new Uri(path, UriKind.RelativeOrAbsolute);
+                                source.CacheOption = BitmapCacheOption.OnLoad;
+                                source.EndInit();
+
+                                _screenshotCollection.Add(new ScreenshotViewModelCollection
+                                {
+                                    ScreenshotModel = new ScreenshotModel
+                                    {
+                                        Screenshot = source
+
+
+                                    }
+                                });
+                            }
+                            else
+                            {
+                                _screenshotCollection.Add(new ScreenshotViewModelCollection { ScreenshotModel = new ScreenshotModel { Screenshot = null } });
+                            }
+
+
+
                         }
-                        else if (StaticClass.NsfwEnabled == true)
+                        else if (image[1] == "False")
                         {
-                            string path = StaticClass.CurrentDirectory + @"\data\screenshots\" + vnId + @"\" + filenameNoExt;
+                            string filename = Path.GetFileName(image[0]);
+                            string path = StaticClass.CurrentDirectory + @"\data\screenshots\" + vnId + @"\" + filename;
                             var source = new BitmapImage();
                             source.BeginInit();
                             source.UriSource = new Uri(path, UriKind.RelativeOrAbsolute);
                             source.CacheOption = BitmapCacheOption.OnLoad;
                             source.EndInit();
 
+
                             _screenshotCollection.Add(new ScreenshotViewModelCollection
                             {
                                 ScreenshotModel = new ScreenshotModel
                                 {
                                     Screenshot = source
-
-
                                 }
                             });
                         }
@@ -209,42 +238,35 @@ namespace Visual_Novel_Manager.ViewModel
                             _screenshotCollection.Add(new ScreenshotViewModelCollection { ScreenshotModel = new ScreenshotModel { Screenshot = null } });
                         }
 
-
-
-                    }
-                    else if (image[1] == "False")
-                    {
-                        string filename = Path.GetFileName(image[0]);
-                        string path = StaticClass.CurrentDirectory + @"\data\screenshots\" + vnId + @"\" + filename;
-                        var source = new BitmapImage();
-                        source.BeginInit();
-                        source.UriSource = new Uri(path, UriKind.RelativeOrAbsolute);
-                        source.CacheOption = BitmapCacheOption.OnLoad;
-                        source.EndInit();
-
-
-                        _screenshotCollection.Add(new ScreenshotViewModelCollection
-                        {
-                            ScreenshotModel = new ScreenshotModel
-                            {
-                                Screenshot = source
-                            }
-                        });
-                    }
-                    else
-                    {
-                        _screenshotCollection.Add(new ScreenshotViewModelCollection { ScreenshotModel = new ScreenshotModel { Screenshot = null } });
                     }
 
                 }
 
+
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    IsDownloading = false;
+                });
             }
-
-
-            Application.Current.Dispatcher.Invoke(() =>
+            catch (Exception ex)
             {
-                IsDownloading = false;
-            });
+                using (StreamWriter sw = File.AppendText(StaticClass.CurrentDirectory + @"\debug.log"))
+                {
+                    sw.WriteLine(DateTime.Now);
+                    sw.WriteLine("Exception Found:\tType: {0}", ex.GetType().FullName);
+                    sw.WriteLine("Class File: ScreenshotViewModel.cs");
+                    sw.WriteLine("Method Name: BindScreenshotsExecute");
+                    sw.WriteLine("\nMessage: {0}", ex.Message);
+                    sw.WriteLine("Source: {0}", ex.Source);
+                    sw.WriteLine("StackTrace: {0}", ex.StackTrace);
+                    sw.WriteLine("Target Site: {0}", ex.TargetSite);
+
+
+                    sw.WriteLine("\n\n");
+                }
+                throw;
+            }
+            
 
 
 
@@ -265,53 +287,75 @@ namespace Visual_Novel_Manager.ViewModel
 
         private async Task<string> LoadLargeScreenshot()
         {
-            string screenshots = null;
-            List<List<string>> screenarray = new List<List<string>>();
-            using (SQLiteConnection con = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
+            try
             {
-                con.Open();
-
-
-
-                SQLiteCommand cmd = new SQLiteCommand("SELECT * FROM VnAPI WHERE VnId=" + StaticClass.Vnid, con);
-                SQLiteDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
+                string screenshots = null;
+                List<List<string>> screenarray = new List<List<string>>();
+                using (SQLiteConnection con = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
                 {
-                    screenshots = (string)reader["Screenshots"];
+                    con.Open();
 
+
+
+                    SQLiteCommand cmd = new SQLiteCommand("SELECT * FROM VnAPI WHERE VnId=" + StaticClass.Vnid, con);
+                    SQLiteDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        screenshots = (string)reader["Screenshots"];
+
+                    }
+                    con.Close();
                 }
-                con.Close();
-            }
 
-            var sample = screenshots.Split(new[] { '[', ']' }, StringSplitOptions.RemoveEmptyEntries);
+                var sample = screenshots.Split(new[] { '[', ']' }, StringSplitOptions.RemoveEmptyEntries);
 
-            int j = 0;
-            for (int i = 0; i < sample.Count(); i++)
-            {
-                screenarray.Add(new List<string>());
-                var screentmp = sample[i].Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                screenarray[i].AddRange(screentmp);
-            }
-
-
-
-            if (screenarray[SelectedScreenIndex][1] == "True")
-            {
-                MyBrush = System.Windows.Media.Brushes.Red;
-                string filenameNoExt = Path.GetFileNameWithoutExtension(screenarray[SelectedScreenIndex][0]);
-                if (StaticClass.NsfwEnabled == false)
+                int j = 0;
+                for (int i = 0; i < sample.Count(); i++)
                 {
-                    return StaticClass.CurrentDirectory + @"\res\nsfw\screenshot.jpg";
+                    screenarray.Add(new List<string>());
+                    var screentmp = sample[i].Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                    screenarray[i].AddRange(screentmp);
                 }
-                return StaticClass.CurrentDirectory + @"\data\screenshots\" + StaticClass.Vnid + @"\" + filenameNoExt;
+
+
+
+                if (screenarray[SelectedScreenIndex][1] == "True")
+                {
+                    MyBrush = System.Windows.Media.Brushes.Red;
+                    string filenameNoExt = Path.GetFileNameWithoutExtension(screenarray[SelectedScreenIndex][0]);
+                    if (StaticClass.NsfwEnabled == false)
+                    {
+                        return StaticClass.CurrentDirectory + @"\res\nsfw\screenshot.jpg";
+                    }
+                    return StaticClass.CurrentDirectory + @"\data\screenshots\" + StaticClass.Vnid + @"\" + filenameNoExt;
+                }
+                else
+                {
+                    MyBrush = System.Windows.Media.Brushes.Black;
+                    //return screenarray[SelectedScreenIndex][0];
+                    string filename = Path.GetFileName(screenarray[SelectedScreenIndex][0]);
+                    return StaticClass.CurrentDirectory + @"\data\screenshots\" + StaticClass.Vnid + @"\" + filename;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                MyBrush = System.Windows.Media.Brushes.Black;
-                //return screenarray[SelectedScreenIndex][0];
-                string filename = Path.GetFileName(screenarray[SelectedScreenIndex][0]);
-                return StaticClass.CurrentDirectory + @"\data\screenshots\" + StaticClass.Vnid + @"\" + filename;
+                using (StreamWriter sw = File.AppendText(StaticClass.CurrentDirectory + @"\debug.log"))
+                {
+                    sw.WriteLine(DateTime.Now);
+                    sw.WriteLine("Exception Found:\tType: {0}", ex.GetType().FullName);
+                    sw.WriteLine("Class File: ScreenshotViewModel.cs");
+                    sw.WriteLine("Method Name: LoadLargeScreenshot");
+                    sw.WriteLine("\nMessage: {0}", ex.Message);
+                    sw.WriteLine("Source: {0}", ex.Source);
+                    sw.WriteLine("StackTrace: {0}", ex.StackTrace);
+                    sw.WriteLine("Target Site: {0}", ex.TargetSite);
+
+
+                    sw.WriteLine("\n\n");
+                }
+                throw;
             }
+            
 
 
 
@@ -320,71 +364,93 @@ namespace Visual_Novel_Manager.ViewModel
 
         private async Task<List<List<string>>> GetScreenshotList()
         {
-            string screenshots = null;
-            List<List<string>> screenarray = new List<List<string>>();
-            using (SQLiteConnection con = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
+            try
             {
-                con.Open();
-
-
-
-                SQLiteCommand cmd = new SQLiteCommand("SELECT * FROM VnAPI WHERE VnId=" + StaticClass.Vnid, con);
-                SQLiteDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
+                string screenshots = null;
+                List<List<string>> screenarray = new List<List<string>>();
+                using (SQLiteConnection con = new SQLiteConnection(@"Data Source=|DataDirectory|\Database.db"))
                 {
-                    screenshots = (string)reader["Screenshots"];
-
-                }
-                con.Close();
-            }
-
-            var sample = screenshots.Split(new[] { '[', ']' }, StringSplitOptions.RemoveEmptyEntries);
-
-            int j = 0;
-            for (int i = 0; i < sample.Count(); i++)
-            {
-                screenarray.Add(new List<string>());
-                var screentmp = sample[i].Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                screenarray[i].AddRange(screentmp);
-            }
-            Thread.Sleep(0);
-
-            if (!Directory.Exists(StaticClass.CurrentDirectory + @"\data\screenshots\" + StaticClass.Vnid + @"\"))
-            {
-                Directory.CreateDirectory(StaticClass.CurrentDirectory + @"\data\screenshots\" + StaticClass.Vnid + @"\");
-            }
-
-            foreach (var image in screenarray)
-            {
+                    con.Open();
 
 
-                if (image[1] == "True")
-                {
-                    string filenameNoExt = Path.GetFileNameWithoutExtension(image[0]);
 
-                    if (!File.Exists(StaticClass.CurrentDirectory + @"\data\screenshots\" + StaticClass.Vnid + @"\" + filenameNoExt))
+                    SQLiteCommand cmd = new SQLiteCommand("SELECT * FROM VnAPI WHERE VnId=" + StaticClass.Vnid, con);
+                    SQLiteDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
                     {
-                        WebClient client = new WebClient();
-                        client.DownloadFile(new Uri(image[0]), StaticClass.CurrentDirectory + @"\data\screenshots\" + StaticClass.Vnid + @"\" + filenameNoExt);
+                        screenshots = (string)reader["Screenshots"];
 
                     }
+                    con.Close();
                 }
-                else
-                {
-                    string filename = Path.GetFileName(image[0]);
 
-                    if (!File.Exists(StaticClass.CurrentDirectory + @"\data\screenshots\" + StaticClass.Vnid + @"\" + filename))
+                var sample = screenshots.Split(new[] { '[', ']' }, StringSplitOptions.RemoveEmptyEntries);
+
+                int j = 0;
+                for (int i = 0; i < sample.Count(); i++)
+                {
+                    screenarray.Add(new List<string>());
+                    var screentmp = sample[i].Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                    screenarray[i].AddRange(screentmp);
+                }
+                Thread.Sleep(0);
+
+                if (!Directory.Exists(StaticClass.CurrentDirectory + @"\data\screenshots\" + StaticClass.Vnid + @"\"))
+                {
+                    Directory.CreateDirectory(StaticClass.CurrentDirectory + @"\data\screenshots\" + StaticClass.Vnid + @"\");
+                }
+
+                foreach (var image in screenarray)
+                {
+
+
+                    if (image[1] == "True")
                     {
-                        WebClient client = new WebClient();
-                        client.DownloadFile(new Uri(image[0]), StaticClass.CurrentDirectory + @"\data\screenshots\" + StaticClass.Vnid + @"\" + filename);
+                        string filenameNoExt = Path.GetFileNameWithoutExtension(image[0]);
+
+                        if (!File.Exists(StaticClass.CurrentDirectory + @"\data\screenshots\" + StaticClass.Vnid + @"\" + filenameNoExt))
+                        {
+                            WebClient client = new WebClient();
+                            client.DownloadFile(new Uri(image[0]), StaticClass.CurrentDirectory + @"\data\screenshots\" + StaticClass.Vnid + @"\" + filenameNoExt);
+
+                        }
+                    }
+                    else
+                    {
+                        string filename = Path.GetFileName(image[0]);
+
+                        if (!File.Exists(StaticClass.CurrentDirectory + @"\data\screenshots\" + StaticClass.Vnid + @"\" + filename))
+                        {
+                            WebClient client = new WebClient();
+                            client.DownloadFile(new Uri(image[0]), StaticClass.CurrentDirectory + @"\data\screenshots\" + StaticClass.Vnid + @"\" + filename);
+
+                        }
 
                     }
-
+                    System.Threading.Thread.Sleep(100);
                 }
-                System.Threading.Thread.Sleep(100);
-            }
 
-            return screenarray;
+                return screenarray;
+            }
+            catch (Exception ex)
+            {
+                using (StreamWriter sw = File.AppendText(StaticClass.CurrentDirectory + @"\debug.log"))
+                {
+                    sw.WriteLine(DateTime.Now);
+                    sw.WriteLine("Exception Found:\tType: {0}", ex.GetType().FullName);
+                    sw.WriteLine("Class File: ScreenshotViewModel.cs");
+                    sw.WriteLine("Method Name: GetScreenshotList");
+                    sw.WriteLine("\nMessage: {0}", ex.Message);
+                    sw.WriteLine("Source: {0}", ex.Source);
+                    sw.WriteLine("StackTrace: {0}", ex.StackTrace);
+                    sw.WriteLine("Target Site: {0}", ex.TargetSite);
+
+
+                    sw.WriteLine("\n\n");
+                }
+                throw;
+            }
+            
         }
 
 
