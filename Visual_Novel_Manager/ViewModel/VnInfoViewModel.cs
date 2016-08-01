@@ -104,26 +104,28 @@ namespace Visual_Novel_Manager.ViewModel
         {
             try
             {
-                string[] VnApiData = { };
-                string[] TimePlayed = { };
-                string[] Developers = { };
-                var Taglist = new List<string[]>();
-                var RelationItems = new List<string[]>();
-
-
-                if (File.Exists(StaticClass.CurrentDirectory + @"\config.json"))
+                if (StaticClass.Vnid >0)
                 {
-                    var jsonString = File.ReadAllText(StaticClass.CurrentDirectory + @"\config.json");
-                    var jsonData = JsonConvert.DeserializeObject<ConfigRootObject>(jsonString);
-                    foreach (var vn in jsonData.unique)
+                    string[] VnApiData = { };
+                    string[] TimePlayed = { };
+                    string[] Developers = { };
+                    var Taglist = new List<string[]>();
+                    var RelationItems = new List<string[]>();
+
+
+                    if (File.Exists(StaticClass.CurrentDirectory + @"\config.json"))
                     {
-                        if (vn.VnId == StaticClass.Vnid)
+                        var jsonString = File.ReadAllText(StaticClass.CurrentDirectory + @"\config.json");
+                        var jsonData = JsonConvert.DeserializeObject<ConfigRootObject>(jsonString);
+                        foreach (var vn in jsonData.unique)
                         {
-                            StaticClass.VnSpoilerLevel = vn.VnSpoilerLevel;
-                            break;
+                            if (vn.VnId == StaticClass.Vnid)
+                            {
+                                StaticClass.VnSpoilerLevel = vn.VnSpoilerLevel;
+                                break;
+                            }
                         }
                     }
-                }
 
 
 
@@ -131,114 +133,140 @@ namespace Visual_Novel_Manager.ViewModel
 
 
 
-                await Task.Run(() =>
-                {
-                    VnApiData = LoadNovelSQLData(11, new string[] { "VnId", "title", "original", "aliases", "released", "length", "description", "popularity", "rating", "image", "image_nsfw" },
-                        "SELECT * FROM VnAPI WHERE VnId=").Result;
-
-                    TimePlayed = LoadNovelSQLData(2, new[] { "PlayTime", "LastPlayed" }, "Select * FROM NovelPath WHERE VnId=").Result;
-
-                    Developers = LoadNovelSQLData(1, new[] { "ProducerName" }, "SELECT * FROM ReleaseAPI WHERE ProducerDeveloper='True' AND VnId=").Result;
-
-
-
-                });
-
-
-
-                ConvertRichTextDocument convRTD = new ConvertRichTextDocument();
-                VnInfoModel.VnDescription = convRTD.ConvertToFlowDocument(VnApiData[6]);
-                //VisualNovelsInformation.vndesc.Document = convRTD.ConvertToFlowDocument(VnApiData[6]);
-
-                //var flowdocument = new FlowDocument();
-                //var paragraph= new Paragraph();
-                //flowdocument.Blocks.Add(paragraph);
-                //paragraph.Inlines.Add(new Run("no tag selected"));
-
-
-
-
-                VnInfoModel.Name = VnApiData[1];
-                VnInfoModel.Original = VnApiData[2];
-                VnInfoModel.Aliases = VnApiData[3];
-                VnInfoModel.Released = VnApiData[4];
-                VnInfoModel.Length = VnApiData[5];
-                //VnInfoModel.VnDescription = VnApiData[6];
-                VnInfoModel.Popularity = VnApiData[7];
-                VnInfoModel.Rating = VnApiData[8];
-                //VnInfoModel.TagDescription = "no tag selected";
-                VnInfoModel.Developers = Developers[0];
-
-                #region playtime
-                var tmpSplitPlayTime = TimePlayed[0].Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                List<int> timecount = new List<int>();
-                for (int i = 0; i < tmpSplitPlayTime.Count(); i++)
-                {
-                    timecount.Add(new int());
-                    timecount[i] = Convert.ToInt32(tmpSplitPlayTime[i]);
-                }
-                TimeSpan timeSpan = new TimeSpan(timecount[0], timecount[1], timecount[2], timecount[3]);
-
-                if (timeSpan.Days == 0 && timeSpan.Hours == 0 && timeSpan.Minutes == 0)
-                {
-                    VnInfoModel.PlayTime = "< 1 minute";
-                }
-                else
-                {
-                    string formatted = string.Format("{0}{1}{2}",
-                    timeSpan.Duration().Days > 0 ? string.Format("{0:0} day{1}, ", timeSpan.Days, timeSpan.Days == 1 ? String.Empty : "s") : string.Empty,
-                    timeSpan.Duration().Hours > 0 ? string.Format("{0:0} hour{1}, ", timeSpan.Hours, timeSpan.Hours == 1 ? String.Empty : "s") : string.Empty,
-                    timeSpan.Duration().Minutes > 0 ? string.Format("{0:0} minute{1} ", timeSpan.Minutes, timeSpan.Minutes == 1 ? String.Empty : "s") : string.Empty);
-
-                    VnInfoModel.PlayTime = formatted;
-                }
-
-                if (TimePlayed[1] == "")
-                {
-                    VnInfoModel.LastPlayed = "Never";
-                }
-                else
-                {
-                    if ((Convert.ToDateTime(TimePlayed[1]) - DateTime.Today).Days > -7)//need to set to negative, for the difference in days
+                    await Task.Run(() =>
                     {
-                        if (Convert.ToDateTime(TimePlayed[1]) == DateTime.Today)
+                        VnApiData = LoadNovelSQLData(11, new string[] { "VnId", "title", "original", "aliases", "released", "length", "description", "popularity", "rating", "image", "image_nsfw" },
+                            "SELECT * FROM VnAPI WHERE VnId=").Result;
+
+                        TimePlayed = LoadNovelSQLData(2, new[] { "PlayTime", "LastPlayed" }, "Select * FROM NovelPath WHERE VnId=").Result;
+
+                        Developers = LoadNovelSQLData(1, new[] { "ProducerName" }, "SELECT * FROM ReleaseAPI WHERE ProducerDeveloper='True' AND VnId=").Result;
+
+
+
+                    });
+
+
+
+                    ConvertRichTextDocument convRTD = new ConvertRichTextDocument();
+                    VnInfoModel.VnDescription = convRTD.ConvertToFlowDocument(VnApiData[6]);
+                    //VisualNovelsInformation.vndesc.Document = convRTD.ConvertToFlowDocument(VnApiData[6]);
+
+                    //var flowdocument = new FlowDocument();
+                    //var paragraph= new Paragraph();
+                    //flowdocument.Blocks.Add(paragraph);
+                    //paragraph.Inlines.Add(new Run("no tag selected"));
+
+
+
+
+                    VnInfoModel.Name = VnApiData[1];
+                    VnInfoModel.Original = VnApiData[2];
+                    VnInfoModel.Aliases = VnApiData[3];
+                    VnInfoModel.Released = VnApiData[4];
+                    VnInfoModel.Length = VnApiData[5];
+                    //VnInfoModel.VnDescription = VnApiData[6];
+                    VnInfoModel.Popularity = VnApiData[7];
+                    VnInfoModel.Rating = VnApiData[8];
+                    //VnInfoModel.TagDescription = "no tag selected";
+                    VnInfoModel.Developers = Developers[0];
+
+                    #region playtime
+                    var tmpSplitPlayTime = TimePlayed[0].Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                    List<int> timecount = new List<int>();
+                    for (int i = 0; i < tmpSplitPlayTime.Count(); i++)
+                    {
+                        timecount.Add(new int());
+                        timecount[i] = Convert.ToInt32(tmpSplitPlayTime[i]);
+                    }
+                    TimeSpan timeSpan = new TimeSpan(timecount[0], timecount[1], timecount[2], timecount[3]);
+
+                    if (timeSpan.Days == 0 && timeSpan.Hours == 0 && timeSpan.Minutes == 0)
+                    {
+                        VnInfoModel.PlayTime = "< 1 minute";
+                    }
+                    else
+                    {
+                        string formatted = string.Format("{0}{1}{2}",
+                        timeSpan.Duration().Days > 0 ? string.Format("{0:0} day{1}, ", timeSpan.Days, timeSpan.Days == 1 ? String.Empty : "s") : string.Empty,
+                        timeSpan.Duration().Hours > 0 ? string.Format("{0:0} hour{1}, ", timeSpan.Hours, timeSpan.Hours == 1 ? String.Empty : "s") : string.Empty,
+                        timeSpan.Duration().Minutes > 0 ? string.Format("{0:0} minute{1} ", timeSpan.Minutes, timeSpan.Minutes == 1 ? String.Empty : "s") : string.Empty);
+
+                        VnInfoModel.PlayTime = formatted;
+                    }
+
+                    if (TimePlayed[1] == "")
+                    {
+                        VnInfoModel.LastPlayed = "Never";
+                    }
+                    else
+                    {
+                        if ((Convert.ToDateTime(TimePlayed[1]) - DateTime.Today).Days > -7)//need to set to negative, for the difference in days
                         {
-                            VnInfoModel.LastPlayed = "Today";
-                        }
-                        else if ((Convert.ToDateTime(TimePlayed[1]) - DateTime.Today).Days > -2 && (Convert.ToDateTime(TimePlayed[1]) - DateTime.Today).Days < 0)
-                        {
-                            VnInfoModel.LastPlayed = "Yesterday";
+                            if (Convert.ToDateTime(TimePlayed[1]) == DateTime.Today)
+                            {
+                                VnInfoModel.LastPlayed = "Today";
+                            }
+                            else if ((Convert.ToDateTime(TimePlayed[1]) - DateTime.Today).Days > -2 && (Convert.ToDateTime(TimePlayed[1]) - DateTime.Today).Days < 0)
+                            {
+                                VnInfoModel.LastPlayed = "Yesterday";
+                            }
+                            else
+                            {
+                                VnInfoModel.LastPlayed = Convert.ToDateTime(TimePlayed[1]).DayOfWeek.ToString();
+                            }
                         }
                         else
                         {
-                            VnInfoModel.LastPlayed = Convert.ToDateTime(TimePlayed[1]).DayOfWeek.ToString();
+                            VnInfoModel.LastPlayed = TimePlayed[1];
+                        }
+                    }
+                    #endregion
+
+                    #region nsfw
+                    if (VnApiData[10] == "True")
+                    {
+                        if (StaticClass.NsfwEnabled == false)
+                        {
+                            string path = StaticClass.CurrentDirectory + @"\res\nsfw\cover.jpg";
+                            var source = new BitmapImage();
+                            source.BeginInit();
+                            source.UriSource = new Uri(path, UriKind.RelativeOrAbsolute);
+                            source.CacheOption = BitmapCacheOption.OnLoad;
+                            source.EndInit();
+                            VnInfoModel.VnImage = source;
+                        }
+                        else
+                        {
+                            if (File.Exists(StaticClass.CurrentDirectory + @"\data\cover\" + VnApiData[0]))
+                            {
+                                string path = StaticClass.CurrentDirectory + @"\data\cover\" + VnApiData[0];
+                                var source = new BitmapImage();
+                                source.BeginInit();
+                                source.UriSource = new Uri(path, UriKind.RelativeOrAbsolute);
+                                source.CacheOption = BitmapCacheOption.OnLoad;
+                                source.EndInit();
+                                VnInfoModel.VnImage = source;
+                            }
+                            else
+                            {
+                                WebClient client = new WebClient();
+                                client.DownloadFile(new Uri(VnApiData[9]), StaticClass.CurrentDirectory + @"\data\cover\" + VnApiData[0]);
+                                string path = StaticClass.CurrentDirectory + @"\data\cover\" + VnApiData[0];
+                                var source = new BitmapImage();
+                                source.BeginInit();
+                                source.UriSource = new Uri(path, UriKind.RelativeOrAbsolute);
+                                source.CacheOption = BitmapCacheOption.OnLoad;
+                                source.EndInit();
+                                VnInfoModel.VnImage = source;
+                            }
                         }
                     }
                     else
                     {
-                        VnInfoModel.LastPlayed = TimePlayed[1];
-                    }
-                }
-                #endregion
-
-                #region nsfw
-                if (VnApiData[10] == "True")
-                {
-                    if (StaticClass.NsfwEnabled == false)
-                    {
-                        string path = StaticClass.CurrentDirectory + @"\res\nsfw\cover.jpg";
-                        var source = new BitmapImage();
-                        source.BeginInit();
-                        source.UriSource = new Uri(path, UriKind.RelativeOrAbsolute);
-                        source.CacheOption = BitmapCacheOption.OnLoad;
-                        source.EndInit();
-                        VnInfoModel.VnImage = source;
-                    }
-                    else
-                    {
-                        if (File.Exists(StaticClass.CurrentDirectory + @"\data\cover\" + VnApiData[0]))
+                        if (File.Exists(StaticClass.CurrentDirectory + @"\data\cover\" + VnApiData[0] + ".jpg"))
                         {
-                            string path = StaticClass.CurrentDirectory + @"\data\cover\" + VnApiData[0];
+                            string path = StaticClass.CurrentDirectory + @"\data\cover\" + VnApiData[0] + ".jpg";
                             var source = new BitmapImage();
                             source.BeginInit();
                             source.UriSource = new Uri(path, UriKind.RelativeOrAbsolute);
@@ -249,8 +277,8 @@ namespace Visual_Novel_Manager.ViewModel
                         else
                         {
                             WebClient client = new WebClient();
-                            client.DownloadFile(new Uri(VnApiData[9]), StaticClass.CurrentDirectory + @"\data\cover\" + VnApiData[0]);
-                            string path = StaticClass.CurrentDirectory + @"\data\cover\" + VnApiData[0];
+                            client.DownloadFile(new Uri(VnApiData[9]), StaticClass.CurrentDirectory + @"\data\cover\" + VnApiData[0] + ".jpg");
+                            string path = StaticClass.CurrentDirectory + @"\data\cover\" + VnApiData[0] + ".jpg";
                             var source = new BitmapImage();
                             source.BeginInit();
                             source.UriSource = new Uri(path, UriKind.RelativeOrAbsolute);
@@ -259,66 +287,46 @@ namespace Visual_Novel_Manager.ViewModel
                             VnInfoModel.VnImage = source;
                         }
                     }
+                    #endregion
+                    await Task.Run(() =>
+                    {
+                        Taglist = LoadTags().Result;
+                        RelationItems = LoadRelations().Result;
+                    });
+
+
+                    if (_vnInfoTags != null)
+                    {
+                        List<string> tgList = new List<string>();
+
+                        _vnInfoTags.Clear();//clears observable collection so the new items don't add to existing list
+                        for (int i = 0; i < Taglist.Count; (i)++)
+                        {
+                            if (Convert.ToInt32(Taglist[i][1]) <= StaticClass.VnSpoilerLevel)
+                            {
+                                tgList.Add(Taglist[i][0]);
+                            }
+                        }
+                        VnInfoViewModelTags.AddRange(tgList);
+                    }
+
+
+                    if (_vnInfoRelations != null)
+                    {
+                        List<string> relList = new List<string>();
+                        _vnInfoRelations.Clear();
+                        for (int i = 0; i < RelationItems.Count; i++)
+                        {
+                            relList.Add(RelationItems[i][0] + ", " + RelationItems[i][1] + ", " + RelationItems[i][2]);
+                        }
+                        VnInfoViewModelRelations.AddRange(relList);
+                    }
                 }
                 else
                 {
-                    if (File.Exists(StaticClass.CurrentDirectory + @"\data\cover\" + VnApiData[0] + ".jpg"))
-                    {
-                        string path = StaticClass.CurrentDirectory + @"\data\cover\" + VnApiData[0] + ".jpg";
-                        var source = new BitmapImage();
-                        source.BeginInit();
-                        source.UriSource = new Uri(path, UriKind.RelativeOrAbsolute);
-                        source.CacheOption = BitmapCacheOption.OnLoad;
-                        source.EndInit();
-                        VnInfoModel.VnImage = source;
-                    }
-                    else
-                    {
-                        WebClient client = new WebClient();
-                        client.DownloadFile(new Uri(VnApiData[9]), StaticClass.CurrentDirectory + @"\data\cover\" + VnApiData[0] + ".jpg");
-                        string path = StaticClass.CurrentDirectory + @"\data\cover\" + VnApiData[0] + ".jpg";
-                        var source = new BitmapImage();
-                        source.BeginInit();
-                        source.UriSource = new Uri(path, UriKind.RelativeOrAbsolute);
-                        source.CacheOption = BitmapCacheOption.OnLoad;
-                        source.EndInit();
-                        VnInfoModel.VnImage = source;
-                    }
+                    
                 }
-                #endregion
-                await Task.Run(() =>
-                {
-                    Taglist = LoadTags().Result;
-                    RelationItems = LoadRelations().Result;
-                });
-
-
-                if (_vnInfoTags != null)
-                {
-                    List<string> tgList = new List<string>();
-
-                    _vnInfoTags.Clear();//clears observable collection so the new items don't add to existing list
-                    for (int i = 0; i < Taglist.Count; (i)++)
-                    {
-                        if (Convert.ToInt32(Taglist[i][1]) <= StaticClass.VnSpoilerLevel)
-                        {
-                            tgList.Add(Taglist[i][0]);
-                        }
-                    }
-                    VnInfoViewModelTags.AddRange(tgList);
-                }
-
-
-                if (_vnInfoRelations != null)
-                {
-                    List<string> relList = new List<string>();
-                    _vnInfoRelations.Clear();
-                    for (int i = 0; i < RelationItems.Count; i++)
-                    {
-                        relList.Add(RelationItems[i][0] + ", " + RelationItems[i][1] + ", " + RelationItems[i][2]);
-                    }
-                    VnInfoViewModelRelations.AddRange(relList);
-                }
+                
             }
             catch (Exception ex)
             {
