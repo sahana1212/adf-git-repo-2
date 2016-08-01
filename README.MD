@@ -14,9 +14,13 @@ Here are a few github projects that I ussed to create this program:
 
 
 ### Screenshots
-<img src=http://i.imgur.com/Jq1PueI.png>
+<img src=https://i.imgur.com/bGGB07A.png>
 
-<img src=http://i.imgur.com/fwYMCa9.png>
+<img src=https://i.imgur.com/Kd7HGj6.png>
+
+<img src=https://i.imgur.com/hkNAa1m.png>
+
+<img src=https://i.imgur.com/NYLOQyi.png>
 
 ### Development
 
