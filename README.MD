@@ -3,7 +3,7 @@
 This Visual Novel Manager is used to store and manage visual novels. You can add visual novels to the program, and it will download metadata about the selected title. You can also change your votes and comments on novels if you have an account on VNDB.org
 
 ### Version
-1.0.0
+1.1.0
 
 ### Tech
 Here are a few github projects that I ussed to create this program:
