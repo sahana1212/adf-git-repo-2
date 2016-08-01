@@ -1,0 +1,124 @@
+﻿<UserControl x:Class="Visual_Novel_Manager.View.UserVnList"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Visual_Novel_Manager.View"
+             xmlns:customClasses="clr-namespace:Visual_Novel_Manager.CustomClasses"
+             xmlns:viewModel="clr-namespace:Visual_Novel_Manager.ViewModel"
+             mc:Ignorable="d" 
+             d:DesignHeight="768" d:DesignWidth="1024">
+    <UserControl.DataContext>
+        <viewModel:UserVnListViewModel/>
+    </UserControl.DataContext>
+    <UserControl.Resources>
+        <customClasses:NullImageConverter x:Key="NullImageConverter"/>
+    </UserControl.Resources>
+    
+    <Grid Background="#F0F0F0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="350"/>
+            <ColumnDefinition Width="7*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="25"/>
+        </Grid.RowDefinitions>
+
+        <GroupBox Header="Visual Novel List" HorizontalAlignment="Left" VerticalAlignment="Top" Height="700" Width="350" BorderBrush="Gray">
+            <Grid>
+                <ListBox x:Name="VnListBox" HorizontalAlignment="Left" Height="675" VerticalAlignment="Top" Width="338" SelectionChanged="VnListBox_OnSelectionChanged"
+                         ItemsSource="{Binding UserVnListCollection}" SelectedIndex="{Binding ListboxSelectedIndex}" >
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="0,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock   Text="{Binding}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+
+
+
+            </Grid>
+        </GroupBox>
+
+        <GroupBox Grid.Column="1" Header="Visual Novel List Information" HorizontalAlignment="Left" Margin="5,103,0,0" VerticalAlignment="Top" Height="316" Width="331" BorderBrush="Gray">
+            <Grid Margin="0,0,0,-12" >
+                <TextBlock HorizontalAlignment="Left" Margin="10,21,0,0" TextWrapping="Wrap" Text="Vote:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="10,73,0,0" TextWrapping="Wrap" Text="Status:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="10,129,0,0" TextWrapping="Wrap" Text="Releases:" VerticalAlignment="Top"/>
+
+                <TextBlock x:Name="voteTextBlock" HorizontalAlignment="Left" Margin="50,21,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="83" Text="{Binding UserVnListModel.VoteInfo}"/>
+                <TextBlock x:Name="statusTextBlock" HorizontalAlignment="Left" Margin="50,73,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="165" Text="{Binding UserVnListModel.StatusInfo}"/>
+                <TextBlock x:Name="releaseTextBlock" HorizontalAlignment="Left" Margin="63,129,0,0" TextWrapping="Wrap" Text="Not available yet from the API" VerticalAlignment="Top" Foreground="Gray"/>
+
+            </Grid>
+        </GroupBox>
+
+        <GroupBox Grid.Column="1" Header="Update Item" HorizontalAlignment="Left" Margin="5,419,0,0" VerticalAlignment="Top" Height="281" Width="644" BorderBrush="Gray"
+                  Grid.Row="0">
+            <Grid>
+                <TextBlock HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Status:" VerticalAlignment="Top" Height="16" Width="39"/>
+                <ComboBox x:Name="cb_Status" HorizontalAlignment="Left" Margin="49,10,0,0" VerticalAlignment="Top" Width="120" SelectedIndex="{Binding UserVnListModel.StatusComboBoxIndex}">
+                    <ComboBoxItem Content="Unknown"/>
+                    <ComboBoxItem Content="Playing"/>
+                    <ComboBoxItem Content="Finished"/>
+                    <ComboBoxItem Content="Stalled"/>
+                    <ComboBoxItem Content="Dropped"/>
+                </ComboBox>
+                <TextBlock HorizontalAlignment="Left" Margin="10,42,0,0" TextWrapping="Wrap" Text="Clear Status:" VerticalAlignment="Top"/>
+                <CheckBox x:Name="ClearStatusChk" Content="" HorizontalAlignment="Left" Margin="80,43,0,0" VerticalAlignment="Top" IsChecked="{Binding UserVnListModel.ClearStatus}"/>
+                <TextBlock HorizontalAlignment="Left" Margin="10,73,0,0" TextWrapping="Wrap" Text="Vote:" VerticalAlignment="Top"/>
+                <TextBox x:Name="VoteTextbox" HorizontalAlignment="Left" Height="23" Margin="49,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" MaxLength="3" Text="{Binding UserVnListModel.UpdateVote}"/>
+                <TextBlock HorizontalAlignment="Left" Margin="10,110,0,0" TextWrapping="Wrap" Text="Clear Vote:" VerticalAlignment="Top"/>
+                <CheckBox x:Name="ClearVoteChk" Content="" HorizontalAlignment="Left" Margin="79,111,0,0" VerticalAlignment="Top" IsChecked="{Binding UserVnListModel.ClearVote}"/>
+                <TextBlock HorizontalAlignment="Left" Margin="10,142,0,0" TextWrapping="Wrap" Text="Notes:" VerticalAlignment="Top"/>
+                <TextBox x:Name="NotesTextBox" HorizontalAlignment="Left" Height="23" Margin="49,142,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="573" Text="{Binding UserVnListModel.UpdateNote}"/>
+                <TextBlock HorizontalAlignment="Left" Margin="10,179,0,0" TextWrapping="Wrap" Text="Clear Notes:" VerticalAlignment="Top"/>
+                <CheckBox x:Name="ClearNotesChk" Content="" HorizontalAlignment="Left" Margin="79,180,0,0" VerticalAlignment="Top" IsChecked="{Binding UserVnListModel.ClearNote}"/>
+
+                <Button Content="Update" HorizontalAlignment="Left" Margin="49,218,0,0" VerticalAlignment="Top" Width="75" Command="{Binding UpdateUserVnListCommand}"/>
+
+
+            </Grid>
+        </GroupBox>
+        <GroupBox Grid.Column="1" Header="Vn Image" HorizontalAlignment="Left" Margin="341,103,0,0" VerticalAlignment="Top" Height="316" Width="308" BorderBrush="Gray">
+            <Grid>
+                <Image x:Name="vnImage" HorizontalAlignment="Left" Height="274" Margin="10,10,0,0" VerticalAlignment="Top" Width="276" 
+                       Stretch="Uniform" Source="{Binding UserVnListModel.VnImage, Converter={StaticResource NullImageConverter}}"/>
+
+            </Grid>
+        </GroupBox>
+        <GroupBox Grid.Column="1" Header="GroupBox" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Top" Height="103" Width="634" BorderBrush="Gray">
+            <Grid>
+                <Label Content="Login:" HorizontalAlignment="Left" Margin="10,25,0,0" VerticalAlignment="Top"/>
+                <TextBox x:Name="usernameTxt" HorizontalAlignment="Left" Height="23" Margin="57,28,0,0" TextWrapping="Wrap" Text="{Binding UserVnListModel.Username}" 
+                         VerticalAlignment="Top" Width="120" IsEnabled="{Binding UserVnListModel.UsernameEnabled}"/>
+                <TextBlock HorizontalAlignment="Left" Margin="289,30,0,0" TextWrapping="Wrap" Text="Password:" VerticalAlignment="Top"/>
+                <PasswordBox x:Name="passwordTxt" HorizontalAlignment="Left" Margin="347,28,0,0" VerticalAlignment="Top" Width="130" IsEnabled="{Binding UserVnListModel.PasswordEnabled}"/>
+                <Button x:Name="LoginBtn" Content="Login" HorizontalAlignment="Left" Margin="519,25,0,0" VerticalAlignment="Top" Width="75" Height="26"
+                         Click="LoginBtn_OnClick" IsEnabled="{Binding UserVnListModel.LoginBtnEnabled}"/>
+                <ProgressBar x:Name="_progressBar" HorizontalAlignment="Left" Height="10" Margin="186,61,0,0" VerticalAlignment="Top" Width="165" Value="{Binding ProgbarValue}"/>
+
+
+            </Grid>
+
+        </GroupBox>
+
+
+
+
+
+
+
+
+        <!--bottomm statusbar-->
+        <!--<StatusBar HorizontalAlignment="Stretch" Height="25" Margin="0,0,0,0" Grid.Row="2" VerticalAlignment="Top" Width="Auto" Background="DarkGray"  Grid.ColumnSpan="2"
+                               Grid.Column="0"/>-->
+    </Grid>
+</UserControl>

@@ -1,0 +1,51 @@
+﻿<Window x:Class="Visual_Novel_Manager.View.AddVisualNovel"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Visual_Novel_Manager.ViewModel"
+        mc:Ignorable="d"
+        Title="Add Visual Novel" Height="380" Width="400" MinHeight="380" MinWidth="400">
+    <Window.DataContext>
+        <local:AddVnViewModel/>
+    </Window.DataContext>
+    <Grid Background="#F0F0F0">
+        
+
+            <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="25"/>
+        </Grid.RowDefinitions>
+        <GroupBox Header=" Visual Novel Information" BorderBrush="Gray">
+            <Grid>
+                <TextBox x:Name="txtID" HorizontalAlignment="Left" Height="23" Margin="74,22,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Text="{Binding AddVnModel.VnId}"/>
+                <TextBox x:Name="txtName" HorizontalAlignment="Left" Height="23" Margin="74,65,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="286"  Text="{Binding AddVnModel.Name}"/>
+                <TextBox x:Name="txtPath" HorizontalAlignment="Left" Height="23" Margin="74,115,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="195" Text="{Binding AddVnModel.ExePath}"/>
+                <TextBox x:Name="txtIcon" HorizontalAlignment="Left" Height="23" Margin="74,163,0,0" TextWrapping="NoWrap"  VerticalAlignment="Top" Width="195" Text="{Binding AddVnModel.IconPath}"/>
+
+                <!--<Label Content="ID:" HorizontalAlignment="Left" Margin="45,19,0,0" VerticalAlignment="Top"/>-->
+                <TextBlock HorizontalAlignment="Left" Margin="57,25,0,0" TextWrapping="Wrap" Text="ID:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="35,67,0,0" TextWrapping="Wrap" Text="Name:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="4,117,0,0" TextWrapping="Wrap" Text="Path to .exe:" VerticalAlignment="Top"/>
+                <TextBlock HorizontalAlignment="Left" Margin="44,165,0,0" TextWrapping="Wrap" Text="Icon:" VerticalAlignment="Top"/>
+                
+                
+                
+                <Button x:Name="ExePathBrowseBtn" Content="Browse" HorizontalAlignment="Left" Margin="284,116,0,0" VerticalAlignment="Top" Width="74" Command="{Binding ExePathBrowseCommand}"/>
+                <Button x:Name="IconPathBrowseBtn" Content="Browse" HorizontalAlignment="Left" Margin="284,167,0,0" VerticalAlignment="Top" Width="74" Command="{Binding IconPathBrowseCommand}"/>
+                <Button x:Name="btnFetch" Content="Fetch" HorizontalAlignment="Left" Margin="128,203,0,0" VerticalAlignment="Top" Width="75" Command="{Binding AddVnExecuteCommand}"/>
+                
+
+                <Grid HorizontalAlignment="Left" Height="74" Margin="85,228,0,0" VerticalAlignment="Top" Width="234">
+                    <Label x:Name="lblProgress" HorizontalAlignment="Center" Content="{Binding AddVnModel.ProgressPercent}" />
+                    <ProgressBar x:Name="progress" Height="25" Foreground="LimeGreen" Value="{Binding AddVnModel.ProgressBar}"/>
+                </Grid>
+
+            </Grid>
+
+        </GroupBox>
+        <StatusBar x:Name="lblStatus" HorizontalAlignment="Stretch" Height="25" Margin="0,0,0,0" Grid.Row="1" VerticalAlignment="Top" Width="Auto" Grid.ColumnSpan="3" Background="Bisque">
+            <TextBlock x:Name="lblStatus1" />
+        </StatusBar>
+    </Grid>
+</Window>
