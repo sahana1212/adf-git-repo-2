@@ -631,6 +631,10 @@ namespace Visual_Novel_Manager.ViewModel
                             var uservnlist = JsonConvert.DeserializeObject<UserVnListRootObject>(conn.JsonResponse);
                             _userVnListItem = uservnlist.items;
 
+                            if (vnlistPage == 1)
+                            {
+                                _userVnListItem = uservnlist.items;
+                            }
 
                             if (vnlistPage > 1)
                             {
