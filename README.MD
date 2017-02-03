@@ -11,6 +11,8 @@ Here are a few github projects that I ussed to create this program:
 * [VN-Database-Program] - used as a base for my program
 
 
+### Building
+You will need the Json.Newtonsoft library, as well as the libraries from SqlCeToolbox <https://github.com/ErikEJ/SqlCeToolbox> to build this
 
 
 ### Screenshots
