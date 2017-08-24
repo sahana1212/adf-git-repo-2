@@ -1045,6 +1045,7 @@ namespace VisualNovelManager.ViewModel
         {
             try
             {
+
                 List<List<string>> sqlList = new List<List<string>>();
                 List<List<string>> currentSqlList = new List<List<string>>();
 
@@ -1140,7 +1141,7 @@ namespace VisualNovelManager.ViewModel
 
 
 
-
+                
                 int CurrSqlList25more = 0;//index keeping track of how many times currentsqllist is >25(0=0,25=1,50=2
                 while (true)
                 {
@@ -1249,8 +1250,8 @@ namespace VisualNovelManager.ViewModel
                         }
                     }
 
-                   
-                    
+
+
 
                 }
 

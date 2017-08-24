@@ -335,6 +335,7 @@ namespace VisualNovelManager
                 }
                 finally
                 {
+                    Thread.Sleep(9000);
                     conn.Close();
                 }
             }

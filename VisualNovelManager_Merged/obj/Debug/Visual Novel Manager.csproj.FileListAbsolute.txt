@@ -1,0 +1,107 @@
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\bin\Debug\VisualNovelManager.exe.config
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\bin\Debug\libs\amd64\sqlceca40.dll
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\bin\Debug\libs\amd64\sqlcecompact40.dll
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\bin\Debug\libs\amd64\sqlceer40EN.dll
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\bin\Debug\libs\amd64\sqlceme40.dll
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\bin\Debug\libs\amd64\sqlceqp40.dll
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\bin\Debug\libs\amd64\sqlcese40.dll
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\bin\Debug\libs\x86\sqlceca40.dll
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\bin\Debug\libs\x86\sqlcecompact40.dll
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\bin\Debug\libs\x86\sqlceer40EN.dll
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\bin\Debug\libs\x86\sqlceme40.dll
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\bin\Debug\libs\x86\sqlceqp40.dll
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\bin\Debug\libs\x86\sqlcese40.dll
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\bin\Debug\VisualNovelManager.exe.manifest
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\bin\Debug\VisualNovelManager.application
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\bin\Debug\VisualNovelManager.exe
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\bin\Debug\VisualNovelManager.pdb
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\bin\Debug\Newtonsoft.Json.dll
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\bin\Debug\System.Data.SqlServerCe.dll
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\bin\Debug\System.Drawing.dll
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\bin\Debug\System.Management.dll
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\obj\Debug\View\Settings.baml
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\obj\Debug\Startup\SplashScreen.g.cs
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\obj\Debug\View\AddVisualNovel.g.cs
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\obj\Debug\View\CharacterTab.g.cs
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\obj\Debug\MainWindow.g.cs
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\obj\Debug\View\ReleasesTab.g.cs
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\obj\Debug\View\ScreenshotsTab.g.cs
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\obj\Debug\View\Settings.g.cs
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\obj\Debug\View\UserVnList.g.cs
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\obj\Debug\View\VisualNovelsListBox.g.cs
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\obj\Debug\View\VisualNovelsInformation.g.cs
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\obj\Debug\VisualNovelManager_Content.g.cs
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\obj\Debug\GeneratedInternalTypeHelper.g.cs
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\obj\Debug\VisualNovelManager_MarkupCompile.cache
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\obj\Debug\VisualNovelManager_MarkupCompile.lref
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\obj\Debug\Startup\SplashScreen.baml
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\obj\Debug\View\AddVisualNovel.baml
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\obj\Debug\View\CharacterTab.baml
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\obj\Debug\MainWindow.baml
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\obj\Debug\View\ReleasesTab.baml
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\obj\Debug\View\ScreenshotsTab.baml
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\obj\Debug\View\UserVnList.baml
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\obj\Debug\View\VisualNovelsListBox.baml
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\obj\Debug\View\VisualNovelsInformation.baml
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\obj\Debug\VisualNovelManager.g.resources
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\obj\Debug\VisualNovelManager.Properties.Resources.resources
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\obj\Debug\Visual Novel Manager.csproj.GenerateResource.Cache
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\obj\Debug\VisualNovelManager.exe.manifest
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\obj\Debug\VisualNovelManager.application
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\obj\Debug\VisualNovelManager.exe
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\obj\Debug\VisualNovelManager.pdb
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch\VisualNovelManager_Merged\obj\Debug\Visual Novel Manager.csprojResolveAssemblyReference.cache
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\bin\Debug\VisualNovelManager.exe.config
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\obj\Debug\VisualNovelManager.exe
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\obj\Debug\VisualNovelManager.pdb
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\bin\Debug\libs\amd64\sqlceca40.dll
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\bin\Debug\libs\amd64\sqlcecompact40.dll
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\bin\Debug\libs\amd64\sqlceer40EN.dll
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\bin\Debug\libs\amd64\sqlceme40.dll
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\bin\Debug\libs\amd64\sqlceqp40.dll
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\bin\Debug\libs\amd64\sqlcese40.dll
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\bin\Debug\libs\x86\sqlceca40.dll
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\bin\Debug\libs\x86\sqlcecompact40.dll
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\bin\Debug\libs\x86\sqlceer40EN.dll
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\bin\Debug\libs\x86\sqlceme40.dll
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\bin\Debug\libs\x86\sqlceqp40.dll
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\bin\Debug\libs\x86\sqlcese40.dll
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\bin\Debug\VisualNovelManager.exe.manifest
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\bin\Debug\VisualNovelManager.application
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\bin\Debug\VisualNovelManager.exe
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\bin\Debug\VisualNovelManager.pdb
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\bin\Debug\Newtonsoft.Json.dll
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\bin\Debug\System.Data.SqlServerCe.dll
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\bin\Debug\System.Drawing.dll
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\bin\Debug\System.Management.dll
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\obj\Debug\Visual Novel Manager.csprojResolveAssemblyReference.cache
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\obj\Debug\View\Settings.baml
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\obj\Debug\Startup\SplashScreen.g.cs
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\obj\Debug\View\AddVisualNovel.g.cs
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\obj\Debug\View\CharacterTab.g.cs
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\obj\Debug\MainWindow.g.cs
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\obj\Debug\View\ReleasesTab.g.cs
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\obj\Debug\View\ScreenshotsTab.g.cs
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\obj\Debug\View\Settings.g.cs
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\obj\Debug\View\UserVnList.g.cs
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\obj\Debug\View\VisualNovelsListBox.g.cs
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\obj\Debug\View\VisualNovelsInformation.g.cs
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\obj\Debug\VisualNovelManager_Content.g.cs
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\obj\Debug\GeneratedInternalTypeHelper.g.cs
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\obj\Debug\VisualNovelManager_MarkupCompile.cache
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\obj\Debug\VisualNovelManager_MarkupCompile.lref
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\obj\Debug\Startup\SplashScreen.baml
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\obj\Debug\View\AddVisualNovel.baml
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\obj\Debug\View\CharacterTab.baml
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\obj\Debug\MainWindow.baml
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\obj\Debug\View\ReleasesTab.baml
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\obj\Debug\View\ScreenshotsTab.baml
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\obj\Debug\View\UserVnList.baml
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\obj\Debug\View\VisualNovelsListBox.baml
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\obj\Debug\View\VisualNovelsInformation.baml
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\obj\Debug\VisualNovelManager.g.resources
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\obj\Debug\VisualNovelManager.Properties.Resources.resources
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\obj\Debug\Visual Novel Manager.csproj.GenerateResource.Cache
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\obj\Debug\VisualNovelManager.exe.manifest
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\obj\Debug\VisualNovelManager.application
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\obj\Debug\Visual Novel Manager.csproj.CoreCompileInputs.cache

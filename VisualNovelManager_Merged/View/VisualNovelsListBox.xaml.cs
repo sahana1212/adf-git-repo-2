@@ -37,7 +37,7 @@ namespace VisualNovelManager.View
 
         public void LoadCategoriesForDropdown()
         {
-            
+
             var CategoryListArr = new List<string>();
             using (SqlCeConnection con = new SqlCeConnection(@"Data Source=|DataDirectory|\Database.sdf"))
             {
@@ -111,11 +111,13 @@ namespace VisualNovelManager.View
 
         }
 
-       
 
 
 
-        private void LoadCategories()
+
+
+
+        private void cbCategory_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (cbCategory.SelectedItem == null)
             {
@@ -127,16 +129,8 @@ namespace VisualNovelManager.View
                 StaticClass.VnListboxViewModelStatic.SelectedCategory = cbCategory.SelectedItem.ToString();
                 //loads the list with only novels in the selected category
                 StaticClass.VnListboxViewModelStatic.BindListboxCategoryCommand.Execute(null);
-               
+
             }
-            
-           
-        }
-
-
-        private void cbCategory_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            LoadCategories();
         }
 
 

@@ -1,0 +1,20 @@
+﻿VisualNovelManager
+
+
+winexe
+C#
+.cs
+D:\Documents\Visual Studio 2015\Projects\Visual Novel Manager\Master-branch - Copy\VisualNovelManager_Merged\obj\Debug\
+VisualNovelManager
+none
+false
+DEBUG;TRACE
+
+10-987199633
+12-1569991569
+57367436228
+162030720224
+Startup\SplashScreen.xaml;View\AddVisualNovel.xaml;View\CharacterTab.xaml;MainWindow.xaml;View\ReleasesTab.xaml;View\ScreenshotsTab.xaml;View\Settings.xaml;View\UserVnList.xaml;View\VisualNovelsListBox.xaml;View\VisualNovelsInformation.xaml;
+
+False
+
