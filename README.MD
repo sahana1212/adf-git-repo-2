@@ -1,10 +1,12 @@
-# Visual Novel Manager
+# [Obselete] Visual Novel Manager
 
 This Visual Novel Manager is used to store and manage visual novels. You can add visual novels to the program, and it will download metadata about the selected title. You can also change your votes and comments on novels if you have an account on VNDB.org
 
 ### Notice
-This project will likely no longer be worked on, as I am doing a complete rewrite of the program. The new program should have significantly less bugs when finished, but it is still under heavy development.
+This project is no longer being worked on, as I am doing a complete rewrite of the program. The new program should have significantly less bugs when finished, but it is still under heavy development.
 [https://github.com/micah686/Visual-Novel-Manager-v2](https://github.com/micah686/Visual-Novel-Manager-v2)
+
+All issues are being closed, and creating new issues are disabled, for I will only be working on my new version, and not this one.
 
 ### Version
 1.1.0
