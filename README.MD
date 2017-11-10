@@ -1,7 +1,5 @@
 # [Obselete] Visual Novel Manager
 
-This Visual Novel Manager is used to store and manage visual novels. You can add visual novels to the program, and it will download metadata about the selected title. You can also change your votes and comments on novels if you have an account on VNDB.org
-
 ### Notice
 This project is no longer being worked on.
 You can get the new version here:
