@@ -1,0 +1,22 @@
+{
+	"name": "inputset_in_develop_branch",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage_in_git",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "emp.txt",
+				"container": "adftutorial"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
