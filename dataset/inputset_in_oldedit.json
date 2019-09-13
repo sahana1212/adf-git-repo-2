@@ -1,0 +1,22 @@
+{
+	"name": "inputset_in_oldedit",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage_in_oldedit_branch",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "emp.txt",
+				"container": "adftutorial"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
